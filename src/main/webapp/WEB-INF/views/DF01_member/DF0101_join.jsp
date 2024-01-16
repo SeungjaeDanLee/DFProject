@@ -52,7 +52,7 @@
 
         <fieldset>
             <label for="nick_name">닉네임</label>
-            <input type="text" id="nick_name" name="nick_name" style="width: 80%"  placeholder="닉네임을 입력해주세요" onkeyup="characterCheck(this)" onkeydown="characterCheck(this)" required>
+            <input type="text" id="nick_name" name="nick_name" style="width: 80%"  placeholder="닉네임을 입력해주세요" onkeyup="characterCheckNickName(this)" onkeydown="characterCheckNickName(this)" minlength="2" maxlength="16" required>
             <button class="btn btn-secondary" type="button" style="width: 18%;" onclick="checkNickName()">확인</button>
         </fieldset>
         <span id="result2"></span>

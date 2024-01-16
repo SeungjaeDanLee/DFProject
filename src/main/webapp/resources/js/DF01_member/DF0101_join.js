@@ -81,9 +81,42 @@ function pwCheck(){
 }
 
 // 회원가입시 아이디 중복 확인
+// function checkId() {
+//     const inputId = $("[name=id]").val();
+//     console.log(inputId);
+//     $.ajax({
+//         type: "post",
+//         url: "/members/checkId",
+//         data: {"inputId": inputId},
+//         success: function (data) {
+//             console.log(data);
+//             if (inputId != "") {
+//                 if (data == 'ok') {
+//                     $("#result1").text("사용 가능한 아이디입니다.").css("color", "blue");
+//                 } else {
+//                     $("#result1").text("사용할 수 없는 아이디입니다.").css("color", "red");
+//                 }
+//                 isCheckId = true;
+//             } else {
+//                 $("#result1").text("빈 값은 사용할 수 없습니다.").css("color", "red");
+//             }
+//
+//         }, error: function () {
+//             console.log("서버 요청 실패");
+//             isCheckId = false;
+//         }
+//     });
+// }
 function checkId() {
     const inputId = $("[name=id]").val();
     console.log(inputId);
+
+    let regExp = /^[A-Za-z0-9]+$/; // 알파벳 소문자, 대문자, 숫자만 허용
+    if(!regExp.test(inputId)) {
+        $("#result1").text("아이디는 알파벳 대소문자 및 숫자만 사용할 수 있습니다.").css("color", "red");
+        return;
+    }
+
     $.ajax({
         type: "post",
         url: "/members/checkId",
@@ -108,10 +141,21 @@ function checkId() {
     });
 }
 
+
+
+
+
 // 회원가입시 닉네임 중복 확인
 function checkNickName() {
     const inputNickName = $("[name=nick_name]").val();
     console.log(inputNickName);
+
+    let regExp = /[^\uAC00-\uD7A3a-zA-Z0-9]/gi; // 완성된 한글, 알파벳, 숫자를 제외한 모든 문자 매칭
+    if(regExp.test(inputNickName)) {
+        $("#result2").text("닉네임에는 완성된 한글, 알파벳, 숫자만 사용할 수 있습니다.").css("color", "red");
+        return;
+    }
+
     $.ajax({
         type: "post",
         url: "/members/checkNickName",
@@ -136,40 +180,57 @@ function checkNickName() {
     });
 }
 
+
+
 // 특수문자 입력 방지
 // 일반
 function characterCheck(obj){
-    let regExp = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\\(\=]/gi;
-// 허용할 특수문자는 여기서 삭제
-// 띄어쓰기도 특수문자 처리
+    let regExp = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\\(\=]|[\u3131-\u314e\u314f-\u3163\uac00-\ud7a3]/gi;
+    // 허용할 특수문자는 여기서 삭제
+    // 띄어쓰기도 특수문자 처리
+    // 한글 범위 추가
     if( regExp.test(obj.value) ){
-        alert("특수문자는 입력하실수 없습니다.");
-        obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 한자리 지움
+        alert("특수문자 및 한글은 입력하실 수 없습니다.");
+        obj.value = obj.value.substring( 0 , obj.value.length - 2 ); // 입력한 특수문자 및 한글 한자리 지움
+        obj.value = ""; // 입력한 전체 값을 지움
     }
 }
 
-// 이메일
+
+// 이메일(영어와 @.만 가능)
 function characterCheckEmail(obj){
-    let regExp = /[ \{\}\[\]\/?,;:|\)*~`!^\-_+┼<>\#$%&\'\"\\\(\=가-힣]/gi;
+    let regExp = /[ \{\}\[\]\/?,;:|\)*~`!^\-_+┼<>\#$%&\'\"\\\(\=]|[\u3131-\u314e\u314f-\u3163\uac00-\ud7a3]/gi;
 // 허용할 특수문자는 여기서 삭제
 // @.만 허용
 // 띄어쓰기도 특수문자 처리
     if( regExp.test(obj.value) ){
         alert("특수문자와 한글은 입력하실수 없습니다.");
         obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 한자리 지움
+        obj.value = ""
     }
 }
 
 // 이름(한글만)
 function characterCheckName(obj){
-    let regExp = /[^가-힣]/gi;
-// 허용할 특수문자는 여기서 삭제
-// 띄어쓰기도 특수문자 처리
+    let regExp = /[^가-힣ㄱ-ㅎㅏ-ㅣ]/gi;
+    // 한글과 띄어쓰기를 제외한 모든 문자 매칭
     if( regExp.test(obj.value) ){
-        alert("특수문자는 입력하실수 없습니다.");
+        alert("한글만 입력하실 수 있습니다.");
+        obj.value = obj.value.replace(regExp, ''); // 매칭된 문자 삭제
+    }
+}
+
+// 닉네임(특수문자만 삭제)
+function characterCheckNickName(obj){
+    let regExp = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\\(\=]/gi;
+    // 허용할 특수문자는 여기서 삭제
+    // 띄어쓰기도 특수문자 처리
+    if( regExp.test(obj.value) ){
+        alert("특수문자는 입력하실 수 없습니다.");
         obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 한자리 지움
     }
 }
+
 
 // 회원가입시 휴대폰 번호 숫자 지정
 const autoHyphen = (target) => {
