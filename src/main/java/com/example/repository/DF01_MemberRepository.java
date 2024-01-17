@@ -30,4 +30,9 @@ public class DF01_MemberRepository {
     public DF01_MemberDTO memberLogin(DF01_MemberDTO memberDTO) {
         return sql.selectOne("Member.memberLogin", memberDTO);
     }
+
+    // 회원탈퇴
+    public void memberDelelte(int mno) {
+        sql.delete("Member.memberDelete", mno);
+    }
 }

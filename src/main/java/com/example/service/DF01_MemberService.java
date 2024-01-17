@@ -47,4 +47,9 @@ public class DF01_MemberService {
             return false;
         }
     }
+
+    // 회원탈퇴
+    public void member_delete(int mno) {
+        memberRepository.memberDelelte(mno);
+    }
 }

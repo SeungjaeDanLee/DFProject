@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <link href="../resources/css/DF01_member.css" rel="stylesheet"/>
-<script src="../resources/js/DF01_member.js"></script>
+<script src="../resources/js/DF01_member/DF0101_join.js"></script>
 <fieldset>
     <label>주소</label>
     <div class="form-group">

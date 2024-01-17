@@ -29,12 +29,12 @@
 
     <!--회원 정보 수정 update-->
 <!--    <update id="memberUpdate" parameterType="member">-->
-<!--        update * from member where id = #{id} and password = #{password}-->
+<!--        update member set  where mno = #{mno}-->
 <!--    </update>-->
 
 
     <!--회원 탈퇴 delete-->
-<!--    <delete id="memberDelete" parameterType="member">-->
-<!--        delete * from member where id = #{id}-->
-<!--    </delete>-->
+    <delete id="memberDelete" parameterType="int">
+        delete * from member where mno = #{mno}
+    </delete>
 </mapper>

@@ -1,7 +1,11 @@
 // 회원가입
 let isCheckId = false;
 let isCheckNickName = false;
+let isCheckEmail = false;
+let isCheckName = false;
 
+
+// 필수 기재
 // 회원가입 폼
 function checkForm() {
     const id = $("[name=id]");
@@ -10,14 +14,6 @@ function checkForm() {
     const email = $("[name=email]");
     const name = $("[name=name]");
     const nickname = $("[name=nick_name]");
-
-    // const phone = $("[name=phone]");
-
-    // const phoneNumber = phone.val().replace(/[^0-9]/g, '');
-    // const address = $("[name=address]");
-    // const gender = $("[name=gender]");
-    // const birthday = $("[name=birthday]");
-
 
     if (id.val() === "") {
         alert("아이디를 입력해주세요.");
@@ -44,30 +40,33 @@ function checkForm() {
         nickname.focus();
         return false;
     }
-    // else if(phone.val() === "") {
-    //     alert("전화번호를 입력해주세요.");
-    //     phone.focus();
-    //     return false;
-    // } else if (phoneNumber.length !== 11) {
-    //     alert("전화번호를 숫자 11자리로 입력해주세요.");
-    //     phone.focus();
-    //     return false;
-    // }
 
     if (!isCheckId) {
-        alert("아이디 중복체크를 확인해주세요.");
+        alert("아이디를 다시 확인해주세요.");
         id.focus();
         return false;
     }
     if (!isCheckNickName) {
-        alert("닉네임 중복체크를 확인해주세요.");
+        alert("닉네임을 다시 확인해주세요.");
         nickname.focus();
         return false;
     }
+    if (!isCheckEmail) {
+        alert("이메일 형식을 다시 확인해주세요.");
+        email.focus();
+        return false;
+    }
+    if (!isCheckName) {
+        alert("이름을 다시 확인해주세요.");
+        name.focus();
+        return false;
+    }
+
 
     $("[name=member]").submit();
 }
 
+// 비밀번호 재확인
 function pwCheck(){
     if ($('#password').val() != "") {
         if($('#password').val() == $('#password_check').val()){
@@ -81,35 +80,9 @@ function pwCheck(){
 }
 
 // 회원가입시 아이디 중복 확인
-// function checkId() {
-//     const inputId = $("[name=id]").val();
-//     console.log(inputId);
-//     $.ajax({
-//         type: "post",
-//         url: "/members/checkId",
-//         data: {"inputId": inputId},
-//         success: function (data) {
-//             console.log(data);
-//             if (inputId != "") {
-//                 if (data == 'ok') {
-//                     $("#result1").text("사용 가능한 아이디입니다.").css("color", "blue");
-//                 } else {
-//                     $("#result1").text("사용할 수 없는 아이디입니다.").css("color", "red");
-//                 }
-//                 isCheckId = true;
-//             } else {
-//                 $("#result1").text("빈 값은 사용할 수 없습니다.").css("color", "red");
-//             }
-//
-//         }, error: function () {
-//             console.log("서버 요청 실패");
-//             isCheckId = false;
-//         }
-//     });
-// }
 function checkId() {
     const inputId = $("[name=id]").val();
-    console.log(inputId);
+    // console.log(inputId);
 
     let regExp = /^[A-Za-z0-9]+$/; // 알파벳 소문자, 대문자, 숫자만 허용
     if(!regExp.test(inputId)) {
@@ -122,33 +95,36 @@ function checkId() {
         url: "/members/checkId",
         data: {"inputId": inputId},
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             if (inputId != "") {
                 if (data == 'ok') {
-                    $("#result1").text("사용 가능한 아이디입니다.").css("color", "blue");
+                    if (inputId.length >= 8){
+                       $("#result1").text("사용 가능한 아이디입니다. (8자 이상)").css("color", "blue");
+                        isCheckId = true;
+                    } else {
+                        $("#result1").text("아이디는 8자 이상이어야 합니다.").css("color", "red");
+                        isCheckId = false;
+                    }
                 } else {
                     $("#result1").text("사용할 수 없는 아이디입니다.").css("color", "red");
+                    isCheckId = false;
                 }
-                isCheckId = true;
             } else {
                 $("#result1").text("빈 값은 사용할 수 없습니다.").css("color", "red");
+                isCheckId = false;
             }
 
         }, error: function () {
-            console.log("서버 요청 실패");
+            // console.log("서버 요청 실패");
             isCheckId = false;
         }
     });
 }
 
-
-
-
-
 // 회원가입시 닉네임 중복 확인
 function checkNickName() {
     const inputNickName = $("[name=nick_name]").val();
-    console.log(inputNickName);
+    // console.log(inputNickName);
 
     let regExp = /[^\uAC00-\uD7A3a-zA-Z0-9]/gi; // 완성된 한글, 알파벳, 숫자를 제외한 모든 문자 매칭
     if(regExp.test(inputNickName)) {
@@ -161,24 +137,68 @@ function checkNickName() {
         url: "/members/checkNickName",
         data: {"inputNickName": inputNickName},
         success: function (data) {
-            console.log(data);
+            // console.log(data);
             if (inputNickName != "") {
                 if (data == 'ok') {
-                    $("#result2").text("사용 가능한 닉네임입니다.").css("color", "blue");
+                    if (inputNickName.length >= 2){
+                        $("#result2").text("사용 가능한 닉네임입니다. (2자 이상)").css("color", "blue");
+                        isCheckNickName = true;
+                    } else {
+                        $("#result2").text("닉네임은 2자 이상이어야 합니다.").css("color", "red");
+                    }
                 } else {
                     $("#result2").text("사용할 수 없는 닉네임입니다.").css("color", "red");
+                    isCheckNickName = false;
                 }
-                isCheckNickName = true;
             } else {
                 $("#result2").text("빈 값은 사용할 수 없습니다.").css("color", "red");
+                isCheckNickName = false;
             }
-
         }, error: function () {
-            console.log("서버 요청 실패");
+            // console.log("서버 요청 실패");
             isCheckNickName = false;
         }
     });
 }
+
+
+function checkName() {
+    const inputName = $("[name=name]").val();
+    // console.log(inputName);
+
+    let regExp = /^[가-힣]+$/; // 완성된 한글 형태를 나타내는 정규 표현식
+
+    if (inputName.length < 2 || !regExp.test(inputName)) {
+        if (inputName.length < 2) {
+            $("#result3").text("이름은 2자 이상이어야 합니다.").css("color", "red");
+        } else {
+            $("#result3").text("이름은 완성된 한글 형태로만 사용할 수 있습니다.").css("color", "red");
+        }
+        isCheckName = false;
+    } else {
+        $("#result3").text("사용할 수 있는 이름입니다.").css("color", "blue");
+        isCheckName = true;
+    }
+}
+
+function checkEmail() {
+    const inputEmail = $("[name=email]").val();
+    // console.log(inputEmail);
+
+    // 이메일 형식을 체크하는 정규 표현식
+    let regExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!regExp.test(inputEmail)) {
+        $("#result4").text("올바른 이메일 형식이 아닙니다.").css("color", "red");
+        isCheckEmail = false;
+    } else {
+        $("#result4").text("사용할 수 있는 이메일입니다.").css("color", "blue");
+        isCheckEmail = true;
+    }
+}
+
+
+
 
 
 
@@ -191,32 +211,19 @@ function characterCheck(obj){
     // 한글 범위 추가
     if( regExp.test(obj.value) ){
         alert("특수문자 및 한글은 입력하실 수 없습니다.");
-        obj.value = obj.value.substring( 0 , obj.value.length - 2 ); // 입력한 특수문자 및 한글 한자리 지움
+        obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 및 한글 한자리 지움
         obj.value = ""; // 입력한 전체 값을 지움
-    }
-}
-
-
-// 이메일(영어와 @.만 가능)
-function characterCheckEmail(obj){
-    let regExp = /[ \{\}\[\]\/?,;:|\)*~`!^\-_+┼<>\#$%&\'\"\\\(\=]|[\u3131-\u314e\u314f-\u3163\uac00-\ud7a3]/gi;
-// 허용할 특수문자는 여기서 삭제
-// @.만 허용
-// 띄어쓰기도 특수문자 처리
-    if( regExp.test(obj.value) ){
-        alert("특수문자와 한글은 입력하실수 없습니다.");
-        obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 한자리 지움
-        obj.value = ""
     }
 }
 
 // 이름(한글만)
 function characterCheckName(obj){
-    let regExp = /[^가-힣ㄱ-ㅎㅏ-ㅣ]/gi;
-    // 한글과 띄어쓰기를 제외한 모든 문자 매칭
+    let regExp = /[^ㄱ-ㅎㅏ-ㅣ가-힣]/gi;
+    // 완성된 한글을 제외한 모든 문자 매칭
     if( regExp.test(obj.value) ){
         alert("한글만 입력하실 수 있습니다.");
         obj.value = obj.value.replace(regExp, ''); // 매칭된 문자 삭제
+        obj.value = ""; // 입력한 전체 값을 지움
     }
 }
 
@@ -228,10 +235,13 @@ function characterCheckNickName(obj){
     if( regExp.test(obj.value) ){
         alert("특수문자는 입력하실 수 없습니다.");
         obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 한자리 지움
+        obj.value = ""; // 입력한 전체 값을 지움
     }
 }
 
 
+
+// 선택 기재
 // 회원가입시 휴대폰 번호 숫자 지정
 const autoHyphen = (target) => {
     target.value = target.value
@@ -245,10 +255,6 @@ const autoDate = (target) => {
         .replace(/[^0-9]/g, '')
         .replace(/^(\d{4})(\d{2})(\d{2})$/, `$1/$2/$3`);
 }
-
-
-
-
 
 // 회원가입시 주소
 function execPostCode() {
@@ -301,16 +307,12 @@ function execPostCode() {
 }
 
 
-
-
-
-
 // 회원가입시 성별입력
-document.addEventListener('DOMContentLoaded', function () {
-    let selectBox = document.getElementById('validationCustom04');
+function handleGenderSelection() {
+    let selectBoxGender = document.getElementById('gender_selection');
     let genderInput = document.getElementById('gender');
 
-    selectBox.addEventListener('change', function () {
+    selectBoxGender.addEventListener('change', function () {
         switch (this.value) {
             case '1':
                 genderInput.value = '남자';
@@ -331,4 +333,57 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
         }
     });
+}
+
+// 회원가입시 이메일입력
+function handleEmailSelection() {
+    let selectBoxEmail = document.getElementById('email_selection');
+    let emailInput = document.getElementById('emailService');
+
+    selectBoxEmail.addEventListener('change', function () {
+        switch (this.value) {
+            case '1':
+                emailInput.value = '@naver.com';
+                emailInput.readOnly = true; // 입력란을 읽기 전용으로 설정
+                break;
+            case '2':
+                emailInput.value = '@daum.net';
+                emailInput.readOnly = true; // 입력란을 읽기 전용으로 설정
+                break;
+            case '3':
+                emailInput.value = '@gmail.com';
+                emailInput.readOnly = true; // 입력란을 읽기 전용으로 설정
+                break;
+            case '4':
+                emailInput.value = '@epcot.co.kr';
+                emailInput.readOnly = true; // 입력란을 읽기 전용으로 설정
+                break;
+            case '5':
+                emailInput.value = ''; // 입력란을 비우기
+                emailInput.readOnly = false; // 입력란을 수정 가능하게 설정
+                emailInput.focus(); // 사용자가 바로 입력할 수 있도록 입력란에 포커스
+                break;
+            default:
+                emailInput.value = '';
+                emailInput.readOnly = true;
+                break;
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    handleGenderSelection();
+    handleEmailSelection();
 });
+
+function updateEmail() {
+    let emailOrigin = document.getElementById('emailOrigin').value;
+    let emailService = document.getElementById('emailService').value;
+    let selectedEmailService = document.getElementById('email_selection').options[document.getElementById('email_selection').selectedIndex].text;
+
+    if (selectedEmailService !== '직접입력') {
+        document.getElementById('email').value = emailOrigin + selectedEmailService;
+    } else {
+        document.getElementById('email').value = emailOrigin + emailService;
+    }
+}

@@ -5,7 +5,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 160vh;
+    height: 120vh;
     margin: 0;
 }
 
@@ -15,7 +15,13 @@
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     min-width: 500px;
-    width: 33%;
+    width: 75%;
+    display: flex;
+    justify-content: space-between; /* 좌우로 공간을 동일하게 배분 */
+}
+
+.needed_things, .unneeded_things {
+    width: 45%; /* 각 섹션의 너비를 45%로 설정 */
 }
 
 /*로그인*/
@@ -95,4 +101,12 @@ input[type="submit"]:hover {
     border-radius: 0.5rem;
     min-width: 3rem;
     font-weight: 700;
+}
+
+
+div{ -webkit-touch-callout: none;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
 }

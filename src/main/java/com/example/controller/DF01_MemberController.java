@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class DF01_MemberController {
     @Autowired
-    DF01_MemberService DF01MemberService;
+    DF01_MemberService memberService;
 
     // 회원가입
     @GetMapping("/new")
@@ -24,21 +24,21 @@ public class DF01_MemberController {
 
     @PostMapping("/new")
     public String memberJoin(@ModelAttribute DF01_MemberDTO memberDTO) {
-        DF01MemberService.member_join(memberDTO);
+        memberService.member_join(memberDTO);
         return "redirect:/members/login";
     }
 
     @PostMapping("/checkId")
     public @ResponseBody String checkId(@RequestParam("inputId") String inputId) {
         System.out.println("inputId = " + inputId);
-        String checkResult = DF01MemberService.checkId(inputId);
+        String checkResult = memberService.checkId(inputId);
         return checkResult;
     }
 
     @PostMapping("/checkNickName")
     public @ResponseBody String checkNickName(@RequestParam("inputNickName") String inputNickName) {
         System.out.println("inputNickName = " + inputNickName);
-        String checkResult = DF01MemberService.checkNickName(inputNickName);
+        String checkResult = memberService.checkNickName(inputNickName);
         return checkResult;
     }
 
@@ -51,7 +51,7 @@ public class DF01_MemberController {
 
     @PostMapping("/login")
     public String memberLogin(@ModelAttribute DF01_MemberDTO memberDTO, HttpSession session) {
-        boolean loginResult = DF01MemberService.member_login(memberDTO);
+        boolean loginResult = memberService.member_login(memberDTO);
         if (loginResult) {
             session.setAttribute("loginId", memberDTO.getId());
             session.setMaxInactiveInterval(-1);
@@ -76,4 +76,9 @@ public class DF01_MemberController {
     }
 
     // 회원 탈퇴
+    @GetMapping("/delete")
+    public String memberDelete(@RequestParam("mno") int mno){
+        memberService.member_delete(mno);
+        return "redirect:/";
+    }
 }
