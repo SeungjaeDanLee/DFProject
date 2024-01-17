@@ -20,48 +20,42 @@
     <form class="mypage_form" action="/members/update" method="post">
         <h3>내 정보</h3><br>
         <%--필수 기재--%>
-        <fieldset>
-            <label for="id">아이디</label>
-            <input type="text" id="id" name="id" readonly>
-        </fieldset>
-
-        <fieldset>
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" name="password" readonly>
-        </fieldset>
-
-        <fieldset>
-            <label for="email">이메일</label>
-            <input type="text" id="email" name="email" readonly>
-        </fieldset>
-
-        <fieldset>
-            <label for="name">이름</label>
-            <input type="text" id="name" name="name" readonly>
-        </fieldset>
-
-        <fieldset>
-            <label for="nick_name">닉네임</label>
-            <input type="text" id="nick_name" name="nick_name" readonly>
-        </fieldset>
-
-
-        <hr>
-        <%--선택 기재--%>
-
-        <%--전화번호--%>
-        <jsp:include page="/resources/layouts/DF01_layouts/DF01_phone.jsp"></jsp:include>
-
-        <%--주소--%>
-        <jsp:include page="/resources/layouts/DF01_layouts/DF01_address.jsp"></jsp:include>
-
-        <%--성별--%>
-        <jsp:include page="/resources/layouts/DF01_layouts/DF01_gender.jsp"></jsp:include>
-
-        <%--생년월일--%>
-        <jsp:include page="/resources/layouts/DF01_layouts/DF01_birthday.jsp"></jsp:include>
-
-    </form>
+        <table>
+            <tr>
+                <th>아이디</th>
+                <td>${member.id}</td>
+            </tr>
+            <tr>
+                <th>이메일</th>
+                <td>${member.email}</td>
+            </tr>
+            <tr>
+                <th>이름</th>
+                <td>${member.name}</td>
+            </tr>
+            <tr>
+                <th>닉네임</th>
+                <td>${member.nick_name}</td>
+            </tr>
+            <tr>
+                <th>폰</th>
+                <td>${member.phone}</td>
+            </tr>
+            <tr>
+                <th>주소</th>
+                <td>${member.zipcode}</td>
+                <td>${member.streetAddress}</td>
+                <td>${member.detailAddress}</td>
+            </tr>
+            <tr>
+                <th>성별</th>
+                <td>${member.gender}</td>
+            </tr>
+            <tr>
+                <th>생년월일</th>
+                <td>${member.birthday}</td>
+            </tr>
+        </table>
 
     <a href="/members/delete" methods="get">회원탈퇴</a>
 

@@ -31,8 +31,14 @@ public class DF01_MemberRepository {
         return sql.selectOne("Member.memberLogin", memberDTO);
     }
 
+    public DF01_MemberDTO findbyMno(int mno) {
+        return sql.selectOne("Member.findbyMno", mno);
+    }
+
     // 회원탈퇴
     public void memberDelelte(int mno) {
         sql.delete("Member.memberDelete", mno);
     }
+
+
 }

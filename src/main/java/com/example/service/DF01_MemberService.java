@@ -48,6 +48,10 @@ public class DF01_MemberService {
         }
     }
 
+    public DF01_MemberDTO findbyMno(int mno) {
+        return memberRepository.findbyMno(mno);
+    }
+
     // 회원탈퇴
     public void member_delete(int mno) {
         memberRepository.memberDelelte(mno);
