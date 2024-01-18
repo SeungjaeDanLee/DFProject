@@ -37,7 +37,6 @@ public class DF01_MemberController {
     // 회원가입시 아이디 중복 검사
     @PostMapping("/checkId")
     public @ResponseBody String checkId(@RequestParam("inputId") String inputId) {
-        System.out.println("inputId = " + inputId);
         String checkResult = memberService.checkId(inputId);
         return checkResult;
     }
@@ -45,7 +44,6 @@ public class DF01_MemberController {
     // 회원가입시 닉네임 중복 검사
     @PostMapping("/checkNickName")
     public @ResponseBody String checkNickName(@RequestParam("inputNickName") String inputNickName) {
-        System.out.println("inputNickName = " + inputNickName);
         String checkResult = memberService.checkNickName(inputNickName);
         return checkResult;
     }
@@ -63,9 +61,6 @@ public class DF01_MemberController {
         if (loginResult) {
             // 세션으로 로그인 아이디를 넘겨줌
             session.setAttribute("loginId", memberDTO.getId());
-
-            // 세션으로 로그인 고유값를 넘겨줌
-            session.setAttribute("loginMno", memberDTO.getMno());
 
             // 세션 무한대
             session.setMaxInactiveInterval(-1);

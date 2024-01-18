@@ -21,7 +21,10 @@ public class DF01_MemberService {
     // 회원가입
     // 비밀번호 암호화 후 저장
     public void member_join(DF01_MemberDTO memberDTO) {
+        String encodedId = passwordEncoder.encode(memberDTO.getId());
         String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
+
+        memberDTO.setId(encodedId);
         memberDTO.setPassword(encodedPassword);
         memberRepository.memberJoin(memberDTO);
     }
@@ -50,6 +53,9 @@ public class DF01_MemberService {
     // 로그인
     public boolean member_login(DF01_MemberDTO memberDTO){
         DF01_MemberDTO loginMember = memberRepository.memberLogin(memberDTO);
+
+        // decode하는 법 필요
+
         if (loginMember != null) {
             return true;
         } else {

@@ -8,15 +8,31 @@
 <!--            http://www.springframework.org/schema/security-->
 <!--            http://www.springframework.org/schema/security/spring-security.xsd">-->
 
-<!--    <http auto-config="true" use-expressions="false">-->
-<!--        <intercept-url pattern="/**" access="ROLE_USER" />-->
+<!--    &lt;!&ndash; 검사 URL &ndash;&gt;-->
+<!--    <http use-expressions="true">-->
+<!--        <intercept-url pattern="/members/login" access="permitAll" />-->
+<!--        <intercept-url pattern="/members/new" access="permitAll" />-->
+<!--        <intercept-url pattern="/" access="permitAll" />-->
+<!--        <intercept-url pattern="/resources/**" access="permitAll" />-->
+
+<!--        <intercept-url pattern="/admin/**" access="hasRole('ADMIN')" />-->
+<!--        <intercept-url pattern="/**" access="hasAnyRole('USER, ADMIN')" />-->
+
+<!--        <form-login login-page="/members/login"-->
+<!--                    default-target-url="/"-->
+<!--                    authentication-failure-url="/members/login?error"-->
+<!--                    username-parameter="id"-->
+<!--                    password-parameter="password" />-->
+<!--        <logout logout-url="/members/logout" logout-success-url="/" />-->
+<!--        <access-denied-handler error-page="/members/login" />-->
 <!--    </http>-->
 
+<!--    &lt;!&ndash;  provider  &ndash;&gt;-->
 <!--    <authentication-manager>-->
 <!--        <authentication-provider>-->
 <!--            <user-service>-->
-<!--                <user name="user" password="userPw" authorities="ROLE_USER"/>-->
-<!--                <user name="guest" password="guest" authorities="ROLE_GUEST"/>-->
+<!--                <user name="user" password="password" authorities="ROLE_USER" />-->
+<!--                <user name="admin" password="password" authorities="ROLE_ADMIN" />-->
 <!--            </user-service>-->
 <!--        </authentication-provider>-->
 <!--    </authentication-manager>-->

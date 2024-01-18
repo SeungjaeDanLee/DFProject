@@ -51,11 +51,11 @@ function checkForm() {
         nickname.focus();
         return false;
     }
-    if (!isCheckEmail) {
-        alert("이메일 형식을 다시 확인해주세요.");
-        email.focus();
-        return false;
-    }
+    // if (!isCheckEmail) {
+    //     alert("이메일 형식을 다시 확인해주세요.");
+    //     email.focus();
+    //     return false;
+    // }
     if (!isCheckName) {
         alert("이름을 다시 확인해주세요.");
         name.focus();
@@ -186,7 +186,7 @@ function checkEmail() {
     // console.log(inputEmail);
 
     // 이메일 형식을 체크하는 정규 표현식
-    let regExp = /^([A-Za-z]|[0-9])+$/;
+    let regExp = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
 
     if (!regExp.test(inputEmail)) {
         $("#result4").text("올바른 이메일 형식이 아닙니다.").css("color", "red");
@@ -383,4 +383,9 @@ function updateEmail() {
     } else {
         document.getElementById('email').value = emailOrigin + emailService;
     }
+}
+
+function updateAndCheckEmail() {
+    updateEmail();
+    checkEmail();
 }
