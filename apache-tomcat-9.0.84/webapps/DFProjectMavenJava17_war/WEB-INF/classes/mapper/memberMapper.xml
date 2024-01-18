@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--    <mapper namespace="memberSpace">-->
+<!--        <insert id="memberSave" parameterType="memberDTO">-->
+<!--            insert into member_table(member_name, member_email, member_pass, member_age) values (#{member_name}, #{member_email}, #{member_pass}, #{member_age})-->
+<!--        </insert>-->
+<!--    </mapper>-->
+</beans>

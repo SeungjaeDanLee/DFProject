@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper>
+    <!-- sql의 select 구문을 입력 -->
+    <!-- resultType : 결과를 무슨 타입으로 볼 건지 설정 -->
+    <select id="memberList" resultType="com.example.dto.Member">
+        select * from member
+    </select>
+</mapper>
