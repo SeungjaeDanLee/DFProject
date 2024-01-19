@@ -33,7 +33,7 @@ CREATE TABLE board (
                        title VARCHAR(255) NOT NULL,
                        content VARCHAR(2000) NOT NULL,
                        like_counts INT,
-                       view_points INT,
+                       view_counts INT,
                        written_date TIMESTAMP,
                        updated_date TIMESTAMP,
                        category VARCHAR(50),

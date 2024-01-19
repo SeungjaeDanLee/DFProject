@@ -18,8 +18,8 @@ public class DF01_MemberController {
     @Autowired
     DF01_MemberService memberService;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
 
     // 회원가입
     @GetMapping("/new")

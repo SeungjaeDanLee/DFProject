@@ -14,10 +14,10 @@ public class DF02_BoardDTO {
     private int bno;
     private String title;
     private String content;
-    private int likeCounts;
-    private int viewPoints;
-    private Timestamp writtenDate;
-    private Timestamp updatedDate;
+    private int like_counts;
+    private int view_counts;
+    private Timestamp written_date;
+    private Timestamp updated_date;
     private String category;
     private int mno;
 }
