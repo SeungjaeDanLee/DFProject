@@ -23,8 +23,8 @@ public class DF02_BoardService {
         return boardRepository.findAllBoard();
     }
 
-    int pageLimit = 3; // 한 페이지당 보여줄 글 갯수
-    int blockLimit = 3; // 하단에 보여줄 페이지 번호 갯수
+    int pageLimit = 10; // 한 페이지당 보여줄 글 갯수
+    int blockLimit = 10; // 하단에 보여줄 페이지 번호 갯수
 
     public List<DF02_BoardDTO> pagingList(int page) {
         /*
@@ -68,5 +68,9 @@ public class DF02_BoardService {
 
     public DF02_BoardDTO findByBoardBno(int bno) {
         return boardRepository.findByBoardBno(bno);
+    }
+
+    public void update_board(DF02_BoardDTO boardDTO) {
+        boardRepository.updateBoard(boardDTO);
     }
 }

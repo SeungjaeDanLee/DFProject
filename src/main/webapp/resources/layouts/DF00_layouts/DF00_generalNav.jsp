@@ -38,7 +38,7 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li class="nav-item"><a class="nav-link active" aria-current="page" href="/board/boardList">게시판</a>
+                            <li class="nav-item"><a class="nav-link active" aria-current="page" href="/board/paging">게시판</a>
                             </li>
                             <li class="nav-item"><a class="nav-link" href="/board/write">글쓰기</a></li>
                             <li class="nav-item dropdown">

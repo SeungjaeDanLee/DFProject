@@ -37,12 +37,9 @@ public class DF02_BoardController {
 
         // 아이디로 데이터베이스에서 모든정보 조회
         DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-
         if (memberDTO != null) {
             int mno = memberDTO.getMno();
-
             boardDTO.setMno(mno);
-
             boardService.write_board(boardDTO);
         } else {
             // 아이디에 해당하는 회원이 없는 경우 처리
@@ -50,12 +47,6 @@ public class DF02_BoardController {
         }
         return "redirect:/";
     }
-
-    @GetMapping("/view")
-    public String viewBoardPage(){
-        return "DF02_board/DF0202_viewBoard";
-    }
-
 
     // 전체 게시글 목록
     @GetMapping("/boardList")
@@ -71,14 +62,13 @@ public class DF02_BoardController {
     @GetMapping("/paging")
     public String paging(Model model,
                          @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
-        System.out.println("page = " + page);
+
         // 해당 페이지에서 보여줄 글 목록
         List<DF02_BoardDTO> pagingList = boardService.pagingList(page);
-        System.out.println("pagingList = " + pagingList);
         DF02_PageDTO pageDTO = boardService.pagingParam(page);
         model.addAttribute("boardList", pagingList);
         model.addAttribute("paging", pageDTO);
-        return "paging";
+        return "DF02_board/DF0204_boardPaging";
     }
 
     // 상세 페이지
@@ -95,27 +85,30 @@ public class DF02_BoardController {
         return "DF02_board/DF0202_viewBoard";
     }
 
+    // 게시글 수정
+    @GetMapping("/update")
+    public String updatePage(@RequestParam("bno") int bno, Model model) {
+        DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
+        model.addAttribute("board", boardDTO);
+        return "update";
+    }
+
+    @PostMapping("/update")
+    public String updateBoard(@ModelAttribute DF02_BoardDTO boardDTO, Model model) {
+        boardService.update_board(boardDTO);
+        DF02_BoardDTO dto = boardService.findByBoardBno(boardDTO.getBno());
+        model.addAttribute("board", dto);
+        return "detail";
+//        return "redirect:/board?id="+boardDTO.getId();
+    }
+
+
 //    @GetMapping("/delete")
 //    public String delete(@RequestParam("id") Long id) {
 //        boardService.delete(id);
 //        return "redirect:/board/";
 //    }
-//
-//    @GetMapping("/update")
-//    public String updateForm(@RequestParam("id") Long id, Model model) {
-//        DF02_BoardDTO boardDTO = boardService.findById(id);
-//        model.addAttribute("board", boardDTO);
-//        return "update";
-//    }
-//
-//    @PostMapping("/update")
-//    public String update(@ModelAttribute DF02_BoardDTO boardDTO, Model model) {
-//        boardService.update(boardDTO);
-//        DF02_BoardDTO dto = boardService.findById(boardDTO.getId());
-//        model.addAttribute("board", dto);
-//        return "detail";
-////        return "redirect:/board?id="+boardDTO.getId();
-//    }
-//
+
+
 
 }

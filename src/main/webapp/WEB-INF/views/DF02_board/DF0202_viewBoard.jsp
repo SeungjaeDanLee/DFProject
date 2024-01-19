@@ -38,6 +38,6 @@
 <button onclick="deleteFn()">삭제</button>
 
     <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalFooter.jsp"></jsp:include>
-    <script src="../resources/js/DF02_board/DF0201_writeBoard.js"></script>
+    <script src="../resources/js/DF02_board/DF0202_viewBoard.js"></script>
 </body>
 </html>

@@ -43,4 +43,7 @@ public class DF02_BoardRepository {
     }
 
 
+    public void updateBoard(DF02_BoardDTO boardDTO) {
+        sql.update("Board.updateBoard", boardDTO);
+    }
 }
