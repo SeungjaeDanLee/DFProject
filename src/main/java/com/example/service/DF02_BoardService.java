@@ -19,12 +19,31 @@ public class DF02_BoardService {
         boardRepository.writeBoard(boardDTO);
     }
 
-    public List<DF02_BoardDTO> findAllBoard() {
-        return boardRepository.findAllBoard();
+//    public List<DF02_BoardDTO> findAllBoard() {
+//        return boardRepository.findAllBoard();
+//    }
+
+    // 게시글 고유값 찾기
+    public DF02_BoardDTO findByBoardBno(int bno) {
+        return boardRepository.findByBoardBno(bno);
     }
 
-    int pageLimit = 10; // 한 페이지당 보여줄 글 갯수
-    int blockLimit = 10; // 하단에 보여줄 페이지 번호 갯수
+    // 게시글 수정
+    public void update_board(DF02_BoardDTO boardDTO) {
+        boardRepository.updateBoard(boardDTO);
+    }
+
+    // 게시글 삭제
+    public void delete_board(int bno) {
+        boardRepository.deleteBoard(bno);
+    }
+
+
+
+
+    // 페이징으로 전체 게시판 보여주기
+    int pageLimit = 3; // 한 페이지당 보여줄 글 갯수
+    int blockLimit = 3; // 하단에 보여줄 페이지 번호 갯수
 
     public List<DF02_BoardDTO> pagingList(int page) {
         /*
@@ -62,15 +81,13 @@ public class DF02_BoardService {
         return pageDTO;
     }
 
+    // 조회수 보여주기
     public void view_counts(int bno) {
         boardRepository.viewCounts(bno);
     }
 
-    public DF02_BoardDTO findByBoardBno(int bno) {
-        return boardRepository.findByBoardBno(bno);
-    }
 
-    public void update_board(DF02_BoardDTO boardDTO) {
-        boardRepository.updateBoard(boardDTO);
+    public int findAuthorMnoByBoardBno(int bno) {
+        return boardRepository.findAuthorMnoByBoardBno(bno);
     }
 }

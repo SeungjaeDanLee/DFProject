@@ -31,10 +31,11 @@
         </thead>
         <tbody>
         <c:forEach items="${boardList}" var="board">
-            <tr>
-                <td>
-                    <a href="/board?bno=${board.bno}&page=${paging.page}">${board.title}</a>
-                </td>
+            <tr onclick="location.href='/board?bno=${board.bno}&page=${paging.page}';" style="cursor:pointer;">
+<%--                <td>--%>
+<%--                    <a href="/board?bno=${board.bno}&page=${paging.page}">${board.title}</a>--%>
+<%--                </td>--%>
+                <td>${board.title}</td>
                 <td>${board.mno}</td>
                 <td>${board.like_counts}</td>
                 <td>${board.view_counts}</td>

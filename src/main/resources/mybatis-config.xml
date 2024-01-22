@@ -5,6 +5,6 @@
     <typeAliases>
         <typeAlias type="com.example.dto.DF01_MemberDTO" alias="member" />
         <typeAlias type="com.example.dto.DF02_BoardDTO" alias="board" />
-<!--        <typeAlias type="com.example.dto.DF03_ReplyDTO" alias="reply" />-->
+        <typeAlias type="com.example.dto.DF03_ReplyDTO" alias="reply" />
     </typeAliases>
 </configuration>

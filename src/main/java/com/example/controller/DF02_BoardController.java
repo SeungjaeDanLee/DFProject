@@ -24,13 +24,14 @@ public class DF02_BoardController {
     @Autowired
     DF02_BoardService boardService;
 
+    // 게시글 작성
     @GetMapping("/write")
-    public String writeBoardPage(){
+    public String writeBoardPage() {
         return "DF02_board/DF0201_wirteBoard";
     }
 
     @PostMapping("/write")
-    public String writeBoard(@ModelAttribute DF02_BoardDTO boardDTO, HttpSession session){
+    public String writeBoard(@ModelAttribute DF02_BoardDTO boardDTO, HttpSession session) {
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -45,16 +46,91 @@ public class DF02_BoardController {
             // 아이디에 해당하는 회원이 없는 경우 처리
             // 예: 유효하지 않은 세션 상태에 대한 오류 처리
         }
-        return "redirect:/";
+        return "redirect:/board/paging";
     }
 
-    // 전체 게시글 목록
-    @GetMapping("/boardList")
-    public String boardListPage(Model model) {
-        List<DF02_BoardDTO> boardDTOList = boardService.findAllBoard();
-        model.addAttribute("boardList", boardDTOList);
-        return "DF02_board/DF0203_boardList";
+
+    // 상세 페이지
+    @GetMapping
+    public String findByBoardBno(@RequestParam("bno") int bno,
+                                 @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                                 Model model, HttpSession session) {
+        boardService.view_counts(bno);
+        DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
+        boolean isAuthor = authorUpdateAndDeleteBoard(bno, session);
+        model.addAttribute("board", boardDTO);
+        model.addAttribute("page", page);
+        model.addAttribute("isAuthor", isAuthor);
+//        List<CommentDTO> commentDTOList = commentService.findAll(bno);
+//        model.addAttribute("commentList", commentDTOList);
+        return "DF02_board/DF0202_viewBoard";
     }
+
+
+    // 게시글 수정
+    @GetMapping("/update")
+    public String updatePage(@RequestParam("bno") int bno, Model model, HttpSession session) {
+        if (!authorUpdateAndDeleteBoard(bno, session)) {
+            // 작성자가 아닌 경우, 권한 없음 메시지를 뷰로 전달하거나 리디렉션
+            model.addAttribute("message", "수정 권한이 없습니다.");
+            return "errorPage"; // 권한 없음을 알리는 뷰 페이지
+        }
+
+        // 작성자인 경우, 수정 페이지로 이동
+        DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
+        model.addAttribute("board", boardDTO);
+        return "DF02_board/DF0205_updateBoard";
+    }
+
+    @PostMapping("/update")
+    public String updateBoard(@ModelAttribute DF02_BoardDTO boardDTO, @RequestParam("bno") int bno, Model model) {
+        boardService.update_board(boardDTO);
+        DF02_BoardDTO dto = boardService.findByBoardBno(bno);
+        model.addAttribute("board", dto);
+
+        return "redirect:/board?bno=" + bno;
+    }
+
+
+    // 게시글 삭제
+    @GetMapping("/delete")
+    public String deleteBoard(@RequestParam("bno") int bno, HttpSession session) {
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        // 아이디로 데이터베이스에서 모든 정보 조회
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+        if (memberDTO != null) {
+            int mno = memberDTO.getMno();
+
+            // 게시글의 작성자 MNO 가져오기
+            int authorMno = boardService.findAuthorMnoByBoardBno(bno);
+
+            // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 삭제 수행
+            if (mno == authorMno) {
+                boardService.delete_board(bno);
+            } else {
+                // 다른 사용자의 글을 삭제하려는 경우에 대한 처리
+                // 예: 권한이 없는 상태에 대한 오류 처리
+            }
+        } else {
+            // 아이디에 해당하는 회원이 없는 경우 처리
+            // 예: 유효하지 않은 세션 상태에 대한 오류 처리
+        }
+
+        return "redirect:/board/paging";
+    }
+
+
+
+
+    // 전체 게시글 목록
+//    @GetMapping("/boardList")
+//    public String boardListPage(Model model) {
+//        List<DF02_BoardDTO> boardDTOList = boardService.findAllBoard();
+//        model.addAttribute("boardList", boardDTOList);
+//        return "DF02_board/DF0203_boardList";
+//    }
 
     // 페이지 보여주기
     // /board/paging?page=2
@@ -71,44 +147,24 @@ public class DF02_BoardController {
         return "DF02_board/DF0204_boardPaging";
     }
 
-    // 상세 페이지
-    @GetMapping
-    public String findByBoardId(@RequestParam("bno") int bno,
-                           @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                           Model model) {
-        boardService.view_counts(bno);
-        DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
-        model.addAttribute("board", boardDTO);
-        model.addAttribute("page", page);
-//        List<CommentDTO> commentDTOList = commentService.findAll(bno);
-//        model.addAttribute("commentList", commentDTOList);
-        return "DF02_board/DF0202_viewBoard";
+
+
+    // 당사자만 게시글의 수정 삭제 가능
+    public boolean authorUpdateAndDeleteBoard(int bno, HttpSession session) {
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+        if (memberDTO != null) {
+            int mno = memberDTO.getMno();
+
+            // 게시글의 작성자 MNO 가져오기
+            int authorMno = boardService.findAuthorMnoByBoardBno(bno);
+
+            // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 권한 부여
+            return mno == authorMno;
+        }
+
+        return false;
     }
-
-    // 게시글 수정
-    @GetMapping("/update")
-    public String updatePage(@RequestParam("bno") int bno, Model model) {
-        DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
-        model.addAttribute("board", boardDTO);
-        return "update";
-    }
-
-    @PostMapping("/update")
-    public String updateBoard(@ModelAttribute DF02_BoardDTO boardDTO, Model model) {
-        boardService.update_board(boardDTO);
-        DF02_BoardDTO dto = boardService.findByBoardBno(boardDTO.getBno());
-        model.addAttribute("board", dto);
-        return "detail";
-//        return "redirect:/board?id="+boardDTO.getId();
-    }
-
-
-//    @GetMapping("/delete")
-//    public String delete(@RequestParam("id") Long id) {
-//        boardService.delete(id);
-//        return "redirect:/board/";
-//    }
-
-
-
 }

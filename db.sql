@@ -59,7 +59,7 @@ CREATE TABLE board (
 
 CREATE TABLE reply (
                        rno INT PRIMARY KEY auto_increment,
-                       content TEXT,
+                       content VARCHAR(255) NOT NULL,
                        written_date TIMESTAMP,
                        updated_date TIMESTAMP,
                        bno INT,

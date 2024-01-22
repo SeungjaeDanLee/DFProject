@@ -67,12 +67,12 @@ label {
     margin-right: 0.5em;
 }
 
-form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 160vh;
-}
+/*form {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    height: 160vh;*/
+/*}*/
 
 input {
 

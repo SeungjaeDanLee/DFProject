@@ -20,30 +20,43 @@ public class DF02_BoardRepository {
 
 
     // 게시글 목록 불러오기
-    public List<DF02_BoardDTO> findAllBoard() {
-        return sql.selectList("Board.findAllBoard");
-    }
+//    public List<DF02_BoardDTO> findAllBoard() {
+//        return sql.selectList("Board.findAllBoard");
+//    }
 
     // 게시글 bno로 찾아오기
     public DF02_BoardDTO findByBoardBno(int bno) {
         return sql.selectOne("Board.findByBoardBno", bno);
     }
 
+    // 전체 게시글 페이징
     public List<DF02_BoardDTO> pagingList(Map<String, Integer> pagingParams) {
         return sql.selectList("Board.pagingList", pagingParams);
     }
 
+    // 게시글 갯수
     public int boardCount() {
         return sql.selectOne("Board.boardCount");
     }
 
-    // 게시글 조회수 업데이트
+    // 게시글 조회수
     public void viewCounts(int bno) {
         sql.update("Board.view_counts", bno);
     }
 
 
+    // 게시글 업데이트
     public void updateBoard(DF02_BoardDTO boardDTO) {
         sql.update("Board.updateBoard", boardDTO);
+    }
+
+    // 게시글 삭제
+    public void deleteBoard(int bno) {
+        sql.delete("Board.deleteBoard", bno);
+    }
+
+    // 작성자 고유값 + 게시글 고유값
+    public int findAuthorMnoByBoardBno(int bno) {
+        return sql.selectOne("Board.findAuthorMnoByBoardBno", bno);
     }
 }
