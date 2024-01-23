@@ -14,4 +14,9 @@
     <select id="findAllReply" parameterType="int" resultType="reply">
         select * from reply where bno=#{bno}
     </select>
+
+    <!--댓글 수정-->
+
+
+    <!--댓글 삭제-->
 </mapper>
