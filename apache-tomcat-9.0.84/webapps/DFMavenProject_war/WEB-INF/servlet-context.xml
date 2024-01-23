@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:mvc="http://www.springframework.org/schema/mvc"
+             xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <annotation-driven />
+
+    <!-- 이 부분은 경로를 설정하는 부분입니다. -->
+    <resources mapping="/resources/**" location="/resources/"/>
+    <resources mapping="/upload/**" location="/upload/img/"/>
+
+    <!--    여기서 맵핑을 views 부터 시작하도록 해줍니다 예를들어서  return 'index'; 하게 되면 실질적으로는 /WEB-INF/views/index.jsp 를 불러오는거죠 -->
+    <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <beans:property name="prefix" value="/WEB-INF/views/" />
+        <beans:property name="suffix" value=".jsp" />
+    </beans:bean>
+
+    <!-- 자바 프로젝트 패키지이름 확인  /src/main/java 경로랑 맞도록 설정해줍시다. -->
+    <context:component-scan base-package="com.example" />
+
+
+
+</beans:beans>
