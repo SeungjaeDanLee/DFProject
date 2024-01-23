@@ -3,8 +3,10 @@ package com.example.controller;
 import com.example.dto.DF01_MemberDTO;
 import com.example.dto.DF02_BoardDTO;
 import com.example.dto.DF02_PageDTO;
+import com.example.dto.DF03_ReplyDTO;
 import com.example.service.DF01_MemberService;
 import com.example.service.DF02_BoardService;
+import com.example.service.DF03_ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,9 @@ public class DF02_BoardController {
 
     @Autowired
     DF02_BoardService boardService;
+
+    @Autowired
+    DF03_ReplyService replyService;
 
     // 게시글 작성
     @GetMapping("/write")
@@ -57,12 +62,12 @@ public class DF02_BoardController {
                                  Model model, HttpSession session) {
         boardService.view_counts(bno);
         DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
-        boolean isAuthor = authorUpdateAndDeleteBoard(bno, session);
+        boolean isBoardAuthor = authorUpdateAndDeleteBoard(bno, session);
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", page);
-        model.addAttribute("isAuthor", isAuthor);
-//        List<CommentDTO> commentDTOList = commentService.findAll(bno);
-//        model.addAttribute("commentList", commentDTOList);
+        model.addAttribute("isBoardAuthor", isBoardAuthor);
+        List<DF03_ReplyDTO> replyDTOList = replyService.findAllReply(bno);
+        model.addAttribute("replyList", replyDTOList);
         return "DF02_board/DF0202_viewBoard";
     }
 

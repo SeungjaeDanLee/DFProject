@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.dto.DF01_MemberDTO;
+import com.example.dto.DF02_BoardDTO;
 import com.example.dto.DF03_ReplyDTO;
 import com.example.service.DF01_MemberService;
 import com.example.service.DF02_BoardService;
@@ -8,6 +9,7 @@ import com.example.service.DF03_ReplyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -47,4 +49,15 @@ public class DF03_ReplyController {
         // 해당 게시글에 작성된 댓글 리스트를 가져옴
         return replyService.findAllReply(replyDTO.getBno());
     }
+
+
+    // 해당 게시물의 댓글 목록 가져오기
+    @GetMapping("/{bno}")
+    public @ResponseBody List<DF03_ReplyDTO> getReplyList(@PathVariable("bno") int bno) {
+        // 해당 게시글에 작성된 모든 댓글을 가져옴
+        return replyService.findAllReply(bno);
+    }
+
+    
+
 }
