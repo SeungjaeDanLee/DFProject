@@ -14,7 +14,7 @@
 <!--        <intercept-url pattern="/" access="permitAll"/>-->
 <!--        <intercept-url pattern="/resources/**" access="permitAll"/>-->
 
-<!--        <intercept-url pattern="/**" access="hasRole('ADMIN')"/>-->
+<!--        <intercept-url pattern="/ADMIN/**" access="hasRole('ADMIN')"/>-->
 <!--        <intercept-url pattern="/**" access="hasAnyRole('USER')"/>-->
 
 <!--        <form-login login-page="/members/login"-->

@@ -60,14 +60,23 @@ public class DF02_BoardController {
     public String findByBoardBno(@RequestParam("bno") int bno,
                                  @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                  Model model, HttpSession session) {
+
         boardService.view_counts(bno);
         DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
         boolean isBoardAuthor = authorUpdateAndDeleteBoard(bno, session);
+
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", page);
         model.addAttribute("isBoardAuthor", isBoardAuthor);
+
         List<DF03_ReplyDTO> replyDTOList = replyService.findAllReply(bno);
         model.addAttribute("replyList", replyDTOList);
+
+
+//        boolean isReplyAuthor = authorUpdateAndDeleteAllReply(replyDTOList, session);
+//        model.addAttribute("isReplyAuthor", isReplyAuthor);
+
+
         return "DF02_board/DF0202_viewBoard";
     }
 
@@ -78,7 +87,7 @@ public class DF02_BoardController {
         if (!authorUpdateAndDeleteBoard(bno, session)) {
             // 작성자가 아닌 경우, 권한 없음 메시지를 뷰로 전달하거나 리디렉션
             model.addAttribute("message", "수정 권한이 없습니다.");
-            return "errorPage"; // 권한 없음을 알리는 뷰 페이지
+            return "DF00_error/DF0001_error"; // 권한 없음을 알리는 뷰 페이지
         }
 
         // 작성자인 경우, 수정 페이지로 이동
@@ -109,10 +118,10 @@ public class DF02_BoardController {
             int mno = memberDTO.getMno();
 
             // 게시글의 작성자 MNO 가져오기
-            int authorMno = boardService.findAuthorMnoByBoardBno(bno);
+            int boardAuthorMno = boardService.findAuthorMnoByBoardBno(bno);
 
             // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 삭제 수행
-            if (mno == authorMno) {
+            if (mno == boardAuthorMno) {
                 boardService.delete_board(bno);
             } else {
                 // 다른 사용자의 글을 삭제하려는 경우에 대한 처리
@@ -165,6 +174,25 @@ public class DF02_BoardController {
 
             // 게시글의 작성자 MNO 가져오기
             int authorMno = boardService.findAuthorMnoByBoardBno(bno);
+
+            // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 권한 부여
+            return mno == authorMno;
+        }
+
+        return false;
+    }
+
+    // 당사자만 댓글의 수정 삭제 가능
+    public boolean authorUpdateAndDeleteReply(int rno, HttpSession session) {
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+        if (memberDTO != null) {
+            int mno = memberDTO.getMno();
+
+            // 게시글의 작성자 MNO 가져오기
+            int authorMno = replyService.findAuthorMnoByReplyRno(rno);
 
             // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 권한 부여
             return mno == authorMno;

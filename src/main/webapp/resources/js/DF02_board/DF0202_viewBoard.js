@@ -1,60 +1,48 @@
-// const replyWrite = () => {
-//     const mno = '${member.mno}'
-//     const content = document.getElementById("content").value;
-//     const board = '${board.bno}';
-//     $.ajax({
-//         type: "post",
-//         url: "/reply/write",
-//         data: {
-//             mno: mno,
-//             content: content,
-//             bno: board
-//         },
-//         dataType: "json",
-//         success: function(replyList) {
-//             console.log("작성성공");
-//             console.log(replyList);
-//             let output = "<table>";
-//             output += "<th>작성자</th>";
-//             output += "<th>내용</th>";
-//             output += "<th>작성시간</th></tr>";
-//             for(let i in replyList){
-//                 output += "<tr>";
-//                 output += "<td>"+replyList[i].mno+"</td>";
-//                 output += "<td>"+replyList[i].content+"</td>";
-//                 output += "<td>"+replyList[i].written_date+"</td>";
-//                 output += "</tr>";
-//             }
-//             output += "</table>";
-//             document.getElementById('ReplyList').innerHTML = output;
-//             document.getElementById('mno').value='';
-//             document.getElementById('content').value='';
-//         },
-//         error: function() {
-//             console.log("실패");
-//         }
-//     });
-// }
+function openEditModal(replyId, content) {
+    // 댓글 ID와 내용을 기반으로 수정할 내용을 팝업에 표시
+    document.getElementById('editedContent').value = content;
 
+    // 현재 수정 중인 댓글의 ID를 저장
+    document.getElementById('editedReplyId').value = replyId;
 
-// $(document).ready(function(){
-//     $("form").on('submit', function(event){
-//         event.preventDefault(); // 폼 제출을 막아 페이지가 새로고침되는 것을 방지
-//         let formValues= $(this).serialize(); // 폼 데이터를 쿼리 문자열로 인코딩
-//         $.post("/reply/write", formValues, function(data){
-//             // 댓글 작성이 완료된 후 실행할 코드
-//             $('.reply_content_box').val('');  // textarea의 내용을 지움
-//             $.ajax({
-//                 url: '/reply/' + '${board.bno}',  // 댓글 리스트를 가져오는 URL
-//                 type: 'get',
-//                 success: function(replyList) {  // 서버로부터 응답을 성공적으로 받았을 때 실행할 함수
-//                     $('#replyList').empty(); // 기존 댓글 목록을 비우기
-//                     $.each(replyList, function(index, reply) {  // 응답으로 받은 댓글 리스트를 순회하며 각 댓글에 대해 다음의 함수를 실행
-//                         let row = '<tr><td>' + reply.mno + '</td><td>' + reply.content + '</td><td>' + reply.written_date + '</td></tr>';  // 댓글 정보를 담은 테이블 행을 생성
-//                         $('#replyList').append(row);  // 테이블에 새로운 행을 추가
-//                     });
-//                 }
-//             });
-//         });
-//     });
-// });
+    document.getElementById('editModal').style.display = 'block';
+    document.querySelector('.overlay').style.display = '';
+}
+
+function saveEdit() {
+    // 수정된 내용을 서버로 전송하고 댓글 업데이트 로직 추가
+    let editedContent = document.getElementById('editedContent').value;
+    let replyId = document.getElementById('editedReplyId').value;
+
+    // 서버로 수정된 내용과 댓글 ID 전송 및 업데이트 로직 추가(AJAX)
+    $.ajax({
+        type: 'POST',
+        url: '/reply/update',
+        data: {
+            replyId: replyId,
+            editedContent: editedContent
+        },
+        success: function (response) {
+            // 수정이 성공하면 서버에서의 응답을 처리
+            // ...
+
+            // 팝업 닫기
+            closeEditModal();
+        },
+        error: function (error) {
+            // 수정이 실패하면 에러 처리
+            // ...
+
+            // 팝업 닫기
+            closeEditModal();
+        }
+    });
+
+    // 팝업 닫기
+    closeEditModal();
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+    document.querySelector('.overlay').style.display = 'none';
+}

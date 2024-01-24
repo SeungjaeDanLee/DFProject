@@ -16,7 +16,29 @@
     </select>
 
     <!--댓글 수정-->
+    <update id="updateReply" parameterType="reply">
+        update reply set content=#{content}, updated_date=now() where rno =#{rno}
+    </update>
 
 
     <!--댓글 삭제-->
+    <delete id="deleteReply" parameterType="int">
+        delete from reply where rno = #{rno}
+    </delete>
+
+    <!--작성자와 댓글 일치-->
+    <select id="findAuthorMnoByReplyRno" parameterType="int" resultType="int">
+        select mno
+        from reply
+        where rno = #{rno}
+    </select>
+
+    <!--해당 댓글 rno 가져오기-->
+    <select id="findByReplyRno" parameterType="int" resultType="int">
+        select *
+        from reply
+        where rno = #{rno}
+    </select>
+
+
 </mapper>

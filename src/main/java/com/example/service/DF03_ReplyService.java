@@ -1,8 +1,6 @@
 package com.example.service;
 
-import com.example.dto.DF01_MemberDTO;
 import com.example.dto.DF03_ReplyDTO;
-import com.example.repository.DF01_MemberRepository;
 import com.example.repository.DF03_ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +20,21 @@ public class DF03_ReplyService {
 
     public List<DF03_ReplyDTO> findAllReply(int bno) {
         return replyRepository.findAllReply(bno);
+    }
+
+    public void delete_reply(int rno) {
+        replyRepository.deleteReply(rno);
+    }
+
+    public void update_reply(DF03_ReplyDTO replyDTO) {
+        replyRepository.updateReply(replyDTO);
+    }
+
+    public int findAuthorMnoByReplyRno(int rno) {
+        return replyRepository.findAuthorMnoByReplyRno(rno);
+    }
+
+    public DF03_ReplyDTO findByReplyRno(int rno) {
+        return replyRepository.findByReplyRno(rno);
     }
 }
