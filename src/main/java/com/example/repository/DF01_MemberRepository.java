@@ -52,7 +52,7 @@ public class DF01_MemberRepository {
         sql.delete("Member.memberDelete", mno);
     }
 
-    public void memberUpdate(DF01_MemberDTO memberDTO) {
-        sql.update("Member.memberUpdate", memberDTO);
+    public void memberUpdate(DF01_MemberDTO mno) {
+        sql.update("Member.memberUpdate", mno);
     }
 }

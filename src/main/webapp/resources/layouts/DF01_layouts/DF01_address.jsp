@@ -13,7 +13,7 @@
     <div class="form-group">
         <input class="form-control" placeholder="상세주소" name="detailAddress" id="detailAddress" value="${member.detailAddress}" type="text"  />
     </div>
-    <div class="form-group">
+    <div class="form-group" hidden="hidden">
         <input class="form-control" placeholder="참고항목" name="extraAddress" id="extraAddress" type="text"  />
     </div>
 </fieldset>

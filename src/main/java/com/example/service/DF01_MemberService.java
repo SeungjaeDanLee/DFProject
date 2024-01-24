@@ -4,7 +4,6 @@ import com.example.dto.DF01_MemberDTO;
 import com.example.repository.DF01_MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -116,7 +115,7 @@ public class DF01_MemberService {
         memberRepository.memberDelete(mno);
     }
 
-    public void member_update(DF01_MemberDTO memberDTO) {
-        memberRepository.memberUpdate(memberDTO);
+    public void member_update(DF01_MemberDTO mno) {
+        memberRepository.memberUpdate(mno);
     }
 }

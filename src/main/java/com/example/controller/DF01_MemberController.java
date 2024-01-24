@@ -127,15 +127,22 @@ public class DF01_MemberController {
     }
 
     @PostMapping("/update")
-    public String memberUpdate(@ModelAttribute DF01_MemberDTO memberDTO) {
+    public String memberUpdate(@ModelAttribute DF01_MemberDTO updatedMember, HttpSession session) {
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
 
+        // 아이디로 데이터베이스에서 모든 정보 가져오기
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
         if (memberDTO != null) {
+            // 가져온 정보를 업데이트에 필요한 DTO로 설정
+            updatedMember.setMno(memberDTO.getMno());
 
-            memberService.member_update(memberDTO);
+            // 회원 정보 업데이트
+            memberService.member_update(updatedMember);
 
-            return "DF01_member/DF0103_mypage";
+            return "redirect:/members/my";
         } else {
-            return "DF01_member/DF0102_login";
+            return "redirect:/members/login";
         }
     }
 

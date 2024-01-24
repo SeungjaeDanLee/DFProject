@@ -38,17 +38,18 @@
     <!--회원 정보 수정 update-->
     <update id="memberUpdate" parameterType="member">
         update member
-        set where password = #{password},
-                  email = #{email},
-                  name = #{name},
-                  nick_name = #{nick_name},
-                  phone = #{phone},
-                  zipcode = #{zipcode},
-                  streetAddress = #{streetAddress},
-                  detailAddress = #{detailAddress},
-                  gender = #{gender},
-                  birthday = #{birthday},
-                  updated_date = now()
+        set password = #{password},
+            email = #{email},
+            name = #{name},
+            nick_name = #{nick_name},
+            phone = #{phone},
+            zipcode = #{zipcode},
+            streetAddress = #{streetAddress},
+            detailAddress = #{detailAddress},
+            gender = #{gender},
+            birthday = #{birthday},
+            updated_date = now()
+        where mno = #{mno};
     </update>
 
 
