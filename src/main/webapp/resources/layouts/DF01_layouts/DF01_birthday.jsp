@@ -3,5 +3,5 @@
 <script src="../resources/js/DF01_member/DF0101_join.js"></script>
 <fieldset>
     <label for="birthday">생년월일</label>
-    <input type="text" id="birthday" name="birthday" oninput="autoDate(this)" maxlength="10" placeholder="/없이 숫자만 입력해주세요">
+    <input type="text" id="birthday" name="birthday" oninput="autoDate(this)" maxlength="10" placeholder="/없이 숫자만 입력해주세요" value="${member.birthday}">
 </fieldset>

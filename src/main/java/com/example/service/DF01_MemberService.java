@@ -108,12 +108,15 @@ public class DF01_MemberService {
     // 회원 상세 정보
 
     public void member_detail(DF01_MemberDTO memberDTO) {
-
         memberRepository.memberDetail(memberDTO);
     }
     // 회원탈퇴
 
     public void member_delete(int mno) {
-        memberRepository.memberDelelte(mno);
+        memberRepository.memberDelete(mno);
+    }
+
+    public void member_update(DF01_MemberDTO memberDTO) {
+        memberRepository.memberUpdate(memberDTO);
     }
 }

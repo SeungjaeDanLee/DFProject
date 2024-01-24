@@ -48,7 +48,11 @@ public class DF01_MemberRepository {
     }
 
     // 회원탈퇴
-    public void memberDelelte(int mno) {
+    public void memberDelete(int mno) {
         sql.delete("Member.memberDelete", mno);
+    }
+
+    public void memberUpdate(DF01_MemberDTO memberDTO) {
+        sql.update("Member.memberUpdate", memberDTO);
     }
 }

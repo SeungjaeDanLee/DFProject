@@ -78,11 +78,11 @@
                 minute: '2-digit'
             }));</script>
             </div>
-            <c:if test="${isReplyAuthor}">
+<%--            <c:if test="${isReplyAuthor}">--%>
             <button type="button" onclick="openEditModal('${reply.rno}', '${reply.content}')">수정</button>
             <button type="button" onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='<c:url value='/reply/delete'><c:param name='bno' value='${board.bno}'/><c:param name='rno' value='${reply.rno}'/></c:url>';">삭제</button>
 
-            </c:if>
+<%--            </c:if>--%>
         </div>
         <hr>
     </c:forEach>

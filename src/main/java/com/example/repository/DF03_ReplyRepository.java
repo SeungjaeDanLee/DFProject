@@ -39,4 +39,8 @@ public class DF03_ReplyRepository {
     public void updateReply(DF03_ReplyDTO replyDTO) {
         sql.update("Reply.updateReply", replyDTO);
     }
+
+//    public int findAuthorMnoByAllReplyRno(List<DF03_ReplyDTO> replyDTOList) {
+//        return sql.selectOne("Reply.findAuthorMnoByAllReplyRno", replyDTOList);
+//    }
 }

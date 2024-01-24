@@ -27,6 +27,6 @@
             </div>
         </div>
     </div>
-    <input type="text" id="email" name="email" placeholder="이메일" oninput="updateAndCheckEmail()" readonly>
+    <input type="text" id="email" name="email" placeholder="이메일" oninput="updateAndCheckEmail()" value="${member.email}" readonly>
 </fieldset>
 <span id="result4"></span>

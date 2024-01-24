@@ -389,3 +389,64 @@ function updateAndCheckEmail() {
     updateEmail();
     checkEmail();
 }
+
+
+// 회원수정 폼
+function checkUpdateForm() {
+    const id = $("[name=id]");
+    const pw = $("[name=password]");
+    const pwck = $("[name=password_check]");
+    const email = $("[name=email]");
+    const name = $("[name=name]");
+    const nickname = $("[name=nick_name]");
+
+    if (id.val() === "") {
+        alert("아이디를 입력해주세요.");
+        id.focus();
+        return false;
+    } else if (pw.val() === "") {
+        alert("비밀번호를 입력해주세요.");
+        pw.focus();
+        return false;
+    } else if (pw.val() !== pwck.val()) {
+        alert("비밀번호가 일치하지 않습니다.");
+        pwck.focus();
+        return false;
+    } else if (email.val() === "") {
+        alert("이메일을 입력해주세요.");
+        email.focus();
+        return false;
+    } else if (name.val() === "") {
+        alert("이름을 입력해주세요.");
+        name.focus();
+        return false;
+    } else if (nickname.val() === "") {
+        alert("닉네임을 입력해주세요.");
+        nickname.focus();
+        return false;
+    }
+
+    // if (!isCheckId) {
+    //     alert("아이디를 다시 확인해주세요.");
+    //     id.focus();
+    //     return false;
+    // }
+    if (!isCheckNickName) {
+        alert("닉네임을 다시 확인해주세요.");
+        nickname.focus();
+        return false;
+    }
+    // if (!isCheckEmail) {
+    //     alert("이메일 형식을 다시 확인해주세요.");
+    //     email.focus();
+    //     return false;
+    // }
+    if (!isCheckName) {
+        alert("이름을 다시 확인해주세요.");
+        name.focus();
+        return false;
+    }
+
+
+    $("[name=member]").submit();
+}

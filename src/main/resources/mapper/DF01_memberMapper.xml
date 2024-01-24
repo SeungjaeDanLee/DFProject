@@ -32,13 +32,24 @@
 <!--        select * from member where mno=#{mno}-->
 <!--    </select>-->
     <select id="memberDetail" parameterType="member" resultType="member">
-        select * from member where id=#{id}
+        select * from member where mno=#{mno}
     </select>
 
     <!--회원 정보 수정 update-->
-<!--    <update id="memberUpdate" parameterType="member">-->
-<!--        update member set  where mno = #{mno}-->
-<!--    </update>-->
+    <update id="memberUpdate" parameterType="member">
+        update member
+        set where password = #{password},
+                  email = #{email},
+                  name = #{name},
+                  nick_name = #{nick_name},
+                  phone = #{phone},
+                  zipcode = #{zipcode},
+                  streetAddress = #{streetAddress},
+                  detailAddress = #{detailAddress},
+                  gender = #{gender},
+                  birthday = #{birthday},
+                  updated_date = now()
+    </update>
 
 
     <!--로그인된 아이디로 해당 아이디의 mno 찾기-->

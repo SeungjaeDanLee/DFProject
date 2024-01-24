@@ -4,61 +4,90 @@
     <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <link href="../resources/css/DF01_member.css" rel="stylesheet"/>
-    <script src="../resources/js/DF01_member/DF0101_join.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.js"
             integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
             crossorigin="anonymous"></script>
 
 </head>
-<body>
+<body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
 
 <header>
     <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalNav.jsp"></jsp:include>
 </header>
 
 <div class="mypage">
-    <form class="mypage_form" action="/members/update" method="post">
-        <h3>내 정보</h3><br>
-        <%--필수 기재--%>
-        <table>
-            <tr>
-                <th>아이디</th>
-                <td>${member.id}</td>
-            </tr>
-            <tr>
-                <th>이메일</th>
-                <td>${member.email}</td>
-            </tr>
-            <tr>
-                <th>이름</th>
-                <td>${member.name}</td>
-            </tr>
-            <tr>
-                <th>닉네임</th>
-                <td>${member.nick_name}</td>
-            </tr>
-            <tr>
-                <th>폰</th>
-                <td>${member.phone}</td>
-            </tr>
-            <tr>
-                <th>주소</th>
-                <td>${member.zipcode}</td>
-                <td>${member.streetAddress}</td>
-                <td>${member.detailAddress}</td>
-            </tr>
-            <tr>
-                <th>성별</th>
-                <td>${member.gender}</td>
-            </tr>
-            <tr>
-                <th>생년월일</th>
-                <td>${member.birthday}</td>
-            </tr>
-        </table>
+    <form class="register_form" action="/members/new" method="post">
+        <div class="needed_things">
+            <h3>내 정보</h3><br>
+            <%--필수 기재--%>
+            <h5 style="color: #ff1610">필수 기재</h5>
+            <fieldset>
+                <label for="id">아이디</label>
+                <input type="text" id="id" name="id" value="${member.id}" readonly>
+            </fieldset>
 
-    <a href="/members/delete" methods="get">회원탈퇴</a>
+            <fieldset>
+                <label for="email">이메일</label>
+                <input type="text" id="email" name="email" value="${member.email}" readonly>
+            </fieldset>
 
+            <fieldset>
+                <label for="name">이름</label>
+                <input type="text" id="name" name="name" value="${member.name}" readonly>
+            </fieldset>
+
+            <fieldset>
+                <label for="nick_name">닉네임</label>
+                <input type="text" id="nick_name" name="nick_name" value="${member.nick_name}" readonly>
+            </fieldset>
+            <div class="float-end" style="margin-top: 44%">
+                <a href="/members/delete" methods="get">회원탈퇴</a>
+            </div>
+        </div>
+        <div class="d-flex">
+            <div class="vr"></div>
+        </div>
+        <div class="unneeded_things">
+            <%--선택 기재--%>
+            <br><br><br>
+            <h5 style="color: #1924ff">선택 기재</h5>
+
+            <fieldset>
+                <label for="phone">전화번호</label>
+                <input type="text" id="phone" name="phone" value="${member.phone}" readonly>
+            </fieldset>
+
+            <fieldset>
+                <label>주소</label>
+                <div class="form-group">
+                    <input class="form-control" style="width: 40%; display: inline;" placeholder="우편번호" name="zipcode"
+                           id="zipcode" type="text" value="${member.zipcode}" readonly="readonly" />
+                </div>
+                <div class="form-group">
+                    <input class="form-control" style="top: 5px;" placeholder="도로명 주소" name="streetAddress"
+                           id="streetAddress" type="text" value="${member.streetAddress}" readonly="readonly"/>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" placeholder="상세주소" name="detailAddress" id="detailAddress" type="text"  value="${member.detailAddress}" readonly="readonly"/>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <label for="gender">성별</label>
+                <input type="text" id="gender" name="gender" value="${member.gender}" readonly>
+            </fieldset>
+
+            <fieldset>
+                <label for="birthday">생년월일</label>
+                <input type="text" id="birthday" name="birthday" value="${member.birthday}" readonly>
+            </fieldset>
+
+            <div class="float-end" style="margin-top: 5%">
+                <a href="/members/update" methods="get">회원정보수정</a>
+            </div>
+
+        </div>
+    </form>
 </div>
 
 <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalFooter.jsp"></jsp:include>

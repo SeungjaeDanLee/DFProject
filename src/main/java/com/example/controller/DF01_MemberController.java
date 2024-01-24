@@ -21,6 +21,17 @@ public class DF01_MemberController {
 //    @Autowired
 //    PasswordEncoder passwordEncoder;
 
+//    private DF01_MemberDTO getLoginMember(HttpSession session) {
+//
+//        // 세션에서 아이디 가져오기
+//        String loginId = (String) session.getAttribute("loginId");
+//
+//        // 아이디로 회원 조회
+//        return memberService.findByLoginId(loginId);
+//
+//    }
+
+
     // 회원가입
     @GetMapping("/new")
     public String joinPage() {
@@ -70,14 +81,14 @@ public class DF01_MemberController {
         }
     }
 
-    @GetMapping("/my")
-    public String myPage() {
-        return "DF01_member/DF0103_mypage";
-    }
+//    @GetMapping("/my")
+//    public String myPage() {
+//        return "DF01_member/DF0103_mypage";
+//    }
 
     // 회원 상세 정보
-    @GetMapping
-    public String memberDetail(HttpSession session) {
+    @GetMapping("/my")
+    public String memberDetail(HttpSession session, Model model) {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 
@@ -87,26 +98,45 @@ public class DF01_MemberController {
         if (memberDTO != null) {
             // mno를 이용하여 회원 상세 정보 가져오기
             memberService.member_detail(memberDTO);
+            model.addAttribute("member", memberDTO);
+            return "DF01_member/DF0103_mypage";
         } else {
-            // 아이디에 해당하는 회원이 없는 경우 처리
-            // 예: 유효하지 않은 세션 상태에 대한 오류 처리
+            return "DF01_member/DF0102_login";
         }
-
-        return "DF01_member/DF0103_mypage";
     }
 
-//    @GetMapping
-//    public String findbyMno(@RequestParam("mno") int mno, Model model) {
-//        DF01_MemberDTO memberDTO = memberService.findbyMno(mno);
-//        model.addAttribute("member", memberDTO);
-//        return "DF01_member/DF0103_mypage";
-//    }
 
-    // 로그아웃
-    @GetMapping("/logout")
-    public String logout(HttpSession session){
-        session.removeAttribute("loginId");
-        return "redirect:/";
+
+    // 회원 정보 수정
+    @GetMapping("/update")
+    public String updatePage(HttpSession session, Model model) {
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        // 아이디로 데이터베이스에서 모든 정보 가져오기
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+
+        if (memberDTO != null) {
+            // mno를 이용하여 회원 상세 정보 가져오기
+            memberService.member_detail(memberDTO);
+            model.addAttribute("member", memberDTO);
+            return "DF01_member/DF0104_update";
+        } else {
+            return "DF01_member/DF0102_login";
+        }
+    }
+
+    @PostMapping("/update")
+    public String memberUpdate(@ModelAttribute DF01_MemberDTO memberDTO) {
+
+        if (memberDTO != null) {
+
+            memberService.member_update(memberDTO);
+
+            return "DF01_member/DF0103_mypage";
+        } else {
+            return "DF01_member/DF0102_login";
+        }
     }
 
 
@@ -132,4 +162,11 @@ public class DF01_MemberController {
         return "redirect:/";
     }
 
+
+    // 로그아웃
+    @GetMapping("/logout")
+    public String logout(HttpSession session){
+        session.removeAttribute("loginId");
+        return "redirect:/";
+    }
 }

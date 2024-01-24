@@ -80,6 +80,24 @@ public class DF02_BoardController {
         return "DF02_board/DF0202_viewBoard";
     }
 
+//    private boolean authorUpdateAndDeleteAllReply(List<DF03_ReplyDTO> replyDTOList, HttpSession session) {
+//        // 세션에서 아이디 가져오기
+//        String loginId = (String) session.getAttribute("loginId");
+//
+//        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+//        if (memberDTO != null) {
+//            int mno = memberDTO.getMno();
+//
+//            // 게시글의 작성자 MNO 가져오기
+//            int authorMno = replyService.findAuthorMnoByAllReplyRno(replyDTOList);
+//
+//            // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 권한 부여
+//            return mno == authorMno;
+//        }
+//
+//        return false;
+//    }
+
 
     // 게시글 수정
     @GetMapping("/update")
@@ -134,8 +152,6 @@ public class DF02_BoardController {
 
         return "redirect:/board/paging";
     }
-
-
 
 
     // 전체 게시글 목록

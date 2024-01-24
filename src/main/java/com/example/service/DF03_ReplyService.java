@@ -37,4 +37,8 @@ public class DF03_ReplyService {
     public DF03_ReplyDTO findByReplyRno(int rno) {
         return replyRepository.findByReplyRno(rno);
     }
+
+//    public int findAuthorMnoByAllReplyRno(List<DF03_ReplyDTO> replyDTOList) {
+//        return replyRepository.findAuthorMnoByAllReplyRno(replyDTOList);
+//    }
 }

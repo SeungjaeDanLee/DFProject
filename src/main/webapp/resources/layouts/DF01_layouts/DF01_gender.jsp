@@ -5,7 +5,7 @@
     <div style="display: flex; align-items: center;">
         <div style="margin-right: 20px;">
             <label for="gender">성별</label>
-            <input type="text" id="gender" name="gender" style="width: 100%; display: inline;" readonly>
+            <input type="text" id="gender" name="gender" style="width: 100%; display: inline;" value="${member.gender}" readonly>
         </div>
         <div>
             <label for="gender_selection" class="form-label">성별 선택창</label>
