@@ -48,7 +48,8 @@
             detailAddress = #{detailAddress},
             gender = #{gender},
             birthday = #{birthday},
-            updated_date = now()
+            updated_date = now(),
+            member_level = #{member_level}
         where mno = #{mno};
     </update>
 
