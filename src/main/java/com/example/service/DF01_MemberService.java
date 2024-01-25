@@ -125,4 +125,7 @@ public class DF01_MemberService {
         return memberRepository.findAll();
     }
 
+    public DF01_MemberDTO findByMno(int mno) {
+        return memberRepository.findByMno(mno);
+    }
 }

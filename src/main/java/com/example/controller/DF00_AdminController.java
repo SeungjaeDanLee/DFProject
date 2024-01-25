@@ -54,12 +54,13 @@ public class DF00_AdminController {
 //    }
 
     @GetMapping("/memberManagement/update")
-    public String adminMemberUpdate(@RequestParam("mno") int mno, @RequestParam("member_level") int member_level) {
+    public String adminMemberUpdate(@RequestParam("mno") int mno,
+                                    @RequestParam("member_level") int member_level) {
         logger.info("mno" + mno);
         logger.info("member_level" + member_level);
 
         // mno와 member_level을 사용하여 memberDTO를 생성 또는 조회
-        DF01_MemberDTO memberDTO = new DF01_MemberDTO();
+        DF01_MemberDTO memberDTO = memberService.findByMno(mno);
         memberDTO.setMember_level(member_level);
         memberService.member_update(memberDTO);
         return "redirect:/admin/memberManagement";

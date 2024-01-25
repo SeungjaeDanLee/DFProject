@@ -72,4 +72,9 @@
     <select id="findAll" resultType="member">
         select * from member
     </select>
+
+    <!--Mno로 회원정보 검색-->
+    <select id="findByMno" resultType="member">
+        select * from member where mno = #{mno}
+    </select>
 </mapper>

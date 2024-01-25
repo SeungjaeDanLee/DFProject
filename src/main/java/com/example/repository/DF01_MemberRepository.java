@@ -62,4 +62,7 @@ public class DF01_MemberRepository {
         return sql.selectList("Member.findAll");
     }
 
+    public DF01_MemberDTO findByMno(int mno) {
+        return sql.selectOne("Member.findByMno", mno);
+    }
 }
