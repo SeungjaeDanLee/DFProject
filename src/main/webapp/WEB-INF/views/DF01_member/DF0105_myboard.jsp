@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>페이지 리스트</title>
+    <title>내가 쓴 글 리스트</title>
     <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <link href="../resources/css/DF02_board.css" rel="stylesheet"/>
@@ -15,9 +15,7 @@
 <header>
     <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalNav.jsp"></jsp:include>
 </header>
-
-<jsp:include page="/resources/layouts/DF02_layouts/DF02_boardMenu.jsp"></jsp:include>
-
+<h3 style="text-align: center">내가 쓴 글</h3>
 <div class="container mt-5">
     <table class="table table-striped table-hover">
         <thead class="thead-dark">
@@ -32,38 +30,34 @@
         </thead>
         <tbody>
         <c:forEach items="${boardList}" var="board">
-            <tr onclick="location.href='/board?bno=${board.bno}&page=${paging.page}';" style="cursor:pointer;">
-<%--                <td>--%>
-<%--                    <a href="/board?bno=${board.bno}&page=${paging.page}">${board.title}</a>--%>
-<%--                </td>--%>
-                <td>${board.title}</td>
-                <td>
-                    <c:forEach items="${memberList}" var="member">
-                        <c:if test="${board.mno == member.mno}">
-                            ${member.nick_name}
-                        </c:if>
-                    </c:forEach>
-                </td>
-                <td>${board.like_counts}</td>
-                <td>${board.view_counts}</td>
-                <td>
-                    <c:choose>
-                        <c:when test="${board.category == 0}">공지글</c:when>
-                        <c:when test="${board.category == 1}">자유글</c:when>
-                        <c:when test="${board.category == 2}">정보글</c:when>
-                        <c:otherwise>분류되지 않은 글</c:otherwise>
-                    </c:choose>
-                </td>
-                <td>
-                    <script>document.write(new Date('${board.written_date}').toLocaleString('ko', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }));</script>
-                </td>
-            </tr>
+            <c:if test="${member.mno == board.mno}">
+                <tr onclick="location.href='/board?bno=${board.bno}&page=${paging.page}';" style="cursor:pointer;">
+                        <%--                <td>--%>
+                        <%--                    <a href="/board?bno=${board.bno}&page=${paging.page}">${board.title}</a>--%>
+                        <%--                </td>--%>
+                    <td>${board.title}</td>
+                    <td>${member.nick_name}</td>
+                    <td>${board.like_counts}</td>
+                    <td>${board.view_counts}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${board.category == 0}">공지글</c:when>
+                            <c:when test="${board.category == 1}">자유글</c:when>
+                            <c:when test="${board.category == 2}">정보글</c:when>
+                            <c:otherwise>분류되지 않은 글</c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>
+                        <script>document.write(new Date('${board.written_date}').toLocaleString('ko', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }));</script>
+                    </td>
+                </tr>
+            </c:if>
         </c:forEach>
         </tbody>
     </table>
@@ -121,4 +115,37 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
+
+<script>
+    //검색기능추가
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('searchBtn').addEventListener('click', function () {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#datatablesSimple tbody tr');
+
+            rows.forEach(row => {
+                // 기존 코드에서 변경: 각 열이 존재하는지 확인
+                const name = row.querySelector('td:nth-child(2)');
+                const dept = row.querySelector('td:nth-child(3)');
+                const checkInTime = row.querySelector('td:nth-child(4)');
+                const checkOutTime = row.querySelector('td:nth-child(5)');
+
+                // 수정: 각 열이 존재하지 않더라도 계속 검색 수행
+                const nameText = name ? name.textContent.toLowerCase() : '';
+                const deptText = dept ? dept.textContent.toLowerCase() : '';
+                const checkInTimeText = checkInTime ? checkInTime.textContent.toLowerCase() : '';
+                const checkOutTimeText = checkOutTime ? checkOutTime.textContent.toLowerCase() : '';
+
+                // 수정: 각 열이 존재하지 않더라도 계속 검색 수행
+                if (nameText.includes(searchTerm) || deptText.includes(searchTerm) || checkInTimeText.includes(searchTerm) || checkOutTimeText.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+
+</script>
+
 </html>

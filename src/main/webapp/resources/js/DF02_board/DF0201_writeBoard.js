@@ -1,3 +1,18 @@
+// 선택한 값이 있는지 확인
+const select = document.getElementById("pop");
+const value = select.value;
+
+if (value === "") {
+    // 주의 메시지 표시
+    alert("글 종류를 선택하세요.");
+
+    // 제출 버튼 비활성화
+    const submit = document.querySelector("input[type='submit']");
+    submit.disabled = true;
+}
+
+
+
 let submit = document.getElementById('submitButton');
 submit.onclick = showImage;     //Submit 버튼 클릭시 이미지 보여주기
 

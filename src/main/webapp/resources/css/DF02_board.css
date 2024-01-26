@@ -151,7 +151,7 @@ textarea {
 .content_box{
     margin-top: 10px;
     width: 800px;
-    height: 80vh;
+    height: 50vh;
     border-radius: 4px;
     resize: none;
 }

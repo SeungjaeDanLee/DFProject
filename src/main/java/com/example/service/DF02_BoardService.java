@@ -15,6 +15,7 @@ public class DF02_BoardService {
     @Autowired
     DF02_BoardRepository boardRepository;
 
+    // 게시글 작성
     public void write_board(DF02_BoardDTO boardDTO) {
         boardRepository.writeBoard(boardDTO);
     }
@@ -37,8 +38,6 @@ public class DF02_BoardService {
     public void delete_board(int bno) {
         boardRepository.deleteBoard(bno);
     }
-
-
 
 
     // 페이징으로 전체 게시판 보여주기
@@ -86,11 +85,12 @@ public class DF02_BoardService {
         boardRepository.viewCounts(bno);
     }
 
-
+    // 회원 번호와 게시글 번호로 게시글 작성자 찾기
     public int findAuthorMnoByBoardBno(int bno) {
         return boardRepository.findAuthorMnoByBoardBno(bno);
     }
 
+    // 게시글 전체 목록 찾기
     public List<DF02_BoardDTO> findAll() {
         return boardRepository.findAll();
     }

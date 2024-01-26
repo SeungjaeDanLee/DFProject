@@ -3,8 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <head>
-    <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico"/>
+<%--    <link rel="icon" type="image/x-icon" href="../../assets/favicon.ico"/>--%>
     <!-- Bootstrap icons-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"/>
     <!-- Core theme CSS (includes Bootstrap)-->
@@ -49,7 +48,7 @@
                                     <li>
                                         <hr class="dropdown-divider"/>
                                     </li>
-                                    <li><a class="dropdown-item" href="#!">쓴 글</a></li>
+                                    <li><a class="dropdown-item" href="/members/myBoard">쓴 글</a></li>
                                     <li><a class="dropdown-item" href="#!">찜한 글</a></li>
                                     <li><a class="dropdown-item" href="/members/logout">로그아웃</a></li>
                                     <%--<li><a class="dropdown-item" href="<%session.invalidate();%>">로그아웃</a></li>--%>

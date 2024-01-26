@@ -52,7 +52,7 @@
                     <div class="card-body">
                         <div style="display: flex">
                             <!--   이름검색기능   -->
-                            <input type="text" id="searchInput" placeholder="이름or부서입력...">
+                            <input type="text" id="searchInput" placeholder="내용, 게시글...">
                             <button type="button" id="searchBtn" class="btn btn-primary"
                                     style="width: 95px;border: 1px solid white;height: 38px;padding-top: 7px;background-color: #00c473;border-color: #00c473;color: white;border-radius: 5px;margin-left: 10px;">
                                 검색

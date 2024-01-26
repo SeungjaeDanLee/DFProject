@@ -1,7 +1,10 @@
 package com.example.controller;
 
 import com.example.dto.DF01_MemberDTO;
+import com.example.dto.DF02_BoardDTO;
+import com.example.dto.DF02_PageDTO;
 import com.example.service.DF01_MemberService;
+import com.example.service.DF02_BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/members")
@@ -24,7 +28,11 @@ public class DF01_MemberController {
     @Autowired
     DF01_MemberService memberService;
 
-    AuthenticationManager authenticationManager;
+    @Autowired
+    DF02_BoardService boardService;
+
+//    @Autowired
+//    AuthenticationManager authenticationManager;
 
 //    @Autowired
 //    PasswordEncoder passwordEncoder;
@@ -133,6 +141,34 @@ public class DF01_MemberController {
             memberService.member_detail(memberDTO);
             model.addAttribute("member", memberDTO);
             return "DF01_member/DF0103_mypage";
+        } else {
+            return "DF01_member/DF0102_login";
+        }
+    }
+
+    // 해당 회원이 쓴 글
+    @GetMapping("/myBoard")
+    public String memberBoard(Model model,
+                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                              HttpSession session) {
+
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        // 아이디로 데이터베이스에서 모든 정보 가져오기
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+
+        if (memberDTO != null) {
+            // 세션에서 mno 가져오기
+
+            List<DF02_BoardDTO> pagingList = boardService.pagingList(page);
+            DF02_PageDTO pageDTO = boardService.pagingParam(page);
+
+            model.addAttribute("member", memberDTO);
+            model.addAttribute("boardList", pagingList);
+            model.addAttribute("paging", pageDTO);
+
+            return "DF01_member/DF0105_myboard";
         } else {
             return "DF01_member/DF0102_login";
         }

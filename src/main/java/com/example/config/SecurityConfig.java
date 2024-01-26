@@ -53,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/", "/members/**", "/board/**").access("hasRole('ROLE_USER')")
-                .anyRequest().authenticated()
+                .antMatchers("/**").denyAll()
+//                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/members/login")
@@ -73,6 +74,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .anyRequest().authenticated();
 //    }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -83,11 +89,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authoritiesByUsernameQuery("SELECT id, CASE WHEN member_level = 0 THEN 'ROLE_ADMIN' WHEN member_level = 1 THEN 'ROLE_USER' ELSE 'ROLE_USER' END as authority FROM member WHERE id=?");
     }
 
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public GrantedAuthoritiesMapper authoritiesMapper() {

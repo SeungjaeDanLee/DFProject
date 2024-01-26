@@ -11,22 +11,20 @@
     </insert>
 
 
-    <!--    <select id="findAllBoard" resultType="board">-->
-    <!--        select * from board order by bno desc-->
-    <!--    </select>-->
-
-    <resultMap id="boardResultMap" type="board">
-        <!-- 기타 필드 매핑 -->
-        <result property="nick_name" column="nick_name"/>
-    </resultMap>
-
     <!--게시글 목록-->
     <select id="findAllBoard" resultType="board">
-        SELECT b.*, m.nick_name
-        FROM board b
-                 INNER JOIN member m ON b.mno = m.mno
+        select *
+        from board
         order by bno desc
     </select>
+
+
+    <!--    <select id="findAllBoard" resultType="board">-->
+    <!--        SELECT b.*, m.nick_name-->
+    <!--        FROM board b-->
+    <!--                 INNER JOIN member m ON b.mno = m.mno-->
+    <!--        order by bno desc-->
+    <!--    </select>-->
 
 
     <!--게시글 페이지 리스트-->
@@ -82,6 +80,7 @@
 
     <!--모든 게시글 찾기-->
     <select id="findAll" resultType="board">
-        select * from board
+        select *
+        from board
     </select>
 </mapper>

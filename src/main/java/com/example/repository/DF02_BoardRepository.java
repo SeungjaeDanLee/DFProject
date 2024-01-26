@@ -60,6 +60,7 @@ public class DF02_BoardRepository {
         return sql.selectOne("Board.findAuthorMnoByBoardBno", bno);
     }
 
+    // 모든 게시글 찾기
     public List<DF02_BoardDTO> findAll() {
         return sql.selectList("Board.findAll");
     }
