@@ -6,6 +6,8 @@ import com.example.dto.DF02_PageDTO;
 import com.example.service.DF01_MemberService;
 import com.example.service.DF02_BoardService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +38,8 @@ public class DF01_MemberController {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     // 회원가입
@@ -79,7 +83,7 @@ public class DF01_MemberController {
     @PostMapping("/login")
     public String memberLogin(@ModelAttribute DF01_MemberDTO memberDTO, HttpSession session) {
         DF01_MemberDTO loginMember = memberService.memberLogin(memberDTO);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
 
         if (loginMember != null) {
             // 세션으로 로그인 아이디를 넘겨줌
@@ -107,6 +111,10 @@ public class DF01_MemberController {
     // 회원 상세 정보
     @GetMapping("/my")
     public String memberDetail(HttpSession session, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        logger.info("auth" + auth);
+
+
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 
@@ -119,38 +127,9 @@ public class DF01_MemberController {
             model.addAttribute("member", memberDTO);
             return "DF01_member/DF0103_mypage";
         } else {
-            return "DF01_member/DF0102_login";
+            return "redirect:/members/login";
         }
     }
-
-    // 해당 회원이 쓴 글
-    @GetMapping("/myBoard")
-    public String memberBoard(Model model,
-                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                              HttpSession session) {
-
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
-
-        // 아이디로 데이터베이스에서 모든 정보 가져오기
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-
-        if (memberDTO != null) {
-            // 세션에서 mno 가져오기
-
-            List<DF02_BoardDTO> pagingList = boardService.pagingList(page);
-            DF02_PageDTO pageDTO = boardService.pagingParam(page);
-
-            model.addAttribute("member", memberDTO);
-            model.addAttribute("boardList", pagingList);
-            model.addAttribute("paging", pageDTO);
-
-            return "DF01_member/DF0105_myboard";
-        } else {
-            return "DF01_member/DF0102_login";
-        }
-    }
-
 
 
     // 회원 정보 수정

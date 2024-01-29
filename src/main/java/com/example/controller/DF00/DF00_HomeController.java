@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -29,6 +30,7 @@ public class DF00_HomeController {
 
     @GetMapping("/")
     public String homePage(Model model){
+
         List<DF01_MemberDTO> memberDTOList = memberService.findAll();
         List<DF02_BoardDTO> boardDTOList = boardService.findAll();
 

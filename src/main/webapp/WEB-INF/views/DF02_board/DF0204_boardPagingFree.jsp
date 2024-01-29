@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>페이지 리스트</title>
+    <title>자유 게시글 리스트</title>
     <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <link href="../resources/css/DF02_board.css" rel="stylesheet"/>
@@ -19,7 +19,7 @@
 <jsp:include page="/resources/layouts/DF02_layouts/DF02_boardMenu.jsp"></jsp:include>
 
 <div class="container mt-5">
-    <h3>전체 게시판입니다.</h3><br>
+    <h3>자유 게시판입니다.</h3><br>
     <table class="table table-striped table-hover">
         <thead class="thead-dark">
         <tr>
@@ -78,7 +78,7 @@
         </c:when>
         <%-- 1페이지가 아닌 경우에는 [이전]을 클릭하면 현재 페이지보다 1 작은 페이지 요청 --%>
         <c:otherwise>
-            <a href="/board/paging?page=${paging.page-1}">[이전]</a>
+            <a href="/board/paging/free?page=${paging.page-1}">[이전]</a>
         </c:otherwise>
     </c:choose>
 
@@ -91,7 +91,7 @@
             </c:when>
 
             <c:otherwise>
-                <a href="/board/paging?page=${i}">${i}</a>
+                <a href="/board/paging/free?page=${i}">${i}</a>
             </c:otherwise>
         </c:choose>
     </c:forEach>
@@ -101,19 +101,10 @@
             <span>[다음]</span>
         </c:when>
         <c:otherwise>
-            <a href="/board/paging?page=${paging.page+1}">[다음]</a>
+            <a href="/board/paging/free?page=${paging.page+1}">[다음]</a>
         </c:otherwise>
     </c:choose>
 </div>
-
-<%--<div style="display: flex">--%>
-<%--    <!--   이름검색기능   -->--%>
-<%--    <input type="text" id="searchInput" placeholder="제목 입력...">--%>
-<%--    <button type="button" id="searchBtn" class="btn btn-primary"--%>
-<%--            style="width: 95px;border: 1px solid white;height: 38px;padding-top: 7px;background-color: black;border-color: black;color: white;border-radius: 5px;margin-left: 10px;">--%>
-<%--        검색--%>
-<%--    </button>--%>
-<%--</div>--%>
 
 <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalFooter.jsp"></jsp:include>
 

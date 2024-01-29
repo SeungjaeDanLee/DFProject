@@ -27,18 +27,81 @@
     <!--    </select>-->
 
 
-    <!--게시글 페이지 리스트-->
+    <!--전체 게시글 페이지 리스트-->
     <select id="pagingList" parameterType="java.util.HashMap" resultType="board">
         select *
         from board
         order by bno desc limit #{start}, #{limit}
     </select>
 
-    <!--전체 글 갯수 조회-->
+    <!--전체 게시글 갯수 조회-->
     <select id="boardCount" resultType="Integer">
         select count(bno)
         from board
     </select>
+
+    <!--자유 게시글 페이지 리스트-->
+    <select id="pagingListFree" parameterType="java.util.HashMap" resultType="board">
+        select *
+        from board
+        where category = 1
+        order by bno desc limit #{start}, #{limit}
+    </select>
+
+    <!--자유 게시글 갯수 조회-->
+    <select id="boardCountFree" resultType="Integer">
+        select count(bno)
+        from board
+        where category = 1
+    </select>
+
+    <!--정보 게시글 페이지 리스트-->
+    <select id="pagingListInfo" parameterType="java.util.HashMap" resultType="board">
+        select *
+        from board
+        where category = 2
+        order by bno desc limit #{start}, #{limit}
+    </select>
+
+    <!--정보 게시글 갯수 조회-->
+    <select id="boardCountInfo" resultType="Integer">
+        select count(bno)
+        from board
+        where category = 2
+    </select>
+
+    <!--공지 게시글 페이지 리스트-->
+    <select id="pagingListNoti" parameterType="java.util.HashMap" resultType="board">
+        select *
+        from board
+        where category = 0
+        order by bno desc limit #{start}, #{limit}
+    </select>
+
+    <!--공지 게시글 갯수 조회-->
+    <select id="boardCountNoti" resultType="Integer">
+        select count(bno)
+        from board
+        where category = 0
+    </select>
+
+    <!--내가 쓴 게시글 페이지 리스트-->
+    <select id="pagingListMyBoard" parameterType="java.util.HashMap" resultType="board">
+        select *
+        from board
+        WHERE mno = #{mno}
+        order by bno desc limit #{start}, #{limit}
+    </select>
+
+    <!--내가 쓴 게시글 갯수 조회-->
+    <select id="boardCountMyBoard" resultType="Integer">
+        select count(bno)
+        from board
+        where mno = #{mno}
+    </select>
+
+
+
 
     <!--bno로 상세 게시글 찾기-->
     <select id="findByBoardBno" parameterType="int" resultType="board">

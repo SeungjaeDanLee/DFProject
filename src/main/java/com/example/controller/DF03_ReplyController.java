@@ -29,6 +29,13 @@ public class DF03_ReplyController {
     @Autowired
     DF03_ReplyService replyService;
 
+    private int loginMno(HttpSession session){
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+        // 아이디로 데이터베이스에서 모든정보 조회
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+        return memberDTO.getMno();
+    }
 
     // 댓글 쓰기
     // ResponseBody는 json 형식으로 데이터를 돌려받는다.
@@ -36,15 +43,15 @@ public class DF03_ReplyController {
     public @ResponseBody List<DF03_ReplyDTO> writeReply(@ModelAttribute DF03_ReplyDTO replyDTO,
                                                         @RequestParam("bno") int bno,
                                                         HttpSession session) {
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
+//        // 세션에서 아이디 가져오기
+//        String loginId = (String) session.getAttribute("loginId");
+//
+//        // 아이디로 데이터베이스에서 모든정보 조회
+//        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
 
-        // 아이디로 데이터베이스에서 모든정보 조회
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-
-        replyDTO.setMno(memberDTO.getMno());
+        replyDTO.setMno(loginMno(session));
         replyDTO.setBno(bno);
-        replyService.replyDTO(replyDTO);
+        replyService.writeReply(replyDTO);
 
         // 해당 게시글에 작성된 댓글 리스트를 가져옴
         return replyService.findAllReply(replyDTO.getBno());

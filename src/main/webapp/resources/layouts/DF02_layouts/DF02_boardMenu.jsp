@@ -7,10 +7,10 @@
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav mx-auto">
-                <a class="nav-link" href="#">전체글</a>
-                <a class="nav-link" href="#">자유글</a>
-                <a class="nav-link" href="#">정보글</a>
-                <a class="nav-link" href="#">공지글</a>
+                <a class="nav-link" href="/board/paging">전체글</a>
+                <a class="nav-link" href="/board/paging/free">자유글</a>
+                <a class="nav-link" href="/board/paging/info">정보글</a>
+                <a class="nav-link" href="/board/paging/noti">공지글</a>
             </div>
         </div>
     </div>

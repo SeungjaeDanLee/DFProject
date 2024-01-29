@@ -15,7 +15,7 @@ public class DF03_ReplyRepository {
     private SqlSessionTemplate sql;
 
     // 댓글 쓰기
-    public void write_reply(DF03_ReplyDTO replyDTO) {
+    public void writeReply(DF03_ReplyDTO replyDTO) {
         sql.insert("Reply.writeReply", replyDTO);
     }
 

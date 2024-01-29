@@ -29,6 +29,14 @@ public class DF02_BoardController {
     @Autowired
     DF03_ReplyService replyService;
 
+    private int loginMno(HttpSession session){
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+        // 아이디로 데이터베이스에서 모든정보 조회
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+        return memberDTO.getMno();
+    }
+
     // 게시글 작성
     @GetMapping("/write")
     public String writeBoardPage() {
@@ -76,14 +84,15 @@ public class DF02_BoardController {
         model.addAttribute("memberList", memberDTOList);
         model.addAttribute("replyList", replyDTOList);
 
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
+//        // 세션에서 아이디 가져오기
+//        String loginId = (String) session.getAttribute("loginId");
+//
+//        // 아이디로 데이터베이스에서 모든 정보 조회
+//        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+//
+//        int loginMno = memberDTO.getMno();
 
-        // 아이디로 데이터베이스에서 모든 정보 조회
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-
-        int loginMno = memberDTO.getMno();
-        model.addAttribute("loginMno", loginMno);
+        model.addAttribute("loginMno", loginMno(session));
 
         return "DF02_board/DF0202_viewBoard";
     }
@@ -154,6 +163,7 @@ public class DF02_BoardController {
     // 페이지 보여주기
     // /board/paging?page=2
     // 처음 페이지 요청은 1페이지를 보여줌
+    // 전체 게시판
     @GetMapping("/paging")
     public String paging(Model model,
                          @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
@@ -167,6 +177,88 @@ public class DF02_BoardController {
         model.addAttribute("boardList", pagingList);
         model.addAttribute("paging", pageDTO);
         return "DF02_board/DF0204_boardPaging";
+    }
+
+    // 자유 게시판
+    @GetMapping("/paging/free")
+    public String pagingFree(Model model,
+                         @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+
+        // 해당 페이지에서 보여줄 글 목록
+        List<DF01_MemberDTO> memberDTOList = memberService.findAll();
+        List<DF02_BoardDTO> pagingList = boardService.pagingListFree(page);
+        DF02_PageDTO pageDTO = boardService.pagingParamFree(page);
+
+        model.addAttribute("memberList", memberDTOList);
+        model.addAttribute("boardList", pagingList);
+        model.addAttribute("paging", pageDTO);
+        return "DF02_board/DF0204_boardPagingFree";
+    }
+
+    // 정보 게시판
+    @GetMapping("/paging/info")
+    public String pagingInfo(Model model, HttpSession session,
+                         @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+
+        if (loginMember(session)){
+            // 해당 페이지에서 보여줄 글 목록
+            List<DF01_MemberDTO> memberDTOList = memberService.findAll();
+            List<DF02_BoardDTO> pagingList = boardService.pagingListInfo(page);
+            DF02_PageDTO pageDTO = boardService.pagingParamInfo(page);
+
+            model.addAttribute("memberList", memberDTOList);
+            model.addAttribute("boardList", pagingList);
+            model.addAttribute("paging", pageDTO);
+            return "DF02_board/DF0204_boardPagingInfo";
+        } else {
+            return "redirect:/error/400";
+        }
+
+    }
+
+    // 공지 게시판
+    @GetMapping("/paging/noti")
+    public String pagingNoti(Model model,
+                         @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
+
+        // 해당 페이지에서 보여줄 글 목록
+        List<DF01_MemberDTO> memberDTOList = memberService.findAll();
+        List<DF02_BoardDTO> pagingList = boardService.pagingListNoti(page);
+        DF02_PageDTO pageDTO = boardService.pagingParamNoti(page);
+
+        model.addAttribute("memberList", memberDTOList);
+        model.addAttribute("boardList", pagingList);
+        model.addAttribute("paging", pageDTO);
+        return "DF02_board/DF0204_boardPagingNoti";
+    }
+
+    // 해당 회원이 쓴 게시글
+    @GetMapping("/paging/myBoard")
+    public String memberBoard(Model model,
+                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                              HttpSession session) {
+
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        // 아이디로 데이터베이스에서 모든 정보 가져오기
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+
+        if (memberDTO != null) {
+            // 세션에서 mno 가져오기
+            int mno = memberDTO.getMno();
+
+            List<DF02_BoardDTO> pagingList = boardService.pagingListMyBoard(page, mno);
+            DF02_PageDTO pageDTO = boardService.pagingParamMyBoard(page, mno);
+
+            model.addAttribute("member", memberDTO);
+            model.addAttribute("boardList", pagingList);
+            model.addAttribute("paging", pageDTO);
+
+            return "DF01_member/DF0105_myboard";
+        } else {
+            return "DF01_member/DF0102_login";
+        }
     }
 
     // 당사자만 게시글의 수정 삭제 가능
@@ -186,5 +278,14 @@ public class DF02_BoardController {
         }
 
         return false;
+    }
+
+    // 세션에서 로그인한 멤버의 loginMemberLevel 가져오기
+    private boolean loginMember(HttpSession session) {
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        // member_level 값이 null이거나 0이 아닌 경우에는 false를 반환하여 허용하지 않음
+        return loginId != null;
     }
 }

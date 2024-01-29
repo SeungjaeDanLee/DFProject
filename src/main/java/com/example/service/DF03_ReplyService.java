@@ -14,8 +14,8 @@ public class DF03_ReplyService {
     @Autowired
     private DF03_ReplyRepository replyRepository;
 
-    public void replyDTO(DF03_ReplyDTO replyDTO) {
-        replyRepository.write_reply(replyDTO);
+    public void writeReply(DF03_ReplyDTO replyDTO) {
+        replyRepository.writeReply(replyDTO);
     }
 
     public List<DF03_ReplyDTO> findAllReply(int bno) {

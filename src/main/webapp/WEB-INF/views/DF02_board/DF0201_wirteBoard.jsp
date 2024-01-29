@@ -23,7 +23,9 @@
                     <h3>글 종류</h3>
                     <select id="pop" name="category" required>
                         <option selected disabled value="">선택</option>
-                        <option value="0">공지</option>
+                        <c:if test="${sessionScope.loginMemberLevel == 0}">
+                            <option value="0">공지</option>
+                        </c:if>
                         <option value="1">자유</option>
                         <option value="2">정보</option>
                     </select>

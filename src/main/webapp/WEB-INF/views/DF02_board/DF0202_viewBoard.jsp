@@ -155,16 +155,16 @@
         <%--    });--%>
         <%--});--%>
 
-        $(document).ready(function(){
-            $("form").on("submit", function(event){
-                event.preventDefault(); // 폼 제출을 막아 페이지가 새로고침되는 것을 방지
-                let formValues = $(this).serialize(); // 폼 데이터를 쿼리 문자열로 인코딩
-                $.post("/reply/write", formValues, function(data){
-                    // 댓글 작성이 완료된 후 페이지를 리로드
-                    location.reload();
-                });
-            });
-        });
+        // $(document).ready(function(){
+        //     $("form").on("submit", function(event){
+        //         event.preventDefault(); // 폼 제출을 막아 페이지가 새로고침되는 것을 방지
+        //         let formValues = $(this).serialize(); // 폼 데이터를 쿼리 문자열로 인코딩
+        //         $.post("/reply/write", formValues, function(data){
+        //             // 댓글 작성이 완료된 후 페이지를 리로드
+        //             location.reload();
+        //         });
+        //     });
+        // });
 
         function openEditModal(rno, content) {
             // 현재 수정 중인 댓글의 ID를 저장

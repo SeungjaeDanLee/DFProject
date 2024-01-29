@@ -5,6 +5,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,16 +35,64 @@ public class DF02_BoardRepository {
         return sql.selectList("Board.pagingList", pagingParams);
     }
 
-    // 게시글 갯수
+    // 전체 게시글 갯수
     public int boardCount() {
         return sql.selectOne("Board.boardCount");
+    }
+
+    // 자유 게시글 페이징
+    public List<DF02_BoardDTO> pagingListFree(Map<String, Integer> pagingParams) {
+        return sql.selectList("Board.pagingListFree", pagingParams);
+    }
+
+    // 자유 게시글 갯수
+    public int boardCountFree() {
+        return sql.selectOne("Board.boardCountFree");
+    }
+
+    // 정보 게시글 페이징
+    public List<DF02_BoardDTO> pagingListInfo(Map<String, Integer> pagingParams) {
+        return sql.selectList("Board.pagingListInfo", pagingParams);
+    }
+
+    // 정보 게시글 갯수
+    public int boardCountInfo() {
+        return sql.selectOne("Board.boardCountInfo");
+    }
+
+    // 공지 게시글 페이징
+    public List<DF02_BoardDTO> pagingListNoti(Map<String, Integer> pagingParams) {
+        return sql.selectList("Board.pagingListNoti", pagingParams);
+    }
+
+    // 공지 게시글 갯수
+    public int boardCountNoti() {
+        return sql.selectOne("Board.boardCountNoti");
+    }
+
+    // 내가 쓴 게시글 페이징
+    public List<DF02_BoardDTO> pagingListMyBoard(Map<String, Integer> pagingParams, int mno) {
+        int start = pagingParams.get("start");
+        int limit = pagingParams.get("limit");
+
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("start", start);
+        paramMap.put("limit", limit);
+        paramMap.put("mno", mno);
+
+        return sql.selectList("Board.pagingListMyBoard", paramMap);
+    }
+
+
+    // 내가 쓴 게시글 갯수
+    public int boardCountMyBoard(int mno) {
+        return sql.selectOne("Board.boardCountMyBoard", mno);
     }
 
     // 게시글 조회수
     public void viewCounts(int bno) {
         sql.update("Board.view_counts", bno);
     }
-
 
     // 게시글 업데이트
     public void updateBoard(DF02_BoardDTO boardDTO) {
@@ -64,4 +113,7 @@ public class DF02_BoardRepository {
     public List<DF02_BoardDTO> findAll() {
         return sql.selectList("Board.findAll");
     }
+
+
+
 }

@@ -71,7 +71,7 @@
         </c:when>
         <%-- 1페이지가 아닌 경우에는 [이전]을 클릭하면 현재 페이지보다 1 작은 페이지 요청 --%>
         <c:otherwise>
-            <a href="/board/paging?page=${paging.page-1}">[이전]</a>
+            <a href="/board/paging/myBoard?page=${paging.page-1}">[이전]</a>
         </c:otherwise>
     </c:choose>
 
@@ -84,7 +84,7 @@
             </c:when>
 
             <c:otherwise>
-                <a href="/board/paging?page=${i}">${i}</a>
+                <a href="/board/paging/myBoard?page=${i}">${i}</a>
             </c:otherwise>
         </c:choose>
     </c:forEach>
@@ -94,7 +94,7 @@
             <span>[다음]</span>
         </c:when>
         <c:otherwise>
-            <a href="/board/paging?page=${paging.page+1}">[다음]</a>
+            <a href="/board/paging/myBoard?page=${paging.page+1}">[다음]</a>
         </c:otherwise>
     </c:choose>
 </div>

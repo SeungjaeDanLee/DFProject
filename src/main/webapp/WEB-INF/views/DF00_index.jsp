@@ -61,11 +61,12 @@
 
 
 <!-- Section-->
-<section style="width: 60%; margin: 0 auto;">
+<section style="width: 60%; margin: 0 auto; margin-top: 50px;">
+    <hr>
     <c:forEach items="${boardList}" var="board">
         <a href="/board?bno=${board.bno}" style="text-decoration: none">
 <%--            <img src="../resources/assets/dogfoot.png" alt="개발자국" width="10%" height="10%">--%>
-            <div style="text-align: center; margin: 10px;">
+            <div style="text-align: center; margin: 10px; color: black;">
                 <div style="display: flex; justify-content: space-between;">
                     <div>작성자 :
                         <c:forEach items="${memberList}" var="member">
@@ -98,7 +99,7 @@
                 </div>
                 <br>
             </div>
-            <hr>
+            <hr style="color: black;">
         </a>
     </c:forEach>
 </section>
