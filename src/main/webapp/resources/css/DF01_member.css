@@ -1,0 +1,112 @@
+/*회원가입*/
+.register {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120vh;
+    margin: 0;
+}
+
+.register_form {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 500px;
+    width: 75%;
+    display: flex;
+    justify-content: space-between; /* 좌우로 공간을 동일하게 배분 */
+}
+
+.needed_things, .unneeded_things {
+    width: 45%; /* 각 섹션의 너비를 45%로 설정 */
+}
+
+/*로그인*/
+.login {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    margin: 0;
+}
+
+.login_form {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 500px;
+    width: 33%;
+}
+
+/*마이페이지*/
+.mypage {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.mypage_form {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-width: 500px;
+    width: 33%;
+}
+
+/*공통*/
+label {
+    display: block;
+    margin-top: 10px;
+    color: #333333;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: #dedddb;
+    color: white;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+input[type="submit"]:hover {
+    background-color: #504e51;
+}
+
+.btn_doubleCheck {
+    border-color: #fff;
+    background-color: #6c6c6c;
+    color: #fff;
+    cursor: default;
+    border-radius: 0.5rem;
+    min-width: 3rem;
+    font-weight: 700;
+}
+
+
+div{ -webkit-touch-callout: none;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+}
