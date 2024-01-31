@@ -168,24 +168,24 @@
         from board
     </select>
 
-    <!--조회수 많은 10개 -->
+    <!--조회수 많은 10개-->
     <select id="findViewBoard10" resultType="board">
         select *
         from board
-        where written_date >= now() - interval 2 hour
+        where written_date >= now() - interval 1 day
         order by view_counts desc limit 10
     </select>
 
     <!--좋아요 수-->
-    <update id="decreaseLikePoints" parameterType="int">
+    <update id="decreaseLikePoints" parameterType="board">
         update board
-        set like_counts = #{like_counts} - 1
+        set like_counts = like_counts - 1
         where bno = #{bno}
     </update>
 
-    <update id="increaseLikePoints" parameterType="int">
+    <update id="increaseLikePoints" parameterType="board">
         update board
-        set like_counts = #{like_counts} + 1
+        set like_counts = like_counts + 1
         where bno = #{bno}
     </update>
 </mapper>

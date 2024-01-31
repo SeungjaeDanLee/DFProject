@@ -30,16 +30,15 @@
 <%--            <li style="display: flex; justify-content: space-between; align-items: center;">--%>
             <li>
                 <h2>${board.title}</h2>
-
             </li>
-
             <li style="display: flex; justify-content: right; align-items: center;">
+
                 <c:if test="${!isLiked}">
                     <c:if test="${board.mno != loginMno}">
-                    <button type="button" class="btn btn-outline-light like-btn" style="width: 100px" data-bno="${board.bno}">
-                        <h6>좋아요</h6>
-                        <img src="/resources/assets/black_heart.png" alt="검은 하트" width="33%" height="33%">
-                    </button>
+                        <button type="button" class="btn btn-outline-light like-btn" style="width: 100px" data-bno="${board.bno}">
+                            <h6>좋아요</h6>
+                            <img src="/resources/assets/black_heart.png" alt="검은 하트" width="33%" height="33%">
+                        </button>
                     </c:if>
                 </c:if>
                 <c:if test="${isLiked}">
@@ -49,13 +48,14 @@
                     </button>
                 </c:if>
             </li>
+            <h6 style="display: flex; justify-content: right; align-items: center;">좋아요 ${board.like_counts} | 조회 ${board.view_counts}</h6>
             <script>
                 // 좋아요 버튼 클릭 이벤트 처리
                 $('button.like-btn').click(function() {
                     let bno = $(this).data('bno'); // 게시물 번호 가져오기
-                    console.log(bno);
+                    // console.log(bno);
                     let liked = $(this).hasClass('liked'); // 좋아요 여부 확인
-                    console.log(liked)
+                    // console.log(liked)
                     $.ajax({
                         url: '/like/toggle',
                         method: 'POST',
@@ -78,10 +78,11 @@
                 });
             </script>
 
-
             <hr>
             ${board.content}
         </ul>
+
+
     </section>
 </div>
     <div class="button-area" style="text-align: center;">
@@ -90,7 +91,9 @@
             <button class="btn btn-outline-warning" type="button" onclick="location.href='<c:url value='/board/update'><c:param name='bno' value='${board.bno}'/></c:url>'">수정</button>
             <button class="btn btn-outline-danger" type="button" onclick="if(confirm('정말 삭제하시겠습니까?')) location.href='<c:url value='/board/delete'><c:param name='bno' value='${board.bno}'/></c:url>';">삭제</button>
         </c:if>
+
     </div>
+
 <hr>
 
 

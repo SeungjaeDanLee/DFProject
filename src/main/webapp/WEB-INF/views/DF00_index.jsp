@@ -98,6 +98,7 @@
                     </div>
                 </div>
                 <br>
+                <h6 style="display: flex; justify-content: right; align-items: center;">좋아요 ${board.like_counts} | 조회 ${board.view_counts}</h6>
             </div>
             <hr style="color: black;">
         </a>

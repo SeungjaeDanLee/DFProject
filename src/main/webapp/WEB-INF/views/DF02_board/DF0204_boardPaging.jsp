@@ -19,7 +19,17 @@
 <jsp:include page="/resources/layouts/DF02_layouts/DF02_boardMenu.jsp"></jsp:include>
 
 <div class="container mt-5">
-    <h3>전체 게시판입니다.</h3><br>
+    <h3>전체 게시판입니다.</h3>
+<%--    <nav class="navbar navbar-light bg-light">--%>
+<%--        <div class="container-fluid">--%>
+<%--            <a class="navbar-brand"><h3>전체 게시판입니다.</h3></a>--%>
+<%--            <form class="d-flex" action="/board/entireBoardSearch" method="get">--%>
+<%--                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">--%>
+<%--                <button class="btn btn-outline-success" type="submit">Search</button>--%>
+<%--            </form>--%>
+<%--        </div>--%>
+<%--    </nav>--%>
+    <br>
     <table class="table table-striped table-hover">
         <thead class="thead-dark">
         <tr>
@@ -114,6 +124,8 @@
 <%--        검색--%>
 <%--    </button>--%>
 <%--</div>--%>
+
+
 
 <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalFooter.jsp"></jsp:include>
 

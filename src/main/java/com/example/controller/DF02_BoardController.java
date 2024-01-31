@@ -336,6 +336,12 @@ public class DF02_BoardController {
         }
     }
 
+    // 전체 게시판 검색 기능
+//    @GetMapping("/entireBoardSearch")
+//    public String entireBoardSearch(){
+//
+//    }
+
     // 당사자만 게시글의 수정 삭제 가능
     public boolean authorUpdateAndDeleteBoard(int bno, HttpSession session) {
         // 세션에서 아이디 가져오기
@@ -356,12 +362,4 @@ public class DF02_BoardController {
     }
 
 
-    // 세션에서 로그인한 멤버의 loginMemberLevel 가져오기
-    private boolean loginMember(HttpSession session) {
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
-
-        // member_level 값이 null이거나 0이 아닌 경우에는 false를 반환하여 허용하지 않음
-        return loginId != null;
-    }
 }
