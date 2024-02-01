@@ -6,7 +6,7 @@
         <div style="margin-right: 20px;">
             <label for="emailOrigin">이메일</label>
             <input type="text" id="emailOrigin" name="emailOrigin" placeholder="이메일을 입력해주세요"
-                   oninput="updateEmail()" required>
+                   oninput="updateEmail() || characterCheck(this)" required>
         </div>
         <div>
             <label for="email_selection" class="form-label">이메일 선택창</label>
@@ -27,6 +27,6 @@
             </div>
         </div>
     </div>
-    <input type="text" id="email" name="email" placeholder="이메일" oninput="updateAndCheckEmail()" value="${member.email}" readonly>
+    <input type="text" id="email" name="email" placeholder="이메일" oninput="updateAndCheckEmail() || characterCheck(this)" value="${member.email}" readonly>
 </fieldset>
 <span id="result4"></span>

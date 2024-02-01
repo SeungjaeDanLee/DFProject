@@ -25,7 +25,7 @@
             <fieldset>
                 <label for="id">아이디</label>
                 <input type="text" id="id" name="id" minlength="8" maxlength="20"
-                       placeholder="아이디를 입력해주세요" oninput="checkId()" onkeyup="characterCheck(this)" onkeydown="characterCheck(this)"
+                       placeholder="아이디를 입력해주세요" oninput="checkId(this) || characterCheck(this)"
                        required>
 <%--                <button class="btn btn-secondary" type="button" onclick="checkId()">확인</button>--%>
             </fieldset>
@@ -33,14 +33,14 @@
 
             <fieldset>
                 <label for="password">비밀번호</label>
-                <input type="password" id="password" name="password" oninput="pwCheck()" minlength="8" maxlength="20"
-                       placeholder="비밀번호 8자~20자 특수기호 금지" onkeyup="characterCheck(this)" onkeydown="characterCheck(this)"
+                <input type="password" id="password" name="password" oninput="pwCheck() || characterCheck(this)" minlength="8" maxlength="20"
+                       placeholder="비밀번호 8자~20자 특수기호 금지"
                        required>
             </fieldset>
 
             <fieldset>
                 <label for="password">비밀번호 확인</label>
-                <input type="password" id="password_check" name="password_check" oninput="pwCheck()"
+                <input type="password" id="password_check" name="password_check" oninput="pwCheck() || characterCheck(this)"
                        placeholder="비밀번호를 다시 입력해주세요" required>
             </fieldset>
             <span id="pwConfirm"></span>
@@ -50,17 +50,16 @@
 
             <fieldset>
                 <label for="name">이름</label>
-                <input type="text" id="name" name="name" placeholder="이름을 입력해주세요" onkeyup="characterCheckName(this)"
-                       onkeydown="characterCheckName(this)" minlength="2" maxlength="10" oninput="checkName()" required>
+                <input type="text" id="name" name="name" placeholder="이름을 입력해주세요"
+                       minlength="2" maxlength="10" oninput="checkName() || characterCheckName(this)" required>
             </fieldset>
             <span id="result3"></span>
 
             <fieldset>
                 <label for="nick_name">닉네임</label>
                 <input type="text" id="nick_name" name="nick_name" placeholder="닉네임을 입력해주세요"
-                       oninput="checkNickName()"
-                       onkeyup="characterCheckNickName(this)" onkeydown="characterCheckNickName(this)" minlength="2"
-                       maxlength="16" required>
+                       oninput="checkNickName() || characterCheckNickName(this)"
+                       minlength="2" maxlength="16" required>
 <%--                <button class="btn btn-secondary" type="button" onclick="checkNickName()">확인</button>--%>
             </fieldset>
             <span id="result2"></span>

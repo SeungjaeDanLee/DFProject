@@ -120,6 +120,19 @@ function checkId() {
         }
     });
 }
+// 아이디 특수 문자 및 한글 금지
+function characterCheck(obj){
+    let regExp = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\\(\=]|[\u3131-\u314e\u314f-\u3163\uac00-\ud7a3]/gi;
+    // 허용할 특수문자는 여기서 삭제
+    // 띄어쓰기도 특수문자 처리
+    // 한글 범위 추가
+    if( regExp.test(obj.value) ){
+        // alert("특수문자 및 한글은 입력하실 수 없습니다.");
+        obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 및 한글 한자리 지움
+        // obj.value = ""; // 입력한 전체 값을 지움
+    }
+}
+
 
 // 회원가입시 닉네임 중복 확인
 function checkNickName() {
@@ -162,6 +175,19 @@ function checkNickName() {
 }
 
 
+// 닉네임(특수문자만 삭제)
+function characterCheckNickName(obj){
+    let regExp = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\\(\=]/gi;
+    // 허용할 특수문자는 여기서 삭제
+    // 띄어쓰기도 특수문자 처리
+    if( regExp.test(obj.value) ){
+        // alert("특수문자는 입력하실 수 없습니다.");
+        obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 한자리 지움
+        // obj.value = ""; // 입력한 전체 값을 지움
+    }
+}
+
+// 이름
 function checkName() {
     const inputName = $("[name=name]").val();
     // console.log(inputName);
@@ -170,7 +196,7 @@ function checkName() {
 
     if (inputName.length < 2 || !regExp.test(inputName)) {
         if (inputName.length < 2) {
-            $("#result3").text("이름은 2자 이상이어야 합니다.").css("color", "red");
+            $("#result3").text("이름은 2자 이상의 한글이어야 합니다.").css("color", "red");
         } else {
             $("#result3").text("이름은 완성된 한글 형태로만 사용할 수 있습니다.").css("color", "red");
         }
@@ -181,6 +207,19 @@ function checkName() {
     }
 }
 
+
+// 이름(한글만)
+function characterCheckName(obj){
+    let regExp = /[^ㄱ-ㅎㅏ-ㅣ가-힣]/gi;
+    // 완성된 한글을 제외한 모든 문자 매칭
+    if( regExp.test(obj.value) ){
+        // alert("한글만 입력하실 수 있습니다.");
+        obj.value = obj.value.replace(regExp, ''); // 매칭된 문자 삭제
+        // obj.value = ""; // 입력한 전체 값을 지움
+    }
+}
+
+// 이메일 확인
 function checkEmail() {
     const inputEmail = $("[name=email]").val();
     // console.log(inputEmail);
@@ -197,42 +236,6 @@ function checkEmail() {
     }
 }
 
-// 특수문자 입력 방지
-// 일반
-function characterCheck(obj){
-    let regExp = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\\(\=]|[\u3131-\u314e\u314f-\u3163\uac00-\ud7a3]/gi;
-    // 허용할 특수문자는 여기서 삭제
-    // 띄어쓰기도 특수문자 처리
-    // 한글 범위 추가
-    if( regExp.test(obj.value) ){
-        alert("특수문자 및 한글은 입력하실 수 없습니다.");
-        obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 및 한글 한자리 지움
-        obj.value = ""; // 입력한 전체 값을 지움
-    }
-}
-
-// 이름(한글만)
-function characterCheckName(obj){
-    let regExp = /[^ㄱ-ㅎㅏ-ㅣ가-힣]/gi;
-    // 완성된 한글을 제외한 모든 문자 매칭
-    if( regExp.test(obj.value) ){
-        alert("한글만 입력하실 수 있습니다.");
-        obj.value = obj.value.replace(regExp, ''); // 매칭된 문자 삭제
-        obj.value = ""; // 입력한 전체 값을 지움
-    }
-}
-
-// 닉네임(특수문자만 삭제)
-function characterCheckNickName(obj){
-    let regExp = /[ \{\}\[\]\/?.,;:|\)*~`!^\-_+┼<>@\#$%&\'\"\\\(\=]/gi;
-    // 허용할 특수문자는 여기서 삭제
-    // 띄어쓰기도 특수문자 처리
-    if( regExp.test(obj.value) ){
-        alert("특수문자는 입력하실 수 없습니다.");
-        obj.value = obj.value.substring( 0 , obj.value.length - 1 ); // 입력한 특수문자 한자리 지움
-        obj.value = ""; // 입력한 전체 값을 지움
-    }
-}
 
 // 선택 기재
 // 회원가입시 휴대폰 번호 숫자 지정

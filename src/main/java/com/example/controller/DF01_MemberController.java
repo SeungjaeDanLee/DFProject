@@ -155,30 +155,8 @@ public class DF01_MemberController {
 
 
     // 회원 수정&삭제 본인 검정
-//    @GetMapping("/checkMe")
-//    public ResponseEntity<Void> checkMe(HttpSession session, @RequestParam String inputId, @RequestParam String inputPassword) {
-//
-//        // 세션에서 아이디 가져오기
-//        String loginId = (String) session.getAttribute("loginId");
-//
-//        if (loginId.equals(inputId)) {
-//            // 아이디가 일치하는 경우
-//            // 여기서 inputPassword와 실제 회원의 비밀번호를 확인하고, 일치하는 경우에만 작업 수행
-//            DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-//            if (memberDTO != null && passwordEncoder.matches(inputPassword, memberDTO.getPassword())) {
-//                return new ResponseEntity<>(HttpStatus.OK); // 200: OK
-//            } else {
-//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401: Unauthorized
-//            }
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-    @PostMapping("/checkMe")
-    public ResponseEntity<Void> checkMe(HttpSession session, @RequestBody Map<String, String> requestData) {
-        String inputId = requestData.get("inputId");
-        String inputPassword = requestData.get("inputPassword");
+    @GetMapping("/checkMe")
+    public ResponseEntity<Void> checkMe(HttpSession session, @RequestParam String inputId, @RequestParam String inputPassword) {
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -196,6 +174,28 @@ public class DF01_MemberController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+//    @PostMapping("/checkMe")
+//    public ResponseEntity<Void> checkMe(HttpSession session, @RequestBody Map<String, String> requestData) {
+//        String inputId = requestData.get("inputId");
+//        String inputPassword = requestData.get("inputPassword");
+//
+//        // 세션에서 아이디 가져오기
+//        String loginId = (String) session.getAttribute("loginId");
+//
+//        if (loginId.equals(inputId)) {
+//            // 아이디가 일치하는 경우
+//            // 여기서 inputPassword와 실제 회원의 비밀번호를 확인하고, 일치하는 경우에만 작업 수행
+//            DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+//            if (memberDTO != null && passwordEncoder.matches(inputPassword, memberDTO.getPassword())) {
+//                return new ResponseEntity<>(HttpStatus.OK); // 200: OK
+//            } else {
+//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401: Unauthorized
+//            }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 
 
