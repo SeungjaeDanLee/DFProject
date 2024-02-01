@@ -33,23 +33,31 @@ public class DF01_MemberService {
     }
 
     // 회원가입시 아이디 중복 체크
-    public String checkId(String inputId) {
-        DF01_MemberDTO memberDTO = memberRepository.findById(inputId);
-        if (memberDTO == null) {
-            return "ok";
-        } else {
-            return "no";
-        }
+//    public String checkId(String inputId) {
+//        DF01_MemberDTO memberDTO = memberRepository.findById(inputId);
+//        if (memberDTO == null) {
+//            return "ok";
+//        } else {
+//            return "no";
+//        }
+//    }
+
+    public int checkIdCount(String inputId){
+        return memberRepository.checkIdCount(inputId);
     }
 
     // 회원가입시 닉네임 중복 체크
-    public String checkNickName(String inputNickName) {
-        DF01_MemberDTO memberDTO = memberRepository.findByNickName(inputNickName);
-        if (memberDTO == null) {
-            return "ok";
-        } else {
-            return "no";
-        }
+//    public String checkNickName(String inputNickName) {
+//        DF01_MemberDTO memberDTO = memberRepository.findByNickName(inputNickName);
+//        if (memberDTO == null) {
+//            return "ok";
+//        } else {
+//            return "no";
+//        }
+//    }
+
+    public int checkNickNameCount(String inputNickName) {
+        return memberRepository.checkNickNameCount(inputNickName);
     }
 
     // 로그인 평문
@@ -116,4 +124,6 @@ public class DF01_MemberService {
     public DF01_MemberDTO findByMno(int mno) {
         return memberRepository.findByMno(mno);
     }
+
+
 }

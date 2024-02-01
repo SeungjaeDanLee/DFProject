@@ -97,9 +97,9 @@ function checkId() {
         success: function (data) {
             // console.log(data);
             if (inputId != "") {
-                if (data == 0) {
+                if (data == 'ok') {
                     if (inputId.length >= 8){
-                       $("#result1").text("사용 가능한 아이디입니다. (8자 이상)").css("color", "blue");
+                        $("#result1").text("사용 가능한 아이디입니다. (8자 이상)").css("color", "blue");
                         isCheckId = true;
                     } else {
                         $("#result1").text("아이디는 8자 이상이어야 합니다.").css("color", "red");
@@ -139,7 +139,7 @@ function checkNickName() {
         success: function (data) {
             // console.log(data);
             if (inputNickName != "") {
-                if (data == 0) {
+                if (data == 'ok') {
                     if (inputNickName.length >= 2){
                         $("#result2").text("사용 가능한 닉네임입니다. (2자 이상)").css("color", "blue");
                         isCheckNickName = true;
@@ -197,6 +197,8 @@ function checkEmail() {
     }
 }
 
+
+
 // 특수문자 입력 방지
 // 일반
 function characterCheck(obj){
@@ -233,6 +235,8 @@ function characterCheckNickName(obj){
         obj.value = ""; // 입력한 전체 값을 지움
     }
 }
+
+
 
 // 선택 기재
 // 회원가입시 휴대폰 번호 숫자 지정

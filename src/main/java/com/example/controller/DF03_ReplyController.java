@@ -80,25 +80,27 @@ public class DF03_ReplyController {
 
         if (memberDTO != null) {
             int mno = memberDTO.getMno();
+            int memberLevel = memberDTO.getMember_level();
 
             // 댓글 작성자의 MNO 가져오기
             int replyAuthorMno = replyService.findAuthorMnoByReplyRno(rno);
 
+
             // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 수정 수행
-            if (mno == replyAuthorMno) {
+            if (mno == replyAuthorMno || memberLevel == 0) {
                 replyService.update_reply(replyDTO);
                 DF03_ReplyDTO dto = replyService.findByReplyRno(rno);
                 model.addAttribute("reply", dto);
             }
             else {
-                // 다른 사용자의 글을 삭제하려는 경우에 대한 처리
+                // 다른 사용자의 글을 수정하려는 경우에 대한 처리
                 // 예: 권한이 없는 상태에 대한 오류 처리
-                return "DF00_error/403error";
+                return "redirect:/error/403";
             }
         } else {
             // 아이디에 해당하는 회원이 없는 경우 처리
             // 예: 유효하지 않은 세션 상태에 대한 오류 처리
-            return "DF01_member/DF0102_login";
+            return "redirect:/members/login";
         }
 
         return "redirect:/board/paging";
@@ -119,21 +121,23 @@ public class DF03_ReplyController {
         if (memberDTO != null){
             int mno = memberDTO.getMno();
 
+            int memberLevel = memberDTO.getMember_level();
+
             // 댓글 작성자의 MNO 가져오기
             int replyAuthorMno = replyService.findAuthorMnoByReplyRno(rno);
 
             // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 삭제 수행
-            if (mno == replyAuthorMno) {
+            if (mno == replyAuthorMno || memberLevel == 0) {
                 replyService.delete_reply(rno);
             } else {
                 // 다른 사용자의 글을 삭제하려는 경우에 대한 처리
                 // 예: 권한이 없는 상태에 대한 오류 처리
-                return "DF00_error/403error";
+                return "redirect:/error/403";
             }
         } else {
             // 아이디에 해당하는 회원이 없는 경우 처리
             // 예: 유효하지 않은 세션 상태에 대한 오류 처리
-            return "DF01_member/DF0102_login";
+            return "redirect:/members/login";
         }
 
         return "redirect:/board?bno=" + bno;

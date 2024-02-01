@@ -10,19 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.servlet.http.HttpSession;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/members")
@@ -50,11 +44,11 @@ public class DF01_MemberController {
     // 회원가입
     @GetMapping("/new")
     public String joinPage() {
-        return "DF01_member/DF0101_join";
+        return "DF01_member/DF0101_memberJoin";
     }
 
     @PostMapping("/new")
-    public String memberJoin(@ModelAttribute DF01_MemberDTO memberDTO) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public String memberJoin(@ModelAttribute DF01_MemberDTO memberDTO) throws Exception {
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
@@ -73,24 +67,33 @@ public class DF01_MemberController {
     }
 
     // 회원가입시 아이디 중복 검사
+//    @PostMapping("/checkId")
+//    public @ResponseBody String checkId(@RequestParam("inputId") String inputId) {
+//        String checkResult = memberService.checkId(inputId);
+//        return checkResult;
+//    }
+
     @PostMapping("/checkId")
-    public @ResponseBody String checkId(@RequestParam("inputId") String inputId) {
-        String checkResult = memberService.checkId(inputId);
-        return checkResult;
+    public @ResponseBody int checkIdCount(@RequestParam("inputId") String inputId){
+        return memberService.checkIdCount(inputId);
     }
 
     // 회원가입시 닉네임 중복 검사
+//    @PostMapping("/checkNickName")
+//    public @ResponseBody String checkNickName(@RequestParam("inputNickName") String inputNickName) {
+//        String checkResult = memberService.checkNickName(inputNickName);
+//        return checkResult;
+//    }
     @PostMapping("/checkNickName")
-    public @ResponseBody String checkNickName(@RequestParam("inputNickName") String inputNickName) {
-        String checkResult = memberService.checkNickName(inputNickName);
-        return checkResult;
+    public @ResponseBody int checkNickName(@RequestParam("inputNickName") String inputNickName) {
+        return memberService.checkNickNameCount(inputNickName);
     }
 
 
     // 로그인
     @GetMapping("/login")
     public String loginPage() {
-        return "DF01_member/DF0102_login";
+        return "DF01_member/DF0102_memberLogin";
     }
 
     @PostMapping("/login")
@@ -121,9 +124,9 @@ public class DF01_MemberController {
 
     // 회원 상세 정보
     @GetMapping("/my")
-    public String memberDetail(HttpSession session, Model model) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        logger.info("auth" + auth);
+    public String memberDetail(HttpSession session, Model model) throws Exception {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        logger.info("auth" + auth);
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -144,7 +147,7 @@ public class DF01_MemberController {
             memberDTO.setPhone(decodedPhone);
 
             model.addAttribute("member", memberDTO);
-            return "DF01_member/DF0103_mypage";
+            return "DF01_member/DF0103_memberMyPage";
         } else {
             return "redirect:/members/login";
         }
@@ -153,7 +156,8 @@ public class DF01_MemberController {
 
     // 회원 수정&삭제 본인 검정
 //    @GetMapping("/checkMe")
-//    public boolean checkMe(HttpSession session, @RequestParam String inputId, @RequestParam String inputPassword) {
+//    public ResponseEntity<Void> checkMe(HttpSession session, @RequestParam String inputId, @RequestParam String inputPassword) {
+//
 //        // 세션에서 아이디 가져오기
 //        String loginId = (String) session.getAttribute("loginId");
 //
@@ -162,23 +166,19 @@ public class DF01_MemberController {
 //            // 여기서 inputPassword와 실제 회원의 비밀번호를 확인하고, 일치하는 경우에만 작업 수행
 //            DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
 //            if (memberDTO != null && passwordEncoder.matches(inputPassword, memberDTO.getPassword())) {
-//                // 비밀번호가 일치하는 경우
-//                // 작업 수행
-//                return true;
+//                return new ResponseEntity<>(HttpStatus.OK); // 200: OK
 //            } else {
-//                // 비밀번호가 일치하지 않는 경우
-//                // 오류 처리
-//                return false;
+//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401: Unauthorized
 //            }
 //        } else {
-//            // 아이디가 일치하지 않는 경우
-//            // 오류 처리
-//            return false;
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
 
-    @GetMapping("/checkMe")
-    public ResponseEntity<Void> checkMe(HttpSession session, @RequestParam String inputId, @RequestParam String inputPassword) {
+    @PostMapping("/checkMe")
+    public ResponseEntity<Void> checkMe(HttpSession session, @RequestBody Map<String, String> requestData) {
+        String inputId = requestData.get("inputId");
+        String inputPassword = requestData.get("inputPassword");
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -198,9 +198,10 @@ public class DF01_MemberController {
     }
 
 
+
     // 회원 정보 수정
     @GetMapping("/update")
-    public String updatePage(HttpSession session, Model model, @RequestParam String inputPassword) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public String updatePage(HttpSession session, Model model, @RequestParam String inputPassword) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 
@@ -220,14 +221,14 @@ public class DF01_MemberController {
             memberDTO.setPhone(decodedPhone);
 
             model.addAttribute("member", memberDTO);
-            return "DF01_member/DF0104_update";
+            return "DF01_member/DF0104_memberMyPageUpdate";
         } else {
             return "DF01_member/DF0102_login";
         }
     }
 
     @PostMapping("/update")
-    public String memberUpdate(@ModelAttribute DF01_MemberDTO updatedMember, HttpSession session) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public String memberUpdate(@ModelAttribute DF01_MemberDTO updatedMember, HttpSession session) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 

@@ -80,7 +80,7 @@ public class DF00_AdminController {
             }
 
             model.addAttribute("memberList", memberDTOList);
-            return "DF00_admin/DF0001_memberManagement";
+            return "DF00_admin/DF0001_adminMemberManagement";
         } else {
             // member_level이 0이 아닌 경우에는 에러 페이지로 이동
             return "redirect:/error/403";
@@ -118,7 +118,7 @@ public class DF00_AdminController {
 
             model.addAttribute("memberList", memberDTOList);
             model.addAttribute("boardList", boardDTOList);
-            return "DF00_admin/DF0002_boardManagement";
+            return "DF00_admin/DF0002_adminBoardManagement";
         } else {
             // member_level이 0이 아닌 경우에는 에러 페이지로 이동
             return "redirect:/error/403";
@@ -146,7 +146,7 @@ public class DF00_AdminController {
             model.addAttribute("boardList", boardDTOList);
             model.addAttribute("replyList", replyDTOList);
 
-            return "DF00_admin/DF0003_replyManagement";
+            return "DF00_admin/DF0003_adminReplyManagement";
         } else {
             // member_level이 0이 아닌 경우에는 에러 페이지로 이동
             return "redirect:/error/403";

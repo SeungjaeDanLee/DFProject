@@ -23,10 +23,6 @@ public class DF00_HomeController {
     @Autowired
     DF02_BoardService boardService;
 
-//    private Logger logger = LoggerFactory.getLogger(this.getClass());
-//        logger.error("test");
-//        logger.debug("한글");
-//        logger.debug("1234");
 
     @GetMapping("/")
     public String homePage(Model model){

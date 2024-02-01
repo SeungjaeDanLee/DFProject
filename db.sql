@@ -28,11 +28,11 @@ CREATE TABLE member (
                         member_level INT
 );
 
-ALTER TABLE member
-    CHANGE COLUMN member_level ROLE INT;
-
-ALTER TABLE member
-    CHANGE COLUMN ROLE member_level INT;
+# ALTER TABLE member
+#     CHANGE COLUMN member_level ROLE INT;
+#
+# ALTER TABLE member
+#     CHANGE COLUMN ROLE member_level INT;
 
 
 CREATE TABLE board (

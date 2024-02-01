@@ -63,8 +63,8 @@
                                     <li>
                                         <hr class="dropdown-divider"/>
                                     </li>
-                                    <li><a class="dropdown-item" href="/board/paging/myBoard">쓴 글</a></li>
-                                    <li><a class="dropdown-item" href="/board/paging/myLike">좋아요한 글</a></li>
+                                    <li><a class="dropdown-item" href="/board/paging/myBoard">내가 쓴 글</a></li>
+                                    <li><a class="dropdown-item" href="/board/paging/myLike">내가 좋아하는 글</a></li>
                                     <li><a class="dropdown-item" href="/members/logout">로그아웃</a></li>
                                     <%--<li><a class="dropdown-item" href="<%session.invalidate();%>">로그아웃</a></li>--%>
                                 </ul>

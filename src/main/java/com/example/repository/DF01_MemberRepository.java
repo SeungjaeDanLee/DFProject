@@ -24,13 +24,21 @@ public class DF01_MemberRepository {
     }
 
     // 회원가입 시 아이디 중복 검사
-    public DF01_MemberDTO findById(String inputId) {
-        return sql.selectOne("Member.findById", inputId);
+//    public DF01_MemberDTO findById(String inputId) {
+//        return sql.selectOne("Member.findById", inputId);
+//    }
+
+    public int checkIdCount(String inputId) {
+        return sql.selectOne("Member.checkIdCount", inputId);
     }
 
     // 회원가입 시 닉네임 중복 검사
-    public DF01_MemberDTO findByNickName(String inputNickName) {
-        return sql.selectOne("Member.findByNickName", inputNickName);
+//    public DF01_MemberDTO findByNickName(String inputNickName) {
+//        return sql.selectOne("Member.findByNickName", inputNickName);
+//    }
+
+    public int checkNickNameCount(String inputNickName) {
+        return sql.selectOne("Member.checkNickNameCount", inputNickName);
     }
 
     // 로그인
@@ -76,4 +84,7 @@ public class DF01_MemberRepository {
     public String getPassword(String id) {
         return sql.selectOne("Member.getPassword", id);
     }
+
+
+
 }

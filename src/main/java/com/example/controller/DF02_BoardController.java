@@ -44,7 +44,7 @@ public class DF02_BoardController {
     // 게시글 작성
     @GetMapping("/write")
     public String writeBoardPage() {
-        return "DF02_board/DF0201_wirteBoard";
+        return "DF02_board/DF0201_boardWrite";
     }
 
     @PostMapping("/write")
@@ -105,7 +105,7 @@ public class DF02_BoardController {
         boolean isLiked = likePointService.isLiked(bno, loginMno(session));
         model.addAttribute("isLiked", isLiked);
 
-        return "DF02_board/DF0202_viewBoard";
+        return "DF02_board/DF0202_boardView";
     }
 
     // 상세 페이지
@@ -135,16 +135,32 @@ public class DF02_BoardController {
     // 게시글 수정
     @GetMapping("/update")
     public String updatePage(@RequestParam("bno") int bno, Model model, HttpSession session) {
-        if (!authorUpdateAndDeleteBoard(bno, session)) {
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        // 아이디로 데이터베이스에서 모든 정보 조회
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+
+        if (memberDTO == null) {
             // 작성자가 아닌 경우, 권한 없음 메시지를 뷰로 전달하거나 리디렉션
             model.addAttribute("message", "수정 권한이 없습니다.");
-            return ""; // 권한 없음을 알리는 뷰 페이지
+            return "redirect:/board?bno=" + bno; // 권한 없음을 알리는 뷰 페이지
         }
 
-        // 작성자인 경우, 수정 페이지로 이동
-        DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
-        model.addAttribute("board", boardDTO);
-        return "DF02_board/DF0205_updateBoard";
+        int memberLevel = memberDTO.getMember_level();
+
+        if (authorUpdateAndDeleteBoard(bno, session) || memberLevel == 0) {
+            // 작성자인 경우, 수정 페이지로 이동
+            DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
+            model.addAttribute("board", boardDTO);
+            return "DF02_board/DF0205_boardUpdate";
+        } else {
+            // 작성자가 아닌 경우, 권한 없음 메시지를 뷰로 전달하거나 리디렉션
+            model.addAttribute("message", "수정 권한이 없습니다.");
+            return "redirect:/board?bno=" + bno; // 권한 없음을 알리는 뷰 페이지
+        }
+
+
     }
 
     @PostMapping("/update")
@@ -171,19 +187,25 @@ public class DF02_BoardController {
             // 게시글의 작성자 MNO 가져오기
             int boardAuthorMno = boardService.findAuthorMnoByBoardBno(bno);
 
+            int memberLevel = memberDTO.getMember_level();
+
             // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 삭제 수행
             if (mno == boardAuthorMno) {
                 boardService.delete_board(bno);
+                return "redirect:/board/paging";
+            } else if (memberLevel == 0) {
+                boardService.delete_board(bno);
+                return "redirect:/admin/boardManagement";
             } else {
                 // 다른 사용자의 글을 삭제하려는 경우에 대한 처리
                 // 예: 권한이 없는 상태에 대한 오류 처리
+                return "redirect:/board/bno=" + bno;
             }
         } else {
             // 아이디에 해당하는 회원이 없는 경우 처리
             // 예: 유효하지 않은 세션 상태에 대한 오류 처리
         }
-
-        return "redirect:/board/paging";
+        return "";
     }
 
 
@@ -278,6 +300,8 @@ public class DF02_BoardController {
         return "DF02_board/DF0204_boardPagingNoti";
     }
 
+
+    // 마이 페이지와 관련된 것들
     // 해당 회원이 쓴 게시글
     @GetMapping("/paging/myBoard")
     public String memberBoard(Model model,
@@ -301,17 +325,17 @@ public class DF02_BoardController {
             model.addAttribute("boardList", pagingList);
             model.addAttribute("paging", pageDTO);
 
-            return "DF01_member/DF0105_myboard";
+            return "DF01_member/DF0105_memberMyBoard";
         } else {
-            return "DF01_member/DF0102_login";
+            return "members/login";
         }
     }
 
     // 해당 회원이 좋아하는 게시글
     @GetMapping("/paging/myLike")
     public String memberLike(Model model,
-                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                              HttpSession session) {
+                             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                             HttpSession session) {
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -330,9 +354,9 @@ public class DF02_BoardController {
             model.addAttribute("boardList", pagingList);
             model.addAttribute("paging", pageDTO);
 
-            return "DF01_member/DF0106_mylike";
+            return "DF01_member/DF0106_memberMyLike";
         } else {
-            return "DF01_member/DF0102_login";
+            return "members/login";
         }
     }
 
@@ -346,7 +370,6 @@ public class DF02_BoardController {
     public boolean authorUpdateAndDeleteBoard(int bno, HttpSession session) {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
-
         DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
         if (memberDTO != null) {
             int mno = memberDTO.getMno();
@@ -361,5 +384,9 @@ public class DF02_BoardController {
         return false;
     }
 
+    @GetMapping("/boardContent")
+    public String boardContent() {
+        return "/DF02_board/DF0200_boardContent";
+    }
 
 }
