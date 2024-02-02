@@ -3,6 +3,8 @@ package com.example.controller;
 import com.example.dto.DF01_MemberDTO;
 import com.example.service.DF01_MemberService;
 import com.example.service.DF02_BoardService;
+import com.example.util.AES128Util;
+import com.example.util.AES192Util;
 import com.example.util.AES256Util;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -16,7 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.Map;
+import java.util.Date;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/members")
@@ -38,6 +41,14 @@ public class DF01_MemberController {
     @Autowired
     AES256Util aes256Util;
 
+    // AES192Util 의존성 주입
+    @Autowired
+    AES192Util aes192Util;
+
+    // AES128Util 의존성 주입
+    @Autowired
+    AES128Util aes128Util;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
@@ -54,13 +65,8 @@ public class DF01_MemberController {
         String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
         memberDTO.setPassword(encodedPassword);
 
-        // 이메일 암호화
-        String encodedEmail = AES256Util.encrypt(memberDTO.getEmail());
-        memberDTO.setEmail(encodedEmail);
-
-        // 폰 번호 암호화
-        String encodedPhone = AES256Util.encrypt(memberDTO.getPhone());
-        memberDTO.setPhone(encodedPhone);
+        // 개인정보 암호화
+        encryptPersonalData(memberDTO);
 
         memberService.member_join(memberDTO);
         return "redirect:/members/login";
@@ -87,6 +93,23 @@ public class DF01_MemberController {
     @PostMapping("/checkNickName")
     public @ResponseBody int checkNickName(@RequestParam("inputNickName") String inputNickName) {
         return memberService.checkNickNameCount(inputNickName);
+    }
+
+
+    @PostMapping("/checkUpdateNickName")
+    public @ResponseBody int checkNickName(@RequestParam("inputNickName") String inputNickName, HttpSession session) {
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        // 아이디로 데이터베이스에서 모든 정보 가져오기
+        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+        String usedNickName = memberDTO.getNick_name();
+
+        if (Objects.equals(usedNickName, inputNickName)){
+            return 0;
+        } else {
+            return memberService.checkNickNameCount(inputNickName);
+        }
     }
 
 
@@ -138,16 +161,25 @@ public class DF01_MemberController {
             // mno를 이용하여 회원 상세 정보 가져오기
             memberService.member_detail(memberDTO);
 
-            // 이메일 복호화
-            String decodedEmail = AES256Util.decrypt(memberDTO.getEmail());
-            memberDTO.setEmail(decodedEmail);
+            // 개인정보 복호화
+            decryptPersonalData(memberDTO);
 
-            // 폰 번호 복호화
-            String decodedPhone = AES256Util.decrypt(memberDTO.getPhone());
-            memberDTO.setPhone(decodedPhone);
+            // 날짜 변경 넣기
+            Date date = memberDTO.getBirthday();
 
-            model.addAttribute("member", memberDTO);
-            return "DF01_member/DF0103_memberMyPage";
+            if (date != null){
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+                // memberDTO의 birthday 필드에 설정
+                memberDTO.setBirthday(sqlDate);
+                model.addAttribute("member", memberDTO);
+                return "DF01_member/DF0103_memberMyPage";
+            } else {
+                model.addAttribute("member", memberDTO);
+                return "DF01_member/DF0103_memberMyPage";
+            }
+
+
         } else {
             return "redirect:/members/login";
         }
@@ -212,13 +244,24 @@ public class DF01_MemberController {
             // mno를 이용하여 회원 상세 정보 가져오기
             memberService.member_detail(memberDTO);
 
-            // 이메일 복호화
-            String decodedEmail = AES256Util.decrypt(memberDTO.getEmail());
-            memberDTO.setEmail(decodedEmail);
+            decryptPersonalData(memberDTO);
 
-            // 폰 번호 복호화
-            String decodedPhone = AES256Util.decrypt(memberDTO.getPhone());
-            memberDTO.setPhone(decodedPhone);
+            // 이메일을 @ 문자를 기준으로 분리하여 배열에 저장
+            String[] emailParts = memberDTO.getEmail().split("@");
+            if (emailParts.length == 2) {
+                // 첫 번째 요소는 이메일 아이디, 두 번째 요소는 도메인
+                String emailId = emailParts[0];
+                String domain = emailParts[1];
+
+                // 모델에 분리된 이메일 아이디와 도메인을 추가
+                model.addAttribute("emailId", emailId);
+                model.addAttribute("domain", "@" + domain);
+            } else {
+                // 이메일 형식이 올바르지 않을 경우 예외 처리
+                // 필요에 따라 로깅 또는 다른 처리를 수행할 수 있음
+                throw new Exception("Invalid email format");
+            }
+
 
             model.addAttribute("member", memberDTO);
             return "DF01_member/DF0104_memberMyPageUpdate";
@@ -228,28 +271,23 @@ public class DF01_MemberController {
     }
 
     @PostMapping("/update")
-    public String memberUpdate(@ModelAttribute DF01_MemberDTO updatedMember, HttpSession session) throws Exception {
+    public String memberUpdate(@ModelAttribute DF01_MemberDTO memberDTO, HttpSession session) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 
-        logger.info("updatedMember" + updatedMember);
+        logger.info("memberDTO" + memberDTO);
         // 아이디로 데이터베이스에서 모든 정보 가져오기
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-        if (memberDTO != null) {
+        DF01_MemberDTO loginMember = memberService.findByLoginId(loginId);
+        if (loginMember != null) {
             // 가져온 정보를 업데이트에 필요한 DTO로 설정
-            updatedMember.setMno(memberDTO.getMno());
-            updatedMember.setMember_level(memberDTO.getMember_level());
+            memberDTO.setMno(loginMember.getMno());
+            memberDTO.setMember_level(loginMember.getMember_level());
 
-            // 이메일 암호화
-            String encodedEmail = AES256Util.encrypt(updatedMember.getEmail());
-            updatedMember.setEmail(encodedEmail);
-
-            // 폰 번호 암호화
-            String encodedPhone = AES256Util.encrypt(updatedMember.getPhone());
-            updatedMember.setPhone(encodedPhone);
+            // 개인정보 암호화
+            encryptPersonalData(memberDTO);
 
             // 회원 정보 업데이트
-            memberService.member_update(updatedMember);
+            memberService.member_update(memberDTO);
 
             return "redirect:/members/my";
         } else {
@@ -300,12 +338,81 @@ public class DF01_MemberController {
 
 
     }
-
-
+    
     // 로그아웃
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute("loginId");
         return "redirect:/";
     }
+
+    // 이메일과 폰 번호를 암호화하는 메서드
+    private void encryptPersonalData(DF01_MemberDTO memberDTO) throws Exception {
+        // 이메일 암호화
+        String encodedEmail = AES256Util.encrypt(memberDTO.getEmail());
+        memberDTO.setEmail(encodedEmail);
+
+        // 이름 암호화
+        String encodedName = AES256Util.encrypt(memberDTO.getName());
+        memberDTO.setName(encodedName);
+
+        // 폰 번호 암호화
+        String encodedPhone = AES256Util.encrypt(memberDTO.getPhone());
+        memberDTO.setPhone(encodedPhone);
+
+        // 지번 암호화
+        String encodedZipcode = AES192Util.encrypt(memberDTO.getZipcode());
+        memberDTO.setZipcode(encodedZipcode);
+
+        // 도로명 암호화
+        String encodedStreetAddress = AES192Util.encrypt(memberDTO.getStreetAddress());
+        memberDTO.setStreetAddress(encodedStreetAddress);
+
+        // 상세주소 암호화
+        String encodedDetailAddress = AES192Util.encrypt(memberDTO.getDetailAddress());
+        memberDTO.setDetailAddress(encodedDetailAddress);
+
+        // 성별 암호화
+        String encodedGender = AES128Util.encrypt(memberDTO.getGender());
+        memberDTO.setGender(encodedGender);
+
+        // 생년월일 암호화
+//        java.sql.Date encodedBirthday = java.sql.Date.valueOf(AES128Util.encrypt(String.valueOf(memberDTO.getBirthday())));
+//        memberDTO.setBirthday(encodedBirthday);
+    }
+
+    private void decryptPersonalData(DF01_MemberDTO memberDTO) throws Exception {
+        // 이메일 복호화
+        String decodedEmail = AES256Util.decrypt(memberDTO.getEmail());
+        memberDTO.setEmail(decodedEmail);
+
+        // 이름 복호화
+        String decodedName = AES256Util.decrypt(memberDTO.getName());
+        memberDTO.setName(decodedName);
+
+        // 폰 번호 복호화
+        String decodedPhone = AES256Util.decrypt(memberDTO.getPhone());
+        memberDTO.setPhone(decodedPhone);
+
+        // 지번 복호화
+        String decodedZipcode = AES192Util.decrypt(memberDTO.getZipcode());
+        memberDTO.setZipcode(decodedZipcode);
+
+        // 도로명 복호화
+        String decodedStreetAddress = AES192Util.decrypt(memberDTO.getStreetAddress());
+        memberDTO.setStreetAddress(decodedStreetAddress);
+
+        // 상세주소 복호화
+        String decodedDetailAddress = AES192Util.decrypt(memberDTO.getDetailAddress());
+        memberDTO.setDetailAddress(decodedDetailAddress);
+
+        // 성별 복호화
+        String decodedGender = AES128Util.decrypt(memberDTO.getGender());
+        memberDTO.setGender(decodedGender);
+
+        // 생년월일 복호화
+//        java.sql.Date decodedBirthday = java.sql.Date.valueOf(AES128Util.decrypt(String.valueOf(memberDTO.getBirthday())));
+//        memberDTO.setBirthday(decodedBirthday);
+    }
+
 }

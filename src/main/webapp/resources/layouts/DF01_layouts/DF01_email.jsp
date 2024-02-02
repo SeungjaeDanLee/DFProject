@@ -6,13 +6,13 @@
         <div style="margin-right: 20px;">
             <label for="emailOrigin">이메일</label>
             <input type="text" id="emailOrigin" name="emailOrigin" placeholder="이메일을 입력해주세요"
-                   oninput="updateEmail() || characterCheck(this)" required>
+                   oninput="updateEmail() || characterCheck(this)" value="${emailId}" required>
         </div>
         <div>
-            <label for="email_selection" class="form-label">이메일 선택창</label>
+            <label for="email_selection" class="form-label">도메인 선택창</label>
             <div style="display: flex; align-items: baseline;">
                 <input type="text" id="emailService" name="emailService" placeholder="나머지 주소"
-                       style="margin-right: 5%" onchange="handleEmailSelection()" oninput="updateEmail()" readonly required>
+                       style="margin-right: 5%" onchange="handleEmailSelection()" oninput="updateEmail()" value="${domain}" readonly required>
                 <select class="form-select" id="email_selection" onchange="updateEmail()">
                     <option selected disabled value=""></option>
                     <option value="1">@naver.com</option>

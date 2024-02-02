@@ -174,6 +174,46 @@ function checkNickName() {
     });
 }
 
+// 회원 정보 수정시 닉네임 중복 확인
+function checkUpdateNickName() {
+    const inputNickName = $("[name=nick_name]").val();
+    // console.log(inputNickName);
+
+    let regExp = /[^\uAC00-\uD7A3a-zA-Z0-9]/gi; // 완성된 한글, 알파벳, 숫자를 제외한 모든 문자 매칭
+    if(regExp.test(inputNickName)) {
+        $("#result2").text("닉네임에는 완성된 한글, 알파벳, 숫자만 사용할 수 있습니다.").css("color", "red");
+        return;
+    }
+
+    $.ajax({
+        type: "post",
+        url: "/members/checkUpdateNickName",
+        data: {"inputNickName": inputNickName},
+        success: function (data) {
+            // console.log(data);
+            if (inputNickName != "") {
+                if (data == 0) {
+                    if (inputNickName.length >= 2){
+                        $("#result2").text("사용 가능한 닉네임입니다. (2자 이상)").css("color", "blue");
+                        isCheckNickName = true;
+                    } else {
+                        $("#result2").text("닉네임은 2자 이상이어야 합니다.").css("color", "red");
+                    }
+                } else {
+                    $("#result2").text("사용할 수 없는 닉네임입니다.").css("color", "red");
+                    isCheckNickName = false;
+                }
+            } else {
+                $("#result2").text("빈 값은 사용할 수 없습니다.").css("color", "red");
+                isCheckNickName = false;
+            }
+        }, error: function () {
+            // console.log("서버 요청 실패");
+            isCheckNickName = false;
+        }
+    });
+}
+
 
 // 닉네임(특수문자만 삭제)
 function characterCheckNickName(obj){
@@ -225,7 +265,8 @@ function checkEmail() {
     // console.log(inputEmail);
 
     // 이메일 형식을 체크하는 정규 표현식
-    let regExp = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    // let regExp = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    let regExp = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]?\.[a-zA-Z]{2,4}$/i;
 
     if (!regExp.test(inputEmail)) {
         $("#result4").text("올바른 이메일 형식이 아닙니다.").css("color", "red");
@@ -388,6 +429,8 @@ function updateAndCheckEmail() {
     updateEmail();
     checkEmail();
 }
+
+
 
 
 // 회원수정 폼

@@ -18,14 +18,15 @@ public class DF01_MemberDTO {
     private String email;
     private String name;
     private String nick_name;
-    private Long zipcode;
+    private String zipcode;
     private String streetAddress;
     private String detailAddress;
     private String gender;
     private String phone;
 
-    @DateTimeFormat(pattern = "yyyy/MM/dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
+
     private Timestamp regdate;
     private Timestamp updated_date;
     private int member_level;

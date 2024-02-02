@@ -4,7 +4,7 @@
     <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <link href="../resources/css/DF01_member.css" rel="stylesheet"/>
-    <script src="../resources/js/DF01_member/DF0104_update.js"></script>
+    <script src="../resources/js/DF01_member/DF0101_join.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.0.js"
             integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
             crossorigin="anonymous"></script>
@@ -32,8 +32,8 @@
 
             <fieldset>
                 <label for="name">이름</label>
-                <input type="text" id="name" name="name" placeholder="이름을 입력해주세요" onkeyup="characterCheckName(this)"
-                       onkeydown="characterCheckName(this)" minlength="2" maxlength="10" oninput="checkName()" value="${member.name}" required>
+                <input type="text" id="name" name="name" placeholder="이름을 입력해주세요"
+                       minlength="2" maxlength="10" oninput="checkName() || characterCheckName(this)" value="${member.name}" required>
             </fieldset>
 
             <span id="result3"></span>
@@ -41,9 +41,8 @@
             <fieldset>
                 <label for="nick_name">닉네임</label>
                 <input type="text" id="nick_name" name="nick_name" placeholder="닉네임을 입력해주세요"
-                       oninput="checkNickName()"
-                       onkeyup="characterCheckNickName(this)" onkeydown="characterCheckNickName(this)" minlength="2"
-                       maxlength="16" value="${member.nick_name}" required>
+                       oninput="checkUpdateNickName() || characterCheckNickName(this)"
+                       minlength="2" maxlength="16" value="${member.nick_name}" required>
 <%--                <button class="btn btn-secondary" type="button" onclick="checkNickName()">확인</button>--%>
             </fieldset>
             <span id="result2"></span>
