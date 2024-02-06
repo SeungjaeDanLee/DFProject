@@ -33,7 +33,7 @@ public class DF02_BoardController {
     @Autowired
     DF04_LikePointService likePointService;
 
-    private int loginMno(HttpSession session) {
+    private int loginMno(HttpSession session) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
         // 아이디로 데이터베이스에서 모든정보 조회
@@ -48,7 +48,7 @@ public class DF02_BoardController {
     }
 
     @PostMapping("/write")
-    public String writeBoard(@ModelAttribute DF02_BoardDTO boardDTO, HttpSession session) {
+    public String writeBoard(@ModelAttribute DF02_BoardDTO boardDTO, HttpSession session) throws Exception {
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -71,7 +71,7 @@ public class DF02_BoardController {
     @GetMapping
     public String findByBoardBno(@RequestParam("bno") int bno,
                                  @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                                 Model model, HttpSession session) {
+                                 Model model, HttpSession session) throws Exception {
 
         if (session.getAttribute("loginId") == null) {
             return "redirect:/error/401";
@@ -134,7 +134,7 @@ public class DF02_BoardController {
 
     // 게시글 수정
     @GetMapping("/update")
-    public String updatePage(@RequestParam("bno") int bno, Model model, HttpSession session) {
+    public String updatePage(@RequestParam("bno") int bno, Model model, HttpSession session) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 
@@ -175,7 +175,7 @@ public class DF02_BoardController {
 
     // 게시글 삭제
     @GetMapping("/delete")
-    public String deleteBoard(@RequestParam("bno") int bno, HttpSession session) {
+    public String deleteBoard(@RequestParam("bno") int bno, HttpSession session) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 
@@ -306,7 +306,7 @@ public class DF02_BoardController {
     @GetMapping("/paging/myBoard")
     public String memberBoard(Model model,
                               @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                              HttpSession session) {
+                              HttpSession session) throws Exception {
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -335,7 +335,7 @@ public class DF02_BoardController {
     @GetMapping("/paging/myLike")
     public String memberLike(Model model,
                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-                             HttpSession session) {
+                             HttpSession session) throws Exception {
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -367,7 +367,7 @@ public class DF02_BoardController {
 //    }
 
     // 당사자만 게시글의 수정 삭제 가능
-    public boolean authorUpdateAndDeleteBoard(int bno, HttpSession session) {
+    public boolean authorUpdateAndDeleteBoard(int bno, HttpSession session) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
         DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
@@ -383,10 +383,4 @@ public class DF02_BoardController {
 
         return false;
     }
-
-    @GetMapping("/boardContent")
-    public String boardContent() {
-        return "/DF02_board/DF0200_boardContent";
-    }
-
 }

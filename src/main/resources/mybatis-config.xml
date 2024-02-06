@@ -7,5 +7,6 @@
         <typeAlias type="com.example.dto.DF02_BoardDTO" alias="board" />
         <typeAlias type="com.example.dto.DF03_ReplyDTO" alias="reply" />
         <typeAlias type="com.example.dto.DF04_LikePointDTO" alias="likepoint" />
+        <typeAlias type="com.example.dto.DF05_FileDTO" alias="file" />
     </typeAliases>
 </configuration>

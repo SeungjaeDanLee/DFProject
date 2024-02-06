@@ -29,7 +29,7 @@ public class DF03_ReplyController {
     @Autowired
     DF03_ReplyService replyService;
 
-    private int loginMno(HttpSession session){
+    private int loginMno(HttpSession session) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
         // 아이디로 데이터베이스에서 모든정보 조회
@@ -42,7 +42,7 @@ public class DF03_ReplyController {
     @PostMapping("/write")
     public @ResponseBody List<DF03_ReplyDTO> writeReply(@ModelAttribute DF03_ReplyDTO replyDTO,
                                                         @RequestParam("bno") int bno,
-                                                        HttpSession session) {
+                                                        HttpSession session) throws Exception {
 //        // 세션에서 아이디 가져오기
 //        String loginId = (String) session.getAttribute("loginId");
 
@@ -70,7 +70,7 @@ public class DF03_ReplyController {
     public String updateReply(@ModelAttribute DF03_ReplyDTO replyDTO,
                               @RequestParam("rno") int rno,
                               HttpSession session,
-                              Model model) {
+                              Model model) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 
@@ -111,7 +111,7 @@ public class DF03_ReplyController {
     @GetMapping("/delete")
     public String deleteReply(@RequestParam("rno") int rno,
                               @RequestParam("bno") int bno,
-                              HttpSession session) {
+                              HttpSession session) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 

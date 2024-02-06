@@ -13,19 +13,12 @@
     </insert>
 
     <!--회원가입시 아이디 중복 검사-->
-<!--    <select id="findById" parameterType="String" resultType="member">-->
-<!--        select * from member where id=#{inputId}-->
-<!--    </select>-->
-
     <select id="checkIdCount" parameterType="String" resultType="int">
         select count(*) from member where id=#{inputId}
     </select>
 
 
     <!--회원가입시 닉네임 중복 검사-->
-<!--    <select id="findByNickName" parameterType="String" resultType="member">-->
-<!--        select * from member where nick_name=#{inputNickName}-->
-<!--    </select>-->
     <select id="checkNickNameCount" parameterType="String" resultType="int">
         select count(*) from member where nick_name=#{inputNickName}
     </select>
@@ -36,13 +29,15 @@
         select * from member where id = #{id}
     </select>
 
-    <!--회원 상세 정보 select-->
-<!--    <select id="findByMno" parameterType="int" resultType="member">-->
-<!--        select * from member where mno=#{mno}-->
-<!--    </select>-->
-    <select id="memberDetail" parameterType="member" resultType="member">
-        select * from member where mno=#{mno}
+    <!--로그인된 아이디로 해당 아이디의 모든 정보 찾기-->
+    <select id="findByLoginId" parameterType="String" resultType="member">
+        select * from member where id=#{loginId}
     </select>
+
+    <!--회원 탈퇴 delete-->
+    <delete id="memberDelete" parameterType="int">
+        delete from member where mno = #{mno}
+    </delete>
 
     <!--회원 정보 수정 update-->
     <update id="memberUpdate" parameterType="member">
@@ -62,21 +57,7 @@
     </update>
 
 
-    <!--로그인된 아이디로 해당 아이디의 mno 찾기-->
-    <select id="findMno" parameterType="String" resultType="member">
-        select mno from member where id=#{loginId}
-    </select>
-
-    <!--로그인된 아이디로 해당 아이디의 모든 정보 찾기-->
-    <select id="findByLoginId" parameterType="String" resultType="member">
-        select * from member where id=#{loginId}
-    </select>
-
-    <!--회원 탈퇴 delete-->
-    <delete id="memberDelete" parameterType="int">
-        delete from member where mno = #{mno}
-    </delete>
-
+    <!--관리자 페이지-->
     <!--모든 회원 찾기-->
     <select id="findAll" resultType="member">
         select * from member
@@ -85,10 +66,5 @@
     <!--Mno로 회원정보 검색-->
     <select id="findByMno" resultType="member">
         select * from member where mno = #{mno}
-    </select>
-
-    <!--id로 비밀번호 찾기-->
-    <select id="getPassword" resultType="member">
-        select password from member where id = #{id}
     </select>
 </mapper>

@@ -146,4 +146,9 @@ public class DF02_BoardRepository {
     public void decreaseLikePoints(int bno) {
         sql.update("Board.decreaseLikePoints", bno);
     }
+
+    public int getNextBno() {
+        sql.selectOne("Board.getNextBno");
+        return getNextBno();
+    }
 }

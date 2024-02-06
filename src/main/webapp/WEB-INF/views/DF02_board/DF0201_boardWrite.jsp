@@ -8,6 +8,9 @@
             integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
             crossorigin="anonymous"></script>
 
+    <!-- Quill 라이브러리 추가 -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
 
 </head>
 <body>
@@ -40,9 +43,10 @@
             </ul>
 
             <ul>
-                <li>
-                    <textarea type="text" name="content" placeholder="내용을 입력해주세요" class="content_box"
-                              required></textarea>
+                <li style="width: 800px;">
+                    <!-- Quill 텍스트 에디터 -->
+                    <div id="editor" style="height: 500px;"></div>
+                    <input type="hidden" name="content" id="content" class="content_box" required/>
                 </li>
             </ul>
 
@@ -57,6 +61,56 @@
 
 
 <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalFooter.jsp"></jsp:include>
-<script src="../resources/js/DF02_board/DF0201_writeBoard.js"></script>
+<!-- Quill 라이브러리 스크립트 추가 -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+    let quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'image']
+            ]
+        }
+    });
+
+    // Quill에서 입력한 내용을 숨은 input 필드에 복사하여 전송
+    let form = document.querySelector('form');
+    form.onsubmit = function() {
+        let contentInput = document.querySelector('#content');
+        contentInput.value = quill.root.innerHTML;
+    };
+
+    // Quill 이미지 업로드 모듈 활성화
+    quill.getModule('toolbar').addHandler('image', function() {
+        let input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = function() {
+            let file = input.files[0];
+            let formData = new FormData();
+            formData.append('image', file);
+
+            // 이미지를 업로드하고 이미지의 URL을 Quill 에디터에 삽입
+            fetch('/file/upload', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const range = quill.getSelection();
+                    quill.insertEmbed(range.index, 'image', data.imageUrl);
+                })
+                .catch(error => {
+                    console.error('이미지 업로드 실패:', error);
+                });
+        };
+    });
+
+</script>
 </body>
 </html>

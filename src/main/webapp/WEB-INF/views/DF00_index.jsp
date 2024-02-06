@@ -87,7 +87,7 @@
                 </div>
                 <br>
                 <div style="display: flex; justify-content: space-between;">
-                    <div>${board.content}</div>
+                    <div>${board.title}</div>
                     <div>
                         <c:choose>
                             <c:when test="${board.category == 0}">공지글</c:when>

@@ -85,5 +85,5 @@
     <!-- Core theme JS-->
     <script src="/resources/js/scripts.js"></script>
 </head>
-<body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">
-</body>
+<%--<body oncontextmenu="return false" ondragstart="return false" onselectstart="return false">--%>
+<%--</body>--%>

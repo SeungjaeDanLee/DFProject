@@ -54,7 +54,7 @@ public class DF01_MemberController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 // 김성수 대리님, 회원 정보 수정 디폴트 코드 -- @ResponseBody 값만 가져오는 거 알아둘 것
-    //    @PostMapping("/testMemberUpdateAjax")
+//    @PostMapping("/testMemberUpdateAjax")
 //    @ResponseBody
 //    public HashMap testMemberUpdateAjax(@RequestBody Map<String, Object> requestData, HttpSession session) throws Exception {
 //        HashMap paramMap = new HashMap();
@@ -112,30 +112,19 @@ public class DF01_MemberController {
     }
 
     // 회원가입시 아이디 중복 검사
-//    @PostMapping("/checkId")
-//    public @ResponseBody String checkId(@RequestParam("inputId") String inputId) {
-//        String checkResult = memberService.checkId(inputId);
-//        return checkResult;
-//    }
-
     @PostMapping("/checkId")
     public @ResponseBody int checkIdCount(@RequestParam("inputId") String inputId) {
         return memberService.checkIdCount(inputId);
     }
 
     // 회원가입시 닉네임 중복 검사
-//    @PostMapping("/checkNickName")
-//    public @ResponseBody String checkNickName(@RequestParam("inputNickName") String inputNickName) {
-//        String checkResult = memberService.checkNickName(inputNickName);
-//        return checkResult;
-//    }
     @PostMapping("/checkNickName")
     public @ResponseBody int checkNickName(@RequestParam("inputNickName") String inputNickName) {
         return memberService.checkNickNameCount(inputNickName);
     }
 
     @PostMapping("/checkUpdateNickName")
-    public @ResponseBody int checkNickName(@RequestParam("inputNickName") String inputNickName, HttpSession session) {
+    public @ResponseBody int checkNickName(@RequestParam("inputNickName") String inputNickName, HttpSession session) throws Exception {
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 
@@ -194,9 +183,6 @@ public class DF01_MemberController {
         DF01_MemberDTO loginMemberDTO = memberService.findByLoginId(loginId);
 
         if (loginMemberDTO != null) {
-            // mno를 이용하여 회원 상세 정보 가져오기
-            memberService.member_detail(loginMemberDTO);
-
             // 개인정보 복호화
             memberService.decryptPersonalData(loginMemberDTO);
 
@@ -215,7 +201,6 @@ public class DF01_MemberController {
                 return "DF01_member/DF0103_memberMyPage";
             }
 
-
         } else {
             return "redirect:/members/login";
         }
@@ -223,27 +208,6 @@ public class DF01_MemberController {
 
 
     // 회원 수정&삭제 본인 검정
-//    @GetMapping("/checkMe")
-//    public ResponseEntity<Void> checkMe(HttpSession session, @RequestParam String inputId, @RequestParam String inputPassword) {
-//
-//        // 세션에서 아이디 가져오기
-//        String loginId = (String) session.getAttribute("loginId");
-//
-//        if (loginId.equals(inputId)) {
-//            // 아이디가 일치하는 경우
-//            // 여기서 inputPassword와 실제 회원의 비밀번호를 확인하고, 일치하는 경우에만 작업 수행
-//            DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-//            if (memberDTO != null && passwordEncoder.matches(inputPassword, memberDTO.getPassword())) {
-//                return new ResponseEntity<>(HttpStatus.OK); // 200: OK
-//            } else {
-//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401: Unauthorized
-//            }
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
-
     @PostMapping("/checkMe")
     @ResponseBody
     public HashMap checkMe(HttpSession session, @RequestBody Map<String, Object> requestData) throws Exception {
@@ -270,7 +234,6 @@ public class DF01_MemberController {
     public String memberUpdatingPage(HttpSession session, Model model) throws Exception {
 //        ModelAndView mav = new ModelAndView();
 
-
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
 
@@ -279,72 +242,30 @@ public class DF01_MemberController {
 
 
         // mno를 이용하여 회원 상세 정보 가져오기
-        memberService.member_detail(memberDTO);
+//        memberService.member_detail(memberDTO);
 
         memberService.decryptPersonalData(memberDTO);
 
-//        // 이메일을 @ 문자를 기준으로 분리하여 배열에 저장
-//        String[] emailParts = memberDTO.getEmail().split("@");
-//        if (emailParts.length == 2) {
-//            // 첫 번째 요소는 이메일 아이디, 두 번째 요소는 도메인
-//            String emailId = emailParts[0];
-//            String domain = emailParts[1];
-//
-//            // 모델에 분리된 이메일 아이디와 도메인을 추가
-//            model.addAttribute("emailId", emailId);
-//            model.addAttribute("domain", "@" + domain);
-//        } else {
-//            // 이메일 형식이 올바르지 않을 경우 예외 처리
-//            // 필요에 따라 로깅 또는 다른 처리를 수행할 수 있음
-//            throw new Exception("Invalid email format");
-//        }
+        // 이메일을 @ 문자를 기준으로 분리하여 배열에 저장
+        String[] emailParts = memberDTO.getEmail().split("@");
+        if (emailParts.length == 2) {
+            // 첫 번째 요소는 이메일 아이디, 두 번째 요소는 도메인
+            String emailId = emailParts[0];
+            String domain = emailParts[1];
 
+            // 모델에 분리된 이메일 아이디와 도메인을 추가
+            model.addAttribute("emailId", emailId);
+            model.addAttribute("domain", "@" + domain);
+        } else {
+            // 이메일 형식이 올바르지 않을 경우 예외 처리
+            // 필요에 따라 로깅 또는 다른 처리를 수행할 수 있음
+            throw new Exception("Invalid email format");
+        }
 
         model.addAttribute("member", memberDTO);
         return "/DF01_member/DF0104_memberMyPageUpdate";
 
     }
-
-
-
-
-
-//    public String updatePage(HttpSession session, Model model, @RequestParam String inputPassword) throws Exception {
-//        // 세션에서 아이디 가져오기
-//        String loginId = (String) session.getAttribute("loginId");
-//
-//        // 아이디로 데이터베이스에서 모든 정보 가져오기
-//        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-//
-//        if (memberDTO != null && passwordEncoder.matches(inputPassword, memberDTO.getPassword())) {
-//            // mno를 이용하여 회원 상세 정보 가져오기
-//            memberService.member_detail(memberDTO);
-//
-//            memberService.decryptPersonalData(memberDTO);
-//
-//            // 이메일을 @ 문자를 기준으로 분리하여 배열에 저장
-//            String[] emailParts = memberDTO.getEmail().split("@");
-//            if (emailParts.length == 2) {
-//                // 첫 번째 요소는 이메일 아이디, 두 번째 요소는 도메인
-//                String emailId = emailParts[0];
-//                String domain = emailParts[1];
-//
-//                // 모델에 분리된 이메일 아이디와 도메인을 추가
-//                model.addAttribute("emailId", emailId);
-//                model.addAttribute("domain", "@" + domain);
-//            } else {
-//                // 이메일 형식이 올바르지 않을 경우 예외 처리
-//                // 필요에 따라 로깅 또는 다른 처리를 수행할 수 있음
-//                throw new Exception("Invalid email format");
-//            }
-//
-//
-//            model.addAttribute("member", memberDTO);
-//            return "DF01_member/DF0104_memberMyPageUpdate";
-//        } else {
-//            return "DF01_member/DF0102_login";
-//        }
-//    }
 
     @PostMapping("/updated")
     public String memberUpdated(@ModelAttribute DF01_MemberDTO memberDTO, HttpSession session) throws Exception {
@@ -374,8 +295,8 @@ public class DF01_MemberController {
 
     // 회원 탈퇴
     @RequestMapping("/delete")
-    public String memberDelete(HttpSession session, @RequestBody Map<String, String> requestData) {
-        String inputPassword = requestData.get("inputPassword");
+    public String memberDelete(HttpSession session) throws Exception {
+//        String inputPassword = requestData.get("inputPassword");
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -383,11 +304,11 @@ public class DF01_MemberController {
         // 아이디로 데이터베이스에서 모든정보 조회
         DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
 
-        if (inputPassword == null) {
-            return "redirect:/error/400";
-        }
+//        if (inputPassword == null) {
+//            return "redirect:/error/400";
+//        }
 
-        if (memberDTO != null && passwordEncoder.matches(inputPassword, memberDTO.getPassword())) {
+        if (memberDTO != null) {
             // mno를 이용하여 회원 탈퇴 수행
             memberService.member_delete(memberDTO.getMno());
             // 세션에서 아이디 제거

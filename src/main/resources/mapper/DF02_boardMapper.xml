@@ -189,6 +189,11 @@
         where bno = #{bno}
     </update>
 
+    <!--파일 bno 다음번 bno 주기-->
+    <select id="getNextBno" parameterType="int">
+        select MAX(bno) + 1 from board;
+    </select>
+
 
     <!--좋아요 수가 bno +- 2씩되는거-->
 <!--    <update id="decreaseLikePoints" parameterType="board">-->
