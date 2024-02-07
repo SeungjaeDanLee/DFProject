@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 데이터베이스 이름 및 계정 확인 -->
+    <bean id="dataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <!--  여기에 db 정보 넣어주시면 됩니다. -->
+        <property name="url" value="jdbc:mysql://localhost:3306/dogfit?useSSL=false&amp;serverTimezone=Asia/Seoul"/>
+        <property name="username" value="root"/>
+        <property name="password" value="0000"/>
+    </bean>
+
+    <!-- 현재 프로젝트 패키지 경로 맞는지 확인 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--DB에 접속하기 위한 설정-->
+        <property name="dataSource" ref="dataSource"/>
+
+        <!--myBatis 기본 설정-->
+        <property name="configLocation" value="classpath:/mybatis-config.xml"/>
+
+        <!-- query 적힌 xml 위치 -->
+        <property name="mapperLocations" value="classpath:/mapper/*.xml"/>
+
+        <!-- 트랜잭션 관리를 위한 것 -->
+        <property name="transactionFactory">
+            <bean class="org.mybatis.spring.transaction.SpringManagedTransactionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!--10 메가-->
+        <property name="maxUploadSize" value="10000000"/>
+
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>
