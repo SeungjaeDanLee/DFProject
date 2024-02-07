@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.dto.DF01_MemberDTO;
 import com.example.dto.DF02_BoardDTO;
 import com.example.dto.DF02_PageDTO;
 import com.example.repository.DF02_BoardRepository;
@@ -7,12 +8,16 @@ import com.example.repository.DF04_LikePointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class DF02_BoardService {
+    @Autowired
+    DF01_MemberService memberService;
+
     @Autowired
     DF02_BoardRepository boardRepository;
 
@@ -270,5 +275,22 @@ public class DF02_BoardService {
 
     public void decreaseLikePoints(int bno) {
         boardRepository.decreaseLikePoints(bno);
+    }
+
+    // 당사자만 게시글의 수정 삭제 가능
+    public boolean authorUpdateAndDeleteBoard(int bno, HttpSession session) throws Exception {
+
+        DF01_MemberDTO loginMemberDTO = memberService.loginMemberDTO(session);
+        if (loginMemberDTO != null) {
+            int mno = loginMemberDTO.getMno();
+
+            // 게시글의 작성자 MNO 가져오기
+            int authorMno = findAuthorMnoByBoardBno(bno);
+
+            // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 권한 부여
+            return mno == authorMno;
+        }
+
+        return false;
     }
 }

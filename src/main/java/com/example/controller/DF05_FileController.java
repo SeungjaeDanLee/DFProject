@@ -67,8 +67,9 @@ public class DF05_FileController {
         // 배열에서 한 개씩 꺼내서 저장
         for (i = (arrayOfMultipartFile = uploadFile).length, b = 0; b < i; ) {
             MultipartFile upFile = arrayOfMultipartFile[b];
-            String originalFileName = upFile.getOriginalFilename();
-            String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
+//            String originalFileName = upFile.getOriginalFilename();
+//            String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
+            String uniqueFileName = String.valueOf(UUID.randomUUID());
 
             File saveFile = new File(uploadPath, uniqueFileName);
             try {
@@ -77,7 +78,7 @@ public class DF05_FileController {
                 response.put("fileName", uniqueFileName);
             } catch (IOException e) {
                 e.printStackTrace();
-                logger.info("[ 이미지 업로드 ] Fail :: "+originalFileName+" File IOException Error");
+//                logger.info("[ 이미지 업로드 ] Fail :: "+originalFileName+" File IOException Error");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
             b++;
@@ -102,7 +103,7 @@ public class DF05_FileController {
                 return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
             } catch (IOException e) {
                 e.printStackTrace();
-                logger.info("[ 이미지 보기 ] Fail :: "+fileName+" File IOException Error");
+//                logger.info("[ 이미지 보기 ] Fail :: "+fileName+" File IOException Error");
             }
         }
         return ResponseEntity.notFound().build();

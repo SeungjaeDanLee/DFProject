@@ -1,8 +1,9 @@
 <html>
 <head>
     <title>페이지 리스트</title>
-    <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <link href="../resources/css/DF02_board.css" rel="stylesheet"/>
     <script src="https://code.jquery.com/jquery-3.7.0.js"
             integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
@@ -20,15 +21,6 @@
 
 <div class="container mt-5">
     <h3>전체 게시판입니다.</h3>
-<%--    <nav class="navbar navbar-light bg-light">--%>
-<%--        <div class="container-fluid">--%>
-<%--            <a class="navbar-brand"><h3>전체 게시판입니다.</h3></a>--%>
-<%--            <form class="d-flex" action="/board/entireBoardSearch" method="get">--%>
-<%--                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">--%>
-<%--                <button class="btn btn-outline-success" type="submit">Search</button>--%>
-<%--            </form>--%>
-<%--        </div>--%>
-<%--    </nav>--%>
     <br>
     <table class="table table-striped table-hover">
         <thead class="thead-dark">
@@ -43,10 +35,7 @@
         </thead>
         <tbody>
         <c:forEach items="${boardList}" var="board">
-            <tr onclick="location.href='/board?bno=${board.bno}&page=${paging.page}';" style="cursor:pointer;">
-<%--                <td>--%>
-<%--                    <a href="/board?bno=${board.bno}&page=${paging.page}">${board.title}</a>--%>
-<%--                </td>--%>
+            <tr onclick="location.href='/board/boardView?bno=${board.bno}&page=${paging.page}';" style="cursor:pointer;">
                 <td>${board.title}</td>
                 <td>
                     <c:forEach items="${memberList}" var="member">
@@ -66,13 +55,7 @@
                     </c:choose>
                 </td>
                 <td>
-                    <script>document.write(new Date('${board.written_date}').toLocaleString('ko', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }));</script>
+                    <fmt:formatDate pattern="yyyy-MM-dd hh:mm" value="${board.written_date}" />
                 </td>
             </tr>
         </c:forEach>
@@ -115,17 +98,6 @@
         </c:otherwise>
     </c:choose>
 </div>
-
-<%--<div style="display: flex">--%>
-<%--    <!--   이름검색기능   -->--%>
-<%--    <input type="text" id="searchInput" placeholder="제목 입력...">--%>
-<%--    <button type="button" id="searchBtn" class="btn btn-primary"--%>
-<%--            style="width: 95px;border: 1px solid white;height: 38px;padding-top: 7px;background-color: black;border-color: black;color: white;border-radius: 5px;margin-left: 10px;">--%>
-<%--        검색--%>
-<%--    </button>--%>
-<%--</div>--%>
-
-
 
 <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalFooter.jsp"></jsp:include>
 

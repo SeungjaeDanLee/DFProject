@@ -29,26 +29,12 @@ public class DF04_LikePointController {
     @Autowired
     DF04_LikePointService likePointService;
 
-    private int loginMno(HttpSession session) throws Exception {
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
-        // 아이디로 데이터베이스에서 모든정보 조회
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-        return memberDTO.getMno();
-    }
-
     @PostMapping("/toggle")
     public ResponseEntity<String> toggleLikePoint(@RequestBody DF04_LikePointDTO likePoint,
                                                   HttpSession session) throws Exception {
-        likePoint.setMno(loginMno(session));
+        likePoint.setMno(memberService.loginMno(session));
         boolean liked = likePointService.toggleLikePoint(likePoint);
-        int bno = likePoint.getBno();
 
-        if (liked){
-            boardService.increaseLikePoints(bno);
-        } else {
-            boardService.decreaseLikePoints(bno);
-        }
         return ResponseEntity.ok(liked ? "liked" : "unliked");
     }
 }

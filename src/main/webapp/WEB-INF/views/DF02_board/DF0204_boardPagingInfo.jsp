@@ -1,8 +1,9 @@
 <html>
 <head>
     <title>페이지 리스트</title>
-    <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <link href="../resources/css/DF02_board.css" rel="stylesheet"/>
     <script src="https://code.jquery.com/jquery-3.7.0.js"
             integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
@@ -33,9 +34,9 @@
         </thead>
         <tbody>
         <c:forEach items="${boardList}" var="board">
-            <tr onclick="location.href='/board?bno=${board.bno}&page=${paging.page}';" style="cursor:pointer;">
+            <tr onclick="location.href='/board/boardView?bno=${board.bno}&page=${paging.page}';" style="cursor:pointer;">
 <%--                <td>--%>
-<%--                    <a href="/board?bno=${board.bno}&page=${paging.page}">${board.title}</a>--%>
+<%--                    <a href="/board/boardView?bno=${board.bno}&page=${paging.page}">${board.title}</a>--%>
 <%--                </td>--%>
                 <td>${board.title}</td>
                 <td>
@@ -56,13 +57,7 @@
                     </c:choose>
                 </td>
                 <td>
-                    <script>document.write(new Date('${board.written_date}').toLocaleString('ko', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }));</script>
+                    <fmt:formatDate pattern="yyyy-MM-dd hh:mm" value="${board.written_date}" />
                 </td>
             </tr>
         </c:forEach>

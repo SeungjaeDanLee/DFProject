@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <meta name="description" content=""/>
@@ -64,7 +65,7 @@
 <section style="width: 60%; margin: 0 auto; margin-top: 50px;">
     <hr>
     <c:forEach items="${boardList}" var="board">
-        <a href="/board?bno=${board.bno}" style="text-decoration: none">
+        <a href="/board/boardView?bno=${board.bno}" style="text-decoration: none">
 <%--            <img src="../resources/assets/dogfoot.png" alt="개발자국" width="10%" height="10%">--%>
             <div style="text-align: center; margin: 10px; color: black;">
                 <div style="display: flex; justify-content: space-between;">
@@ -76,13 +77,7 @@
                         </c:forEach>
                     </div>
                     <div>작성시간 :
-                        <script>document.write(new Date('${board.written_date}').toLocaleString({
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }));</script>
+                        <fmt:formatDate pattern="yyyy-MM-dd hh:mm" value="${board.written_date}" />
                     </div>
                 </div>
                 <br>

@@ -40,14 +40,6 @@ public class DF02_BoardController {
     @Autowired
     DF04_LikePointService likePointService;
 
-    private int loginMno(HttpSession session) throws Exception {
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
-        // 아이디로 데이터베이스에서 모든정보 조회
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-        return memberDTO.getMno();
-    }
-
     // 게시글 작성
     @GetMapping("/write")
     public String writeBoardPage() {
@@ -73,32 +65,9 @@ public class DF02_BoardController {
         return "redirect:/board/paging";
     }
 
-    // 이미지 보기
-    @ResponseBody
-    @GetMapping({"/display"})
-    public ResponseEntity<byte[]> showImageGET(@RequestParam("fileName") String fileName,
-                                               @RequestParam("datePath") String datePath) {
-        // 톰캣 내부 저장경로 (*윈도우)
-        String uploadFolder = "C:\\Users\\Epcot\\Desktop\\DFProject-0129\\apache-tomcat-9.0.84\\webapps\\upload";
-
-        File file = new File(uploadFolder + File.separator + datePath + File.separator + fileName);
-        if (file.exists()){
-            try {
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("Content-type", Files.probeContentType(file.toPath()));
-                byte[] fileBytes = FileCopyUtils.copyToByteArray(file);
-                return new ResponseEntity<>(fileBytes, headers, HttpStatus.OK);
-            } catch (IOException e) {
-                e.printStackTrace();
-//                logger.info("[ 이미지 보기 ] Fail :: "+fileName+" File IOException Error");
-            }
-        }
-        return ResponseEntity.notFound().build();
-    }
-
 
     // 상세 페이지
-    @GetMapping
+    @GetMapping("/boardView")
     public String findByBoardBno(@RequestParam("bno") int bno,
                                  @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                  Model model, HttpSession session) throws Exception {
@@ -110,7 +79,7 @@ public class DF02_BoardController {
         boardService.view_counts(bno);
 
         DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
-        boolean isBoardAuthor = authorUpdateAndDeleteBoard(bno, session);
+        boolean isBoardAuthor = boardService.authorUpdateAndDeleteBoard(bno, session);
 
         model.addAttribute("board", boardDTO);
         model.addAttribute("page", page);
@@ -122,17 +91,9 @@ public class DF02_BoardController {
         model.addAttribute("memberList", memberDTOList);
         model.addAttribute("replyList", replyDTOList);
 
-//        // 세션에서 아이디 가져오기
-//        String loginId = (String) session.getAttribute("loginId");
-//
-//        // 아이디로 데이터베이스에서 모든 정보 조회
-//        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-//
-//        int loginMno = memberDTO.getMno();
+        model.addAttribute("loginMno", memberService.loginMno(session));
 
-        model.addAttribute("loginMno", loginMno(session));
-
-        boolean isLiked = likePointService.isLiked(bno, loginMno(session));
+        boolean isLiked = likePointService.isLiked(bno, memberService.loginMno(session));
         model.addAttribute("isLiked", isLiked);
 
         return "DF02_board/DF0202_boardView";
@@ -179,7 +140,7 @@ public class DF02_BoardController {
 
         int memberLevel = memberDTO.getMember_level();
 
-        if (authorUpdateAndDeleteBoard(bno, session) || memberLevel == 0) {
+        if (boardService.authorUpdateAndDeleteBoard(bno, session) || memberLevel == 0) {
             // 작성자인 경우, 수정 페이지로 이동
             DF02_BoardDTO boardDTO = boardService.findByBoardBno(bno);
             model.addAttribute("board", boardDTO);
@@ -338,20 +299,16 @@ public class DF02_BoardController {
                               @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                               HttpSession session) throws Exception {
 
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
+        DF01_MemberDTO loginMemberDTO = memberService.loginMemberDTO(session);
 
-        // 아이디로 데이터베이스에서 모든 정보 가져오기
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-
-        if (memberDTO != null) {
+        if (loginMemberDTO != null) {
             // 세션에서 mno 가져오기
-            int mno = memberDTO.getMno();
+            int mno = loginMemberDTO.getMno();
 
             List<DF02_BoardDTO> pagingList = boardService.pagingListMyBoard(page, mno);
             DF02_PageDTO pageDTO = boardService.pagingParamMyBoard(page, mno);
 
-            model.addAttribute("member", memberDTO);
+            model.addAttribute("member", loginMemberDTO);
             model.addAttribute("boardList", pagingList);
             model.addAttribute("paging", pageDTO);
 
@@ -367,20 +324,16 @@ public class DF02_BoardController {
                              @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                              HttpSession session) throws Exception {
 
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
+        DF01_MemberDTO loginMemberDTO = memberService.loginMemberDTO(session);
 
-        // 아이디로 데이터베이스에서 모든 정보 가져오기
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-
-        if (memberDTO != null) {
+        if (loginMemberDTO != null) {
             // 세션에서 mno 가져오기
-            int mno = memberDTO.getMno();
+            int mno = loginMemberDTO.getMno();
 
             List<DF02_BoardDTO> pagingList = boardService.pagingListMyLike(page, mno);
             DF02_PageDTO pageDTO = boardService.pagingParamMyLike(page, mno);
 
-            model.addAttribute("member", memberDTO);
+            model.addAttribute("member", loginMemberDTO);
             model.addAttribute("boardList", pagingList);
             model.addAttribute("paging", pageDTO);
 
@@ -396,21 +349,4 @@ public class DF02_BoardController {
 //
 //    }
 
-    // 당사자만 게시글의 수정 삭제 가능
-    public boolean authorUpdateAndDeleteBoard(int bno, HttpSession session) throws Exception {
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-        if (memberDTO != null) {
-            int mno = memberDTO.getMno();
-
-            // 게시글의 작성자 MNO 가져오기
-            int authorMno = boardService.findAuthorMnoByBoardBno(bno);
-
-            // 현재 로그인한 사용자와 게시글 작성자가 동일한 경우에만 권한 부여
-            return mno == authorMno;
-        }
-
-        return false;
-    }
 }

@@ -10,16 +10,25 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class DF04_LikePointService {
+    @Autowired
+    DF01_MemberService memberService;
+
+    @Autowired
+    DF02_BoardService boardService;
 
     @Autowired
     DF04_LikePointRepository likePointRepository;
 
     public boolean toggleLikePoint(DF04_LikePointDTO likePoint) {
-        if (likePointRepository.isLiked(likePoint.getBno(), likePoint.getMno())) {
-            likePointRepository.deleteLikePoint(likePoint.getBno(), likePoint.getMno());
+        int bno = likePoint.getBno();
+
+        if (likePointRepository.isLiked(bno, bno)) {
+            likePointRepository.deleteLikePoint(bno, bno);
+            boardService.decreaseLikePoints(bno);
             return false; // 좋아요 취소
         } else {
             likePointRepository.insertLikePoint(likePoint);
+            boardService.increaseLikePoints(bno);
             return true; // 좋아요 추가
         }
     }

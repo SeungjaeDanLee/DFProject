@@ -1,8 +1,9 @@
 <html>
 <head>
     <title>글쓰기</title>
-    <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+    <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <link href="../resources/css/DF02_board.css" rel="stylesheet"/>
     <script src="https://code.jquery.com/jquery-3.7.0.js"
             integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="

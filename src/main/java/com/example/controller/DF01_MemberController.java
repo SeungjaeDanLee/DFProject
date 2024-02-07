@@ -6,7 +6,6 @@ import com.example.service.DF02_BoardService;
 import com.example.util.AES128Util;
 import com.example.util.AES192Util;
 import com.example.util.AES256Util;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -99,14 +97,6 @@ public class DF01_MemberController {
 
     @PostMapping("/new")
     public String memberJoin(@ModelAttribute DF01_MemberDTO memberDTO) throws Exception {
-
-        // 비밀번호 암호화
-        String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
-        memberDTO.setPassword(encodedPassword);
-
-        // 개인정보 암호화
-        memberService.encryptPersonalData(memberDTO);
-
         memberService.member_join(memberDTO);
         return "redirect:/members/login";
     }
@@ -125,18 +115,10 @@ public class DF01_MemberController {
 
     @PostMapping("/checkUpdateNickName")
     public @ResponseBody int checkNickName(@RequestParam("inputNickName") String inputNickName, HttpSession session) throws Exception {
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
+        DF01_MemberDTO loginMemberDTO = memberService.loginMemberDTO(session);
+        String usedNickName = loginMemberDTO.getNick_name();
 
-        // 아이디로 데이터베이스에서 모든 정보 가져오기
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-        String usedNickName = memberDTO.getNick_name();
-
-        if (Objects.equals(usedNickName, inputNickName)) {
-            return 0;
-        } else {
-            return memberService.checkNickNameCount(inputNickName);
-        }
+        return Objects.equals(usedNickName, inputNickName) ? 0 : memberService.checkNickNameCount(inputNickName);
     }
 
 
@@ -149,7 +131,6 @@ public class DF01_MemberController {
     @PostMapping("/login")
     public String memberLogin(@ModelAttribute DF01_MemberDTO memberDTO, HttpSession session) {
         DF01_MemberDTO loginMember = memberService.memberLogin(memberDTO);
-
 
         if (loginMember != null) {
             // 세션으로 로그인 아이디를 넘겨줌
@@ -176,11 +157,8 @@ public class DF01_MemberController {
     @GetMapping("/my")
     public String memberDetail(HttpSession session, Model model) throws Exception {
 
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
-
         // 아이디로 데이터베이스에서 모든 정보 가져오기
-        DF01_MemberDTO loginMemberDTO = memberService.findByLoginId(loginId);
+        DF01_MemberDTO loginMemberDTO = memberService.loginMemberDTO(session);
 
         if (loginMemberDTO != null) {
             // 개인정보 복호화
@@ -230,24 +208,55 @@ public class DF01_MemberController {
 
 
     // 회원 정보 수정
+//    @RequestMapping(value = "/updating", method = RequestMethod.POST)
+//    public ResponseEntity<?> memberUpdating(HttpSession session, @RequestBody Map<String, String> requestData) throws Exception {
+//
+//        String inputId = requestData.get("inputId");
+//        String inputPassword = requestData.get("inputPassword");
+//
+//        // 세션에서 아이디 가져오기
+//        String loginId = (String) session.getAttribute("loginId");
+//
+//        // 아이디로 데이터베이스에서 모든 정보 가져오기
+//        DF01_MemberDTO loginMemberDTO = memberService.findByLoginId(loginId);
+//
+//        if (loginId.equals(inputId) && passwordEncoder.matches(inputPassword, loginMemberDTO.getPassword())) {
+//            memberService.decryptPersonalData(loginMemberDTO);
+//
+//            // 이메일을 @ 문자를 기준으로 분리하여 배열에 저장
+//            String[] emailParts = loginMemberDTO.getEmail().split("@");
+//            if (emailParts.length == 2) {
+//                // 첫 번째 요소는 이메일 아이디, 두 번째 요소는 도메인
+//                String emailId = emailParts[0];
+//                String domain = emailParts[1];
+//
+//                // 모델에 분리된 이메일 아이디와 도메인을 추가
+//                Map<String, String> response = new HashMap<>();
+//                response.put("emailId", emailId);
+//                response.put("domain", "@" + domain);
+//                response.put("member", String.valueOf(loginMemberDTO));
+//                return ResponseEntity.ok().body(response);
+//            } else {
+//                // 이메일 형식이 올바르지 않을 경우 예외 처리
+//                // 필요에 따라 로깅 또는 다른 처리를 수행할 수 있음
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+//            }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//    }
+
+
     @RequestMapping("/updating")
     public String memberUpdatingPage(HttpSession session, Model model) throws Exception {
 //        ModelAndView mav = new ModelAndView();
 
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
+        DF01_MemberDTO loginMemberDTO = memberService.loginMemberDTO(session);
 
-        // 아이디로 데이터베이스에서 모든 정보 가져오기
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
-
-
-        // mno를 이용하여 회원 상세 정보 가져오기
-//        memberService.member_detail(memberDTO);
-
-        memberService.decryptPersonalData(memberDTO);
+        memberService.decryptPersonalData(loginMemberDTO);
 
         // 이메일을 @ 문자를 기준으로 분리하여 배열에 저장
-        String[] emailParts = memberDTO.getEmail().split("@");
+        String[] emailParts = loginMemberDTO.getEmail().split("@");
         if (emailParts.length == 2) {
             // 첫 번째 요소는 이메일 아이디, 두 번째 요소는 도메인
             String emailId = emailParts[0];
@@ -262,23 +271,18 @@ public class DF01_MemberController {
             throw new Exception("Invalid email format");
         }
 
-        model.addAttribute("member", memberDTO);
+        model.addAttribute("member", loginMemberDTO);
         return "/DF01_member/DF0104_memberMyPageUpdate";
-
     }
 
     @PostMapping("/updated")
     public String memberUpdated(@ModelAttribute DF01_MemberDTO memberDTO, HttpSession session) throws Exception {
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
+        DF01_MemberDTO loginMemberDTO = memberService.loginMemberDTO(session);
 
-        logger.info("memberDTO" + memberDTO);
-        // 아이디로 데이터베이스에서 모든 정보 가져오기
-        DF01_MemberDTO loginMember = memberService.findByLoginId(loginId);
-        if (loginMember != null) {
+        if (loginMemberDTO != null) {
             // 가져온 정보를 업데이트에 필요한 DTO로 설정
-            memberDTO.setMno(loginMember.getMno());
-            memberDTO.setMember_level(loginMember.getMember_level());
+            memberDTO.setMno(loginMemberDTO.getMno());
+            memberDTO.setMember_level(loginMemberDTO.getMember_level());
 
             // 개인정보 암호화
             memberService.encryptPersonalData(memberDTO);
@@ -298,19 +302,15 @@ public class DF01_MemberController {
     public String memberDelete(HttpSession session) throws Exception {
 //        String inputPassword = requestData.get("inputPassword");
 
-        // 세션에서 아이디 가져오기
-        String loginId = (String) session.getAttribute("loginId");
-
-        // 아이디로 데이터베이스에서 모든정보 조회
-        DF01_MemberDTO memberDTO = memberService.findByLoginId(loginId);
+        DF01_MemberDTO loginMemberDTO = memberService.loginMemberDTO(session);
 
 //        if (inputPassword == null) {
 //            return "redirect:/error/400";
 //        }
 
-        if (memberDTO != null) {
+        if (loginMemberDTO != null) {
             // mno를 이용하여 회원 탈퇴 수행
-            memberService.member_delete(memberDTO.getMno());
+            memberService.member_delete(loginMemberDTO.getMno());
             // 세션에서 아이디 제거
             session.removeAttribute("loginId");
             return "redirect:/";
@@ -319,22 +319,6 @@ public class DF01_MemberController {
             // 예: 유효하지 않은 세션 상태에 대한 오류 처리
             return "redirect:/members/login";
         }
-
-//        if (memberDTO != null){
-//            if (passwordEncoder.matches(inputPassword, memberDTO.getPassword())){
-//                // mno를 이용하여 회원 탈퇴 수행
-//                memberService.member_delete(memberDTO.getMno());
-//                // 세션에서 아이디 제거
-//                session.removeAttribute("loginId");
-//                return "redirect:/";
-//            } else {
-//                return "redirect:/error/400";
-//            }
-//        } else {
-//            return "redirect:/members/login";
-//        }
-
-
     }
 
     // 로그아웃
@@ -343,6 +327,5 @@ public class DF01_MemberController {
         session.removeAttribute("loginId");
         return "redirect:/";
     }
-
 
 }

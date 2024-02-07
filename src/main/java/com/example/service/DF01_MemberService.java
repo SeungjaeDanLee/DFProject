@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,13 @@ public class DF01_MemberService {
 
     // 회원가입
     // 비밀번호 암호화 후 저장
-    public void member_join(DF01_MemberDTO memberDTO) {
+    public void member_join(DF01_MemberDTO memberDTO) throws Exception {
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(memberDTO.getPassword());
+        memberDTO.setPassword(encodedPassword);
+
+        // 개인정보 암호화
+        encryptPersonalData(memberDTO);
         memberRepository.memberJoin(memberDTO);
     }
 
@@ -91,6 +98,25 @@ public class DF01_MemberService {
     // 회원탈퇴
     public void member_delete(int mno) {
         memberRepository.memberDelete(mno);
+    }
+
+
+    // 로그인한 회원의 mno 가져오기
+    public int loginMno(HttpSession session) throws Exception {
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+        // 아이디로 데이터베이스에서 모든정보 조회
+        DF01_MemberDTO loginMemberDTO = findByLoginId(loginId);
+        return loginMemberDTO.getMno();
+    }
+
+    // 로그인한 회원의 loginMemberDTO 가져오기
+    public DF01_MemberDTO loginMemberDTO(HttpSession session){
+        // 세션에서 아이디 가져오기
+        String loginId = (String) session.getAttribute("loginId");
+
+        // 아이디로 데이터베이스에서 모든 정보 가져오기
+        return findByLoginId(loginId);
     }
 
     // 개인정보 암호화
