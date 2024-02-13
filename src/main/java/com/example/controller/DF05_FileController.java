@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.dto.DF05_FileDTO;
 import com.example.service.DF05_FileService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -8,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -53,7 +53,8 @@ public class DF05_FileController {
     public ResponseEntity<Map<String, String>> imageUpload(MultipartFile[] uploadFile) {
 
         // 톰캣 내부 저장경로 (*윈도우), 없을 경우 폴더생성
-        String uploadFolder = "C:\\Users\\Epcot\\Desktop\\DFProject-0207\\apache-tomcat-9.0.85\\webapps\\upload";
+//        String uploadFolder = "C:\\Users\\Epcot\\Desktop\\DFProject-0207\\apache-tomcat-9.0.85\\webapps\\upload";
+        String uploadFolder = "C:\\upload\\image";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String datePath = sdf.format(new Date()).replace("-", File.separator);
         File uploadPath = new File(uploadFolder, datePath);
@@ -67,9 +68,9 @@ public class DF05_FileController {
         // 배열에서 한 개씩 꺼내서 저장
         for (i = (arrayOfMultipartFile = uploadFile).length, b = 0; b < i; ) {
             MultipartFile upFile = arrayOfMultipartFile[b];
-//            String originalFileName = upFile.getOriginalFilename();
-//            String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
-            String uniqueFileName = String.valueOf(UUID.randomUUID());
+            String originalFileName = upFile.getOriginalFilename();
+            String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
+//            String uniqueFileName = String.valueOf(UUID.randomUUID());
 
             File saveFile = new File(uploadPath, uniqueFileName);
             try {
@@ -92,7 +93,8 @@ public class DF05_FileController {
     public ResponseEntity<byte[]> showImageGET(@RequestParam("fileName") String fileName,
                                                @RequestParam("datePath") String datePath) {
         // 톰캣 내부 저장경로 (*윈도우)
-        String uploadFolder = "C:\\Users\\Epcot\\Desktop\\DFProject-0207\\apache-tomcat-9.0.85\\webapps\\upload";
+//        String uploadFolder = "C:\\Users\\Epcot\\Desktop\\DFProject-0207\\apache-tomcat-9.0.85\\webapps\\upload";
+        String uploadFolder = "C:\\upload\\image";
 
         File file = new File(uploadFolder + File.separator + datePath + File.separator + fileName);
         if (file.exists()){
@@ -108,4 +110,46 @@ public class DF05_FileController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    // 파일 업로드
+//    @PostMapping("/fileUpload")
+//    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+//        // 파일을 저장할 경로 설정
+//        String uploadFolder = "C:\\upload\\file";
+//
+//        // 파일 저장을 위한 날짜 형식 지정
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        String datePath = sdf.format(new Date()).replace("-", File.separator);
+//
+//        // 파일 저장 경로 설정
+//        File uploadPath = new File(uploadFolder, datePath);
+//        if (!uploadPath.exists()) {
+//            uploadPath.mkdirs();
+//        }
+//
+//        String originalFileName = file.getOriginalFilename();
+//        String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
+//        // 파일명 중복을 방지하기 위한 UUID 생성
+////        String uniqueFileName = String.valueOf(UUID.randomUUID());
+//
+//        // 파일 저장할 경로 및 파일명 설정
+//        File saveFile = new File(uploadPath, uniqueFileName);
+//        try {
+//            // 파일 저장
+//            file.transferTo(saveFile);
+//            return ResponseEntity.ok("파일 업로드 성공");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패: " + e.getMessage());
+//        }
+//    }
+
+    @PostMapping("/fileUpload")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        String result = fileService.uploadFile(file);
+        return ResponseEntity.ok(result);
+    }
+
+    // 파일 다운로드
+
 }

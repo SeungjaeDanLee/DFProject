@@ -55,6 +55,7 @@ public class DF00_AdminController {
         }
     }
 
+    // 회원관리
     @GetMapping("/memberManagement")
     public String adminMemberManagementPage(Model model, HttpSession session) throws Exception {
         boolean isAdmin = loginMember(session);
@@ -103,6 +104,7 @@ public class DF00_AdminController {
         return "redirect:/admin/memberManagement";
     }
 
+    // 게시물 관리
     @GetMapping("/boardManagement")
     public String adminBoardManagementPage(Model model, HttpSession session) {
         boolean isAdmin = loginMember(session);
@@ -128,6 +130,7 @@ public class DF00_AdminController {
     }
 
 
+    // 댓글 관리
     @GetMapping("/replyManagement")
     public String adminReplyManagementPage(Model model, HttpSession session) {
         boolean isAdmin = loginMember(session);

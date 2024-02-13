@@ -135,7 +135,7 @@ public class DF02_BoardController {
         if (memberDTO == null) {
             // 작성자가 아닌 경우, 권한 없음 메시지를 뷰로 전달하거나 리디렉션
             model.addAttribute("message", "수정 권한이 없습니다.");
-            return "redirect:/board?bno=" + bno; // 권한 없음을 알리는 뷰 페이지
+            return "redirect:/board/boardView?bno=" + bno; // 권한 없음을 알리는 뷰 페이지
         }
 
         int memberLevel = memberDTO.getMember_level();
@@ -148,7 +148,7 @@ public class DF02_BoardController {
         } else {
             // 작성자가 아닌 경우, 권한 없음 메시지를 뷰로 전달하거나 리디렉션
             model.addAttribute("message", "수정 권한이 없습니다.");
-            return "redirect:/board?bno=" + bno; // 권한 없음을 알리는 뷰 페이지
+            return "redirect:/board/boardView?bno=" + bno; // 권한 없음을 알리는 뷰 페이지
         }
 
 
@@ -160,7 +160,7 @@ public class DF02_BoardController {
         DF02_BoardDTO dto = boardService.findByBoardBno(bno);
         model.addAttribute("board", dto);
 
-        return "redirect:/board?bno=" + bno;
+        return "redirect:/board/boardView?bno=" + bno;
     }
 
 
@@ -190,7 +190,7 @@ public class DF02_BoardController {
             } else {
                 // 다른 사용자의 글을 삭제하려는 경우에 대한 처리
                 // 예: 권한이 없는 상태에 대한 오류 처리
-                return "redirect:/board/bno=" + bno;
+                return "redirect:/board/boardView?bno=" + bno;
             }
         } else {
             // 아이디에 해당하는 회원이 없는 경우 처리
@@ -314,7 +314,7 @@ public class DF02_BoardController {
 
             return "DF01_member/DF0105_memberMyBoard";
         } else {
-            return "members/login";
+            return "redirect:/members/login";
         }
     }
 
@@ -339,7 +339,7 @@ public class DF02_BoardController {
 
             return "DF01_member/DF0106_memberMyLike";
         } else {
-            return "members/login";
+            return "redirect:/members/login";
         }
     }
 

@@ -12,6 +12,10 @@ public class DF05_FileRepository {
     @Autowired
     private SqlSessionTemplate sql;
 
+    public void uploadFile(DF05_FileDTO fileDTO) {
+        sql.insert("File.uploadFile", fileDTO);
+    }
+
 //    public void fileSave(DF05_FileDTO fileDTO) {
 //        sql.insert("File.fileSave", fileDTO);
 //    }

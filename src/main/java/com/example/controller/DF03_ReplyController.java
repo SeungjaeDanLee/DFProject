@@ -111,6 +111,6 @@ public class DF03_ReplyController {
             return "redirect:/members/login";
         }
 
-        return "redirect:/board?bno=" + bno;
+        return "redirect:/board/boardView?bno=" + bno;
     }
 }

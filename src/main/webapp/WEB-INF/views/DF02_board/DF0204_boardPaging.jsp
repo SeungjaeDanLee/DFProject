@@ -20,7 +20,10 @@
 <jsp:include page="/resources/layouts/DF02_layouts/DF02_boardMenu.jsp"></jsp:include>
 
 <div class="container mt-5">
-    <h3>전체 게시판입니다.</h3>
+    <div style="display: flex; justify-content: space-between;">
+        <h3>전체 게시판입니다.</h3>
+        <button class="btn-outline-dark" onclick="location.href='/board/write';">글쓰기</button>
+    </div>
     <br>
     <table class="table table-striped table-hover">
         <thead class="thead-dark">

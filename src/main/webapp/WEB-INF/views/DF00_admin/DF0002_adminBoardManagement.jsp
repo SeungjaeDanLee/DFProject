@@ -81,7 +81,7 @@
                                 <tr>
                                     <td id="bno">${board.bno}</td>
                                     <td id="title">
-                                        <a href="/board?bno=${board.bno}">${board.title}</a>
+                                        <a href="/board/boardView?bno=${board.bno}">${board.title}</a>
                                     </td>
                                     <td id="like_counts">${board.like_counts}</td>
                                     <td id="view_counts">${board.view_counts}</td>

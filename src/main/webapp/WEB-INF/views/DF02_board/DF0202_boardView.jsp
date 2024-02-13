@@ -54,6 +54,12 @@
             </li>
             <h6 style="display: flex; justify-content: right; align-items: center;">좋아요 ${board.like_counts} |
                 조회 ${board.view_counts}</h6>
+
+            <c:set var="fileName" value="${fileDTO.fileName}" />
+            <c:set var="datePath" value="${fileDTO.datePath}" />
+
+            <a href="/file/download?fileName=${fileName}&datePath=${datePath}">다운로드</a>
+
             <hr>
             ${board.content}
         </ul>

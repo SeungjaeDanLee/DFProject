@@ -81,7 +81,7 @@
                                     <td id="content">${reply.content}</td>
                                     <td id="written_date">${reply.written_date}</td>
                                     <td id="bno">
-                                        <a href="/board?bno=${reply.bno}">
+                                        <a href="/board/boardView?bno=${reply.bno}">
                                             <c:forEach items="${boardList}" var="board">
                                                 <c:if test="${reply.bno == board.bno}">
                                                     ${board.title}

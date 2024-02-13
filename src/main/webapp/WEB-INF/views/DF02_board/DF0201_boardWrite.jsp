@@ -11,7 +11,7 @@
 
     <!-- Quill 라이브러리 추가 -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet" >
+    <link href="//cdn.quilljs.com/1.3.6/quill.bubble.css" rel="stylesheet">
 </head>
 <body oncontextmenu="return true" ondragstart="return true" onselectstart="return true">
 <header>
@@ -38,15 +38,30 @@
             <ul>
                 <li>
                     <h3><br>제목</h3>
-                    <input type="text" name="title" placeholder="제목을 입력해주세요" class="title" required>
+                    <input type="text" name="title" id="title" placeholder="제목을 입력해주세요" class="title" required>
                 </li>
             </ul>
+
+
+
+            <%--            <ul>--%>
+            <%--                <li>--%>
+            <%--                    <textarea type="text" name="content" placeholder="내용을 입력해주세요"--%>
+            <%--                              class="content_box">${board.content}</textarea>--%>
+            <%--                </li>--%>
+            <%--            </ul>--%>
 
             <ul>
                 <li style="width: 800px;">
                     <!-- Quill 텍스트 에디터 -->
                     <div id="editor" style="height: 500px;"></div>
                     <input type="hidden" name="content" id="content" class="content_box" required/>
+                </li>
+            </ul>
+
+            <ul>
+                <li>
+                    <input id="file" type="file" name="file">
                 </li>
             </ul>
 
@@ -68,31 +83,34 @@
         theme: 'snow',
         modules: {
             toolbar: [
-                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{'header': [1, 2, 3, 4, 5, 6, false]}],
                 ['bold', 'italic', 'underline'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                [{'list': 'ordered'}, {'list': 'bullet'}],
                 ['link', 'image']
             ]
-        }
+        },
+        sanitize: true
     });
 
     // Quill에서 입력한 내용을 숨은 input 필드에 복사하여 전송
     let form = document.querySelector('form');
-    form.onsubmit = function() {
+    form.onsubmit = function () {
         let contentInput = document.querySelector('#content');
         contentInput.value = quill.root.innerHTML;
+        // contentInput.value = quill.root.insertAdjacentHTML;
     };
 
     // Quill 이미지 업로드 모듈 활성화
     quill.getModule('toolbar').addHandler('image', function () {
         selectLocalImage();
     });
+
     function selectLocalImage() {
         const fileInput = document.createElement('input');
         fileInput.setAttribute('type', 'file');
         // console.log(fileInput.type);
         fileInput.click();
-        fileInput.onchange = function() {
+        fileInput.onchange = function () {
             const formData = new FormData();
             const file = fileInput.files[0];
             formData.append('uploadFile', file);
@@ -104,18 +122,54 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    // console.log("data 업로드 성공 : " + data);
+                    console.log("data 업로드 성공 : " + data);
                     const range = quill.getSelection();
                     const fileUrl = "/file/display?fileName=" + encodeURI(data.fileName) + "&datePath=" + encodeURI(data.datePath);
                     quill.insertEmbed(range.index, 'image', fileUrl);
                 },
-                error: function(err) {
-                    console.error("Err :: "+err);
+                error: function (err) {
+                    console.error("Err :: " + err);
                 }
             });
         };
     }
 
+    // form 제출 이벤트 리스너 등록
+    document.querySelector('form').addEventListener('submit', function(event) {
+        // 기본 제출 동작 중지
+        // event.preventDefault();
+
+        // FormData 객체 생성
+        let formData = new FormData();
+
+        // 파일 input 요소에서 선택된 파일 추가
+        let fileInput = document.getElementById('file');
+        formData.append('file', fileInput.files[0]);
+
+        // // 기타 필요한 데이터 추가 (예: 글 종류, 제목, Quill 에디터 내용)
+        // let category = document.getElementById('pop').value;
+        // let title = document.getElementById('title').value;
+        // let content = document.getElementById('content').value;
+        // formData.append('category', category);
+        // formData.append('title', title);
+        // formData.append('content', content);
+
+        // Ajax 요청 생성
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/file/fileUpload');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // 성공적으로 서버 응답을 받았을 때 처리할 코드 작성
+                console.log('성공적으로 업로드되었습니다.');
+            } else {
+                // 서버 응답을 받지 못했을 때 처리할 코드 작성
+                console.error('파일 업로드에 실패했습니다.');
+            }
+        };
+
+        // Ajax 요청 전송
+        xhr.send(formData);
+    });
 </script>
 </body>
 </html>

@@ -52,7 +52,7 @@
             <ul>
                 <li style="width: 800px;">
                     <!-- Quill 텍스트 에디터 -->
-                    <div id="editor" style="height: 500px;">${board.content}</div>
+                    <div id="editor" style="height: 500px;"><c:out value="${board.content}" escapeXml="false" /></div>
                     <input type="hidden" name="content" id="content" class="content_box" required/>
                 </li>
             </ul>
@@ -80,7 +80,8 @@
                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                 ['link', 'image']
             ]
-        }
+        },
+        sanitize: true
     });
 
     // Quill에서 입력한 내용을 숨은 input 필드에 복사하여 전송
