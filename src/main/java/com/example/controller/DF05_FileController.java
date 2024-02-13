@@ -68,9 +68,9 @@ public class DF05_FileController {
         // 배열에서 한 개씩 꺼내서 저장
         for (i = (arrayOfMultipartFile = uploadFile).length, b = 0; b < i; ) {
             MultipartFile upFile = arrayOfMultipartFile[b];
-            String originalFileName = upFile.getOriginalFilename();
-            String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
-//            String uniqueFileName = String.valueOf(UUID.randomUUID());
+//            String originalFileName = upFile.getOriginalFilename();
+//            String uniqueFileName = UUID.randomUUID() + "_" + originalFileName;
+            String uniqueFileName = String.valueOf(UUID.randomUUID());
 
             File saveFile = new File(uploadPath, uniqueFileName);
             try {
@@ -151,5 +151,20 @@ public class DF05_FileController {
     }
 
     // 파일 다운로드
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> downloadFile(@RequestParam("file_name") String file_name,
+                                               @RequestParam("path") String path) {
+        try {
+            byte[] fileContent = fileService.downloadFileByFileNameAndDatePath(file_name, path);
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", file_name);
+
+            return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

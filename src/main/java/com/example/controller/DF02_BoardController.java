@@ -1,13 +1,7 @@
 package com.example.controller;
 
-import com.example.dto.DF01_MemberDTO;
-import com.example.dto.DF02_BoardDTO;
-import com.example.dto.DF02_PageDTO;
-import com.example.dto.DF03_ReplyDTO;
-import com.example.service.DF01_MemberService;
-import com.example.service.DF02_BoardService;
-import com.example.service.DF03_ReplyService;
-import com.example.service.DF04_LikePointService;
+import com.example.dto.*;
+import com.example.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +33,9 @@ public class DF02_BoardController {
 
     @Autowired
     DF04_LikePointService likePointService;
+
+    @Autowired
+    DF05_FileService fileService;
 
     // 게시글 작성
     @GetMapping("/write")
@@ -87,9 +84,11 @@ public class DF02_BoardController {
 
         List<DF01_MemberDTO> memberDTOList = memberService.findAll();
         List<DF03_ReplyDTO> replyDTOList = replyService.findAllReply(bno);
+        List<DF05_FileDTO> fileDTOList = fileService.findFiles(bno);
 
         model.addAttribute("memberList", memberDTOList);
         model.addAttribute("replyList", replyDTOList);
+        model.addAttribute("fileList", fileDTOList);
 
         model.addAttribute("loginMno", memberService.loginMno(session));
 

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,14 +28,16 @@ public class DF05_FileService {
     public String uploadFile(MultipartFile file) {
         // 파일 업로드 로직 구현
 
-
         try {
             // 파일을 저장할 경로 설정
-            String uploadFolder = "C:\\upload\\file";
+//            String uploadFolder = "C:\\upload\\file";
+            String uploadFolder = "C:/upload/file";
 
             // 파일 저장을 위한 날짜 형식 지정
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            String datePath = sdf.format(new Date()).replace("-", File.separator);
+//            String datePath = sdf.format(new Date()).replace("-", File.separator);
+            String datePath = sdf.format(new Date()).replace("-", "/");
+
 
             // 파일 저장 경로 설정
             File uploadPath = new File(uploadFolder, datePath);
@@ -43,7 +46,12 @@ public class DF05_FileService {
             }
 
             // 파일명 중복을 방지하기 위한 UUID 생성
-            String uniqueFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+//            String uniqueFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+//            String uniqueFileName = String.valueOf(UUID.randomUUID());
+
+            String originalFileName = file.getOriginalFilename();
+            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+            String uniqueFileName = UUID.randomUUID() + "." + fileExtension;
 
             // 파일 저장할 경로 및 파일명 설정
             File saveFile = new File(uploadPath, uniqueFileName);
@@ -53,11 +61,12 @@ public class DF05_FileService {
 
             // 파일 정보를 DTO에 저장
             DF05_FileDTO fileDTO = new DF05_FileDTO();
-            fileDTO.setPath(uploadFolder + File.separator + datePath);
+//            fileDTO.setPath(uploadFolder + File.separator + datePath);
+            fileDTO.setPath(uploadFolder + "/" + datePath);
             fileDTO.setFile_name(uniqueFileName);
             fileDTO.setOrigin_name(file.getOriginalFilename());
             // 나머지 파일 정보 설정
-//            fileDTO.setBno(boardRepository.getNextBno());
+            fileDTO.setBno(boardRepository.getNextBno());
 
             // 파일 정보를 DB에 저장
             fileRepository.uploadFile(fileDTO);
@@ -71,7 +80,8 @@ public class DF05_FileService {
 
     // 다운로드할 파일의 경로를 받아서 파일 내용(byte 배열)을 반환하는 메서드
     public byte[] downloadFileByFileNameAndDatePath(String fileName, String datePath) throws IOException {
-        String filePath = "C:\\upload\\file\\" + datePath + "\\" + fileName;
+//        String filePath = "C:\\upload\\file\\" + datePath + "\\" + fileName;
+        String filePath = datePath + "/" + fileName;
         return downloadFile(filePath);
     }
 
@@ -83,8 +93,9 @@ public class DF05_FileService {
         return fileContent;
     }
 
-//    private static final String uploadFolder = "C:\\Users\\Epcot\\Desktop\\DFProject-0207\\apache-tomcat-9.0.85\\webapps\\upload";
-
+    public List<DF05_FileDTO> findFiles(int bno) {
+        return fileRepository.findFiles(bno);
+    }
 
 //    public DF05_FileDTO uploadFile(MultipartFile file) throws IOException {
 //        String fileName = UUID.randomUUID() + "." + getExtension(file.getOriginalFilename());

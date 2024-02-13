@@ -189,9 +189,9 @@
         where bno = #{bno}
     </update>
 
-    <!--파일 bno 다음번 bno 주기-->
-    <select id="getNextBno" parameterType="int">
-        select MAX(bno) + 1 from board;
+    <!-- 파일 bno 다음번 bno 주기 -->
+    <select id="getNextBno" resultType="int">
+        select IFNULL(MAX(bno) + 1, 1) as nextBno from board;
     </select>
 
 
