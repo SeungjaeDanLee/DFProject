@@ -428,6 +428,42 @@
         }
     });
 
+
+    // 이미지 파일 선택 시
+    // $('#img-selector').on('change', function() {
+    //     const file = $(this)[0].files[0];
+    //     const maxSizeInBytes = 10 * 1024 * 1024; // 10MB 제한 예시
+    //     const maxWidth = 800; // 최대 가로 크기
+    //     const maxHeight = 600; // 최대 세로 크기
+    //
+    //     if (file.size > maxSizeInBytes) {
+    //         alert("이미지 파일이 너무 큽니다. 10MB 미만의 이미지 파일을 선택해주세요.");
+    //         // 파일 선택 폼 초기화 (선택된 파일 제거)
+    //         $(this).val('');
+    //         return false;
+    //     }
+    //
+    //     const img = new Image();
+    //     img.onload = function() {
+    //         if (this.width > maxWidth || this.height > maxHeight) {
+    //             alert("이미지 크기가 너무 큽니다. 최대 가로 " + maxWidth + "px, 세로 " + maxHeight + "px 이하의 이미지를 선택해주세요.");
+    //             // 파일 선택 폼 초기화 (선택된 파일 제거)
+    //             $('#img-selector').val('');
+    //             return false;
+    //         }
+    //
+    //         // 이미지 크기 제한에 해당하지 않으면 업로드 진행
+    //         uploadImage(file);
+    //     };
+    //
+    //     // 이미지 로드를 시작합니다.
+    //     const reader = new FileReader();
+    //     reader.onload = function(e) {
+    //         img.src = e.target.result;
+    //     };
+    //     reader.readAsDataURL(file);
+    // });
+
     // 이미지 업로드
     function uploadImage(file) {
         const formData = new FormData();
@@ -447,7 +483,9 @@
                 insertImage(data.fileName, data.datePath);
             },
             error: function (err) {
-                console.error("이미지 업로드 실패 : " + err);
+                console.error("이미지 업로드 실패 : ", err.responseJSON.errorFat || err.responseJSON.errorBig || "알 수 없는 오류가 발생했습니다.");
+                let errorMassage = err.responseJSON.errorFat || err.responseJSON.errorBig || "알 수 없는 오류가 발생했습니다.";
+                alert("이미지 업로드 실패\n" + errorMassage);
             },
         });
     }
@@ -470,6 +508,7 @@
             range.insertNode(img); // 이미지를 삽입
         }
     }
+
 
     // 파일 업로드 용량 제한
     $("input[name=file]").on("change", function(){

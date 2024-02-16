@@ -7,8 +7,9 @@ drop table member;
 
 select * from member;
 select * from board;
-select * from likepoint;
+select * from file;
 select * from reply;
+select * from likepoint;
 
 CREATE TABLE member (
                         mno INT primary key auto_increment
@@ -31,14 +32,13 @@ CREATE TABLE member (
 CREATE TABLE board (
                        bno          INT PRIMARY KEY auto_increment
                        ,title        VARCHAR(255) NOT NULL
-                       ,content      VARCHAR(3000) NOT NULL
+                       ,content      VARCHAR(10000) NOT NULL
                        ,like_counts  INT
                        ,view_counts  INT
                        ,written_date TIMESTAMP
                        ,updated_date TIMESTAMP
                        ,category     VARCHAR(50)
                        ,mno          INT
-                       ,fno          INT
                        ,FOREIGN KEY (mno) REFERENCES member (mno) ON DELETE CASCADE
 );
 

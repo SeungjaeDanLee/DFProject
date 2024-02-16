@@ -12,14 +12,13 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,47 +30,102 @@ public class DF05_FileController {
     // 이미지 업로드
     @ResponseBody
     @RequestMapping(value = {"/imageUpload"}, method = {RequestMethod.POST})
-    public ResponseEntity<Map<String, String>> imageUpload(MultipartFile[] uploadFile) {
+    public ResponseEntity<Map<String, String>> imageUpload(@RequestParam("uploadFile") MultipartFile uploadFile) {
 
         // 파일 크기 및 가로세로 크기 제한 설정
-        long maxSize = 10 * 1024 * 1024; // 최대 10MB
+        long maxSizeInBytes = 10 * 1024 * 1024; // 10MB 제한
         int maxWidth = 1920; // 최대 가로 크기
         int maxHeight = 1080; // 최대 세로 크기
 
-        // 톰캣 내부 저장경로 (*윈도우), 없을 경우 폴더생성
-//        String uploadFolder = "C:\\Users\\Epcot\\Desktop\\DFProject-0207\\apache-tomcat-9.0.85\\webapps\\upload";
-        String uploadFolder = "C:\\upload\\image";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String datePath = sdf.format(new Date()).replace("-", File.separator);
-        File uploadPath = new File(uploadFolder, datePath);
-        if (!uploadPath.exists()) {
-            uploadPath.mkdirs();
+        if (uploadFile.getSize() > maxSizeInBytes) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonMap("errorFat", "이미지 파일이 너무 큽니다. 10MB 미만의 이미지 파일을 선택해주세요."));
         }
-        Map<String, String> response = new HashMap<>();
-        byte b;
-        int i;
-        MultipartFile[] arrayOfMultipartFile;
-        // 배열에서 한 개씩 꺼내서 저장
-        for (i = (arrayOfMultipartFile = uploadFile).length, b = 0; b < i; ) {
-            MultipartFile upFile = arrayOfMultipartFile[b];
-            String originalFileName = upFile.getOriginalFilename();
-            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
-            String uniqueFileName = UUID.randomUUID() + "." + fileExtension;
 
-            File saveFile = new File(uploadPath, uniqueFileName);
-            try {
-                upFile.transferTo(saveFile);
-                response.put("datePath", datePath);
-                response.put("fileName", uniqueFileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-//                logger.info("[ 이미지 업로드 ] Fail :: "+originalFileName+" File IOException Error");
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        try {
+            // 이미지 파일을 메모리에 로드하여 크기 확인
+            BufferedImage img = ImageIO.read(uploadFile.getInputStream());
+            int width = img.getWidth();
+            int height = img.getHeight();
+
+            if (width > maxWidth || height > maxHeight) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Collections.singletonMap("errorBig", "이미지 크기가 너무 큽니다. 최대 가로 " + maxWidth + "px, 세로 " + maxHeight + "px 이하의 이미지를 선택해주세요."));
             }
-            b++;
+
+            // 이미지 저장 경로 설정
+            String uploadFolder = "C:\\upload\\image";
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH");
+            String datePath = sdf.format(new Date()).replace("-", File.separator);
+            File uploadPath = new File(uploadFolder, datePath);
+            if (!uploadPath.exists()) {
+                uploadPath.mkdirs();
+            }
+
+            // 파일 이름 설정 (유니크한 이름으로)
+            String originalFilename = uploadFile.getOriginalFilename();
+            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+            String uniqueFileName = UUID.randomUUID().toString() + "." + fileExtension;
+
+            // 파일 저장
+            File saveFile = new File(uploadPath, uniqueFileName);
+            uploadFile.transferTo(saveFile);
+
+            // 응답 데이터 생성 및 반환
+            Map<String, String> response = new HashMap<>();
+            response.put("datePath", datePath);
+            response.put("fileName", uniqueFileName);
+            return ResponseEntity.ok().body(response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok().body(response);
     }
+
+//    @ResponseBody
+//    @RequestMapping(value = {"/imageUpload"}, method = {RequestMethod.POST})
+//    public ResponseEntity<Map<String, String>> imageUpload(MultipartFile[] uploadFile) {
+//
+//        // 파일 크기 및 가로세로 크기 제한 설정
+//        long maxSize = 10 * 1024 * 1024; // 최대 10MB
+//        int maxWidth = 1920; // 최대 가로 크기
+//        int maxHeight = 1080; // 최대 세로 크기
+//
+//        // 톰캣 내부 저장경로 (*윈도우), 없을 경우 폴더생성
+////        String uploadFolder = "C:\\Users\\Epcot\\Desktop\\DFProject-0207\\apache-tomcat-9.0.85\\webapps\\upload";
+//        String uploadFolder = "C:\\upload\\image";
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        String datePath = sdf.format(new Date()).replace("-", File.separator);
+//        File uploadPath = new File(uploadFolder, datePath);
+//        if (!uploadPath.exists()) {
+//            uploadPath.mkdirs();
+//        }
+//        Map<String, String> response = new HashMap<>();
+//        byte b;
+//        int i;
+//        MultipartFile[] arrayOfMultipartFile;
+//        // 배열에서 한 개씩 꺼내서 저장
+//        for (i = (arrayOfMultipartFile = uploadFile).length, b = 0; b < i; ) {
+//            MultipartFile upFile = arrayOfMultipartFile[b];
+//            String originalFileName = upFile.getOriginalFilename();
+//            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+//            String uniqueFileName = UUID.randomUUID() + "." + fileExtension;
+//
+//            File saveFile = new File(uploadPath, uniqueFileName);
+//            try {
+//                upFile.transferTo(saveFile);
+//                response.put("datePath", datePath);
+//                response.put("fileName", uniqueFileName);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+////                logger.info("[ 이미지 업로드 ] Fail :: "+originalFileName+" File IOException Error");
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//            }
+//            b++;
+//        }
+//        return ResponseEntity.ok().body(response);
+//    }
 
     // 이미지 보기
     @ResponseBody

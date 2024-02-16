@@ -230,7 +230,7 @@ label {
     position: absolute;
 }
 
-/*대글 수정 모달창*/
+/*댓글 수정 모달창*/
 
 #editModal {
     display: none;
@@ -262,4 +262,9 @@ label {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }

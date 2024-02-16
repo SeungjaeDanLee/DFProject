@@ -12,6 +12,12 @@
     <script src="https://code.jquery.com/jquery-3.7.0.js"
             integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
             crossorigin="anonymous"></script>
+    <style>
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -67,6 +73,7 @@
                     </li>
                 </c:if>
             </c:forEach>
+            <br>
             ${board.content}
         </ul>
     </section>
