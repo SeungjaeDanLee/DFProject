@@ -14,7 +14,7 @@ public class DF05_FileDTO {
     private String file_name;
     private String origin_name;
     private Timestamp uploaded_date;
-    private Timestamp updated_date;
+//    private Timestamp updated_date;
     private String path;
     private int bno;
 }

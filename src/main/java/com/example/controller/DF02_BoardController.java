@@ -46,7 +46,9 @@ public class DF02_BoardController {
     }
 
     @PostMapping("/write")
-    public String writeBoard(@ModelAttribute DF02_BoardDTO boardDTO, HttpSession session) throws Exception {
+    public String writeBoard(@ModelAttribute DF02_BoardDTO boardDTO
+                             ,@RequestParam("fno") int fno
+                             ,HttpSession session) throws Exception {
 
         // 세션에서 아이디 가져오기
         String loginId = (String) session.getAttribute("loginId");
@@ -57,6 +59,12 @@ public class DF02_BoardController {
             int mno = memberDTO.getMno();
             boardDTO.setMno(mno);
             boardService.write_board(boardDTO);
+            int bno = boardDTO.getBno();
+            if (fno != 0){
+                fileService.updateBno(bno, fno);
+            } else {
+                return "redirect:/board/paging";
+            }
         } else {
             // 아이디에 해당하는 회원이 없는 경우 처리
             // 예: 유효하지 않은 세션 상태에 대한 오류 처리

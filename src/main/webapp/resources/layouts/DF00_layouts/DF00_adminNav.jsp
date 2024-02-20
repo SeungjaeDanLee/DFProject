@@ -52,7 +52,7 @@
                             </a>
                             <div class="sb-sidenav-menu-heading">분류</div>
                             <a class="nav-link" href="/admin/memberManagement">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 회원관리
                             </a>
                             <a class="nav-link" href="/admin/boardManagement">
@@ -62,6 +62,10 @@
                             <a class="nav-link" href="/admin/replyManagement">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 댓글 관리
+                            </a>
+                            <a class="nav-link" href="/admin/fileManagement">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                파일 관리
                             </a>
                         </div>
                     </div>

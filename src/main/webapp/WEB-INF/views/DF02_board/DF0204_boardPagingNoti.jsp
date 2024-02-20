@@ -10,7 +10,6 @@
             crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="../resources/js/DF00_admin/DF0204_boardPaging.js"></script>
 </head>
 <body>
 <header>

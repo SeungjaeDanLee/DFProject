@@ -3,9 +3,11 @@ package com.example.controller.DF00;
 import com.example.dto.DF01_MemberDTO;
 import com.example.dto.DF02_BoardDTO;
 import com.example.dto.DF03_ReplyDTO;
+import com.example.dto.DF05_FileDTO;
 import com.example.service.DF01_MemberService;
 import com.example.service.DF02_BoardService;
 import com.example.service.DF03_ReplyService;
+import com.example.service.DF05_FileService;
 import com.example.util.AES256Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +35,9 @@ public class DF00_AdminController {
 
     @Autowired
     DF03_ReplyService replyService;
+
+    @Autowired
+    DF05_FileService fileService;
 
     // AES256Util 의존성 주입
     @Autowired
@@ -156,6 +161,32 @@ public class DF00_AdminController {
     public String adminReplyDelete(@RequestParam("rno") int rno) {
         replyService.delete_reply(rno);
         return "redirect:/admin/replyManagement";
+    }
+
+    // 파일 관리
+    @GetMapping("/fileManagement")
+    public String adminFileManagementPage(Model model, HttpSession session) {
+        boolean isAdmin = loginMember(session);
+
+        // member_level이 0인 경우에는 admin home 페이지로 이동
+        if (isAdmin) {
+            List<DF02_BoardDTO> boardDTOList = boardService.findAll();
+            List<DF05_FileDTO> fileDTOList = fileService.findAll();
+
+            model.addAttribute("boardList", boardDTOList);
+            model.addAttribute("fileList", fileDTOList);
+
+            return "DF00_admin/DF0005_adminFileManagement";
+        } else {
+            // member_level이 0이 아닌 경우에는 에러 페이지로 이동
+            return "redirect:/error/403";
+        }
+    }
+
+    @GetMapping("/fileManagement/delete")
+    public String adminFileDelete(@RequestParam("fno") int fno) {
+        fileService.delete_file(fno);
+        return "redirect:/admin/fileManagement";
     }
 
     // 세션에서 로그인한 멤버의 loginMemberLevel 가져오기

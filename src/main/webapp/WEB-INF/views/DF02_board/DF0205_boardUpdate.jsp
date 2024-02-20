@@ -124,6 +124,7 @@
                     <input id="img-selector" type="file" accept="image/*"/>
                 </li>
             </ul>
+
             <ul>
                 <li>
                     <div id="editor" style="height: 500px; width: 800px;" contenteditable="true"><c:out
@@ -156,25 +157,179 @@
 
 <script>
     // jsp 텍스트 에디터 만들기
+    // 제목
     const titleName = document.getElementById("titleName");
+    // 내용
     const editor = document.getElementById("editor");
+
+    // 제목 내 enter 금지
+    document.getElementById('titleName').addEventListener('input', function () {
+        this.textContent = this.textContent.replace(/\n/g, '');
+    });
+
+    // 제목과 내용 검사
+    document.querySelector('form').addEventListener('submit', function(event) {
+        // 제목과 내용 검사
+        if (titleName.textContent.trim() === "") {
+            document.getElementById("result1").textContent = "제목을 입력해주세요.";
+            titleName.focus();
+            event.preventDefault(); // 제출을 중지합니다.
+            return false;
+        }
+        else if (editor.innerHTML.trim() === "") {
+            document.getElementById("result2").textContent = "내용을 입력해주세요.";
+            editor.focus();
+            event.preventDefault(); // 제출을 중지합니다.
+            return false;
+        }
+    });
+
+    // 이미지 업로드
+    function uploadImage(file) {
+        const formData = new FormData();
+        formData.append("uploadFile", file);
+
+        $.ajax({
+            type: "post",
+            enctype: "multipart/form-data",
+            url: "/file/imageUpload", // 이미지를 업로드할 서버 엔드포인트 URL
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log("이미지 업로드 성공 : " + data);
+
+                // 이미지를 삽입할 위치에 파일 경로를 포함하여 이미지 삽입
+                insertImage(data.fileName, data.datePath);
+            },
+            error: function (err) {
+                console.error("이미지 업로드 실패 : " + err);
+            },
+        });
+    }
+
+    // 이미지 보기
+    function insertImage(fileName, datePath) {
+        // 이미지 파일 경로
+        const fileUrl = "/file/display?fileName=" + encodeURI(fileName) + "&datePath=" + encodeURI(datePath);
+
+        // 에디터에 이미지 삽입
+        const img = document.createElement("img");
+        img.src = fileUrl;
+
+        // 에디터의 현재 커서 위치에 이미지 삽입
+        editor.focus(); // 에디터에 포커스를 맞춤
+        const selection = window.getSelection();
+        if (selection.getRangeAt && selection.rangeCount) {
+            const range = selection.getRangeAt(0);
+            range.collapse(false); // 커서를 현재 선택 영역의 끝으로 이동
+            range.insertNode(img); // 이미지를 삽입
+        }
+    }
+
+    // 파일 업로드
+    // 허용된 파일 확장자 목록
+    const whiteList = ['hwp', 'txt'];
+
+    // 파일 업로드 용량 제한
+    $("input[name=file]").on("change", function(){
+        let maxSize = 10 * 1024 * 1024; //* 10MB 사이즈 제한
+        let fileSize = this.files[0].size; //업로드한 파일용량
+        let fileName = this.files[0].name; // 업로드한 파일 이름
+        let fileExtension = fileName.split('.').pop().toLowerCase(); // 파일 확장자 추출
+        console.log(file)
+
+        if(fileSize > maxSize){
+            alert("파일첨부 사이즈는 10MB 이내로 가능합니다.");
+            $(this).val(''); //업로드한 파일 제거
+        }
+
+        // 확장자 검사
+        if (!whiteList.includes(fileExtension)) {
+            alert("허용되지 않는 파일 형식입니다.");
+            $(this).val(''); // 업로드한 파일 제거
+        }
+    });
+
+    // 파일 업로드
+    // form 제출 이벤트 리스너 등록
+    document.querySelector('form').addEventListener('submit', function (event) {
+        // 기본 제출 동작 중지
+        // event.preventDefault();
+
+        // 입력한 내용을 숨은 input 필드에 복사하여 전송 제목 + 내용
+        let titleInput = document.querySelector('#title');
+        titleInput.value = titleName.innerHTML;
+
+        let contentInput = document.querySelector('#content');
+        contentInput.value = editor.innerHTML;
+
+        let bno = $(this).data('bno');
+        // console.log("bno = " + bno);
+
+
+        // 파일 input 요소에서 선택된 파일 추가
+        let fileInput = document.getElementById('file');
+        if (fileInput.files.length > 0) {
+            // FormData 객체 생성
+            let formData = new FormData();
+
+            formData.append('file', fileInput.files[0]);
+
+            // bno 추가
+            formData.append('bno', bno);
+
+            // Ajax 요청 생성
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/file/fileUpdateUpload');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    // 성공적으로 서버 응답을 받았을 때 처리할 코드 작성
+                    console.log('성공적으로 업로드되었습니다.');
+                } else if (xhr.status === 204) {
+                    alert('해당 파일을 업로드할 수 없습니다. (hwp, txt 파일만 가능)');
+                } else {
+                    // 서버 응답을 받지 못했을 때 처리할 코드 작성
+                    console.error('파일 업로드에 실패했습니다.');
+                    alert('파일 업로드에 실패했습니다.');
+                }
+            };
+
+            // Ajax 요청 전송
+            xhr.send(formData);
+        } else {
+            // 파일이 없을 경우 form 바로 제출
+            document.querySelector('form').submit();
+        }
+    });
+
+    // ==========================여기서부터는 텍스트 에디터 설정==========================
+    // 텍스트 에디터와 툴바에 관한 설정
+    // 폰트
+    // 폰트 필체
     const btnBold = document.getElementById("btn-bold");
     const btnItalic = document.getElementById("btn-italic");
     const btnUnderline = document.getElementById("btn-underline");
     const btnStrike = document.getElementById("btn-strike");
     const btnOrderedList = document.getElementById("btn-ordered-list");
     const btnUnorderedList = document.getElementById("btn-unordered-list");
+
+    // 폰트 색상
     const selectFontColor = document.getElementById("select-font-color");
     const selectFontBackground = document.getElementById(
         "select-font-background"
     );
-    const btnImage = document.getElementById("btn-image");
-    const imageSelector = document.getElementById("img-selector");
+
+    // 폰트 사이즈
     const fontSizeSelector = document.getElementById("select-font-size");
     const fontNameSelector = document.getElementById("select-font-name");
-
     const fontSizeList = [10, 13, 16, 18, 24, 32, 48];
 
+    // 이미지
+    const btnImage = document.getElementById("btn-image");
+    const imageSelector = document.getElementById("img-selector");
+
+    // 내용
     editor.addEventListener("keydown", function () {
         checkStyle();
     });
@@ -183,6 +338,7 @@
         checkStyle();
     });
 
+    // 필체
     btnBold.addEventListener("click", function () {
         setStyle("bold");
     });
@@ -207,12 +363,21 @@
         setStyle("insertUnorderedList");
     });
 
+    // 폰트 색상 및 사이즈
     selectFontColor.addEventListener("change", function () {
         setFontColor(this.value);
     });
 
     selectFontBackground.addEventListener("change", function () {
         setFontBackground(this.value);
+    });
+
+    fontSizeSelector.addEventListener("change", function () {
+        changeFontSize(this.value);
+    });
+
+    fontNameSelector.addEventListener("change", function () {
+        changeFontName(this.value);
     });
 
     // 이미지 업로드 모듈 활성화
@@ -227,13 +392,7 @@
         }
     });
 
-    fontSizeSelector.addEventListener("change", function () {
-        changeFontSize(this.value);
-    });
-    fontNameSelector.addEventListener("change", function () {
-        changeFontName(this.value);
-    });
-
+    // FileReader를 사용하여 이미지 파일을 읽고 에디터에 이미지를 삽입
     function insertImageDate(file) {
         const reader = new FileReader();
         reader.addEventListener("load", function (e) {
@@ -243,11 +402,13 @@
         reader.readAsDataURL(file);
     }
 
+    // 폰트 색상 변경
     function setFontColor(color) {
         document.execCommand("foreColor", false, color);
         focusEditor();
     }
 
+    // 스타일
     function setFontBackground(color) {
         document.execCommand("hiliteColor", false, color);
         focusEditor();
@@ -259,10 +420,12 @@
         checkStyle();
     }
 
+    // 내용 에디터에 포커스
     function focusEditor() {
         editor.focus({preventScroll: true});
     }
 
+    // 필체 선택 함수
     function checkStyle() {
         if (isStyle("bold")) {
             btnBold.classList.add("active");
@@ -298,6 +461,7 @@
         reportFont();
     }
 
+    // 지정된 요소의 계산된 스타일 속성 값 가져오기
     function getComputedStyleProperty(el, propName) {
         if (window.getComputedStyle) {
             return window.getComputedStyle(el, null)[propName];
@@ -306,20 +470,24 @@
         }
     }
 
+    // 폰트 이름을 변경
     function changeFontName(name) {
         document.execCommand("fontName", false, name);
         focusEditor();
     }
 
+    // 폰트 사이즈를 변경
     function changeFontSize(size) {
         document.execCommand("fontSize", false, size);
         focusEditor();
     }
 
+    // 지정된 스타일이 적용되어 있는지 확인
     function isStyle(style) {
         return document.queryCommandState(style);
     }
 
+    // 현재 선택된 텍스트의 폰트 설정
     function reportFont() {
         let containerEl, sel;
         if (window.getSelection) {
@@ -357,11 +525,13 @@
         }
     }
 
+    // 10진수를 16진수로 변환
     function componentToHex(c) {
         const hex = parseInt(c).toString(16);
         return hex.length == 1 ? "0" + hex : hex;
     }
 
+    // RGB 색상 값을 16진수 색상 값으로 변환
     function rgbToHex(color) {
         // rgb(r, g, b)에서 색상값만 뽑아 내기 위해서 rgb() 제거
         const temp = color.replace(/[^0-9,]/g, "");
@@ -374,104 +544,6 @@
             componentToHex(rgb[2])
         );
     }
-
-    // 제목 내 enter 금지
-    document.getElementById('titleName').addEventListener('input', function () {
-        this.textContent = this.textContent.replace(/\n/g, '');
-    });
-
-    // 입력한 내용을 숨은 input 필드에 복사하여 전송 제목 + 내용
-    let form = document.querySelector('form');
-    form.onsubmit = function () {
-        let titleInput = document.querySelector('#title');
-        titleInput.value = titleName.innerHTML;
-
-        let contentInput = document.querySelector('#content');
-        contentInput.value = editor.innerHTML;
-    };
-
-
-    // 이미지 업로드 모듈 활성화
-    btnImage.addEventListener("click", function () {
-        imageSelector.click();
-    });
-
-
-    function uploadImage(file) {
-        const formData = new FormData();
-        formData.append("uploadFile", file);
-
-        $.ajax({
-            type: "post",
-            enctype: "multipart/form-data",
-            url: "/file/imageUpload", // 이미지를 업로드할 서버 엔드포인트 URL
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (data) {
-                console.log("이미지 업로드 성공 : " + data);
-
-                // 이미지를 삽입할 위치에 파일 경로를 포함하여 이미지 삽입
-                insertImage(data.fileName, data.datePath);
-            },
-            error: function (err) {
-                console.error("이미지 업로드 실패 : " + err);
-            },
-        });
-    }
-
-    function insertImage(fileName, datePath) {
-        // 이미지 파일 경로
-        const fileUrl = "/file/display?fileName=" + encodeURI(fileName) + "&datePath=" + encodeURI(datePath);
-
-        // 에디터에 이미지 삽입
-        const img = document.createElement("img");
-        img.src = fileUrl;
-
-        // 에디터의 현재 커서 위치에 이미지 삽입
-        editor.focus(); // 에디터에 포커스를 맞춤
-        const selection = window.getSelection();
-        if (selection.getRangeAt && selection.rangeCount) {
-            const range = selection.getRangeAt(0);
-            range.collapse(false); // 커서를 현재 선택 영역의 끝으로 이동
-            range.insertNode(img); // 이미지를 삽입
-        }
-    }
-
-
-    // 파일 업로드
-    // form 제출 이벤트 리스너 등록
-    document.querySelector('form').addEventListener('submit', function (event) {
-        // 기본 제출 동작 중지
-        // event.preventDefault();
-        let bno = $(this).data('bno');
-        console.log("bno = " + bno);
-        // FormData 객체 생성
-        let formData = new FormData();
-
-        // 파일 input 요소에서 선택된 파일 추가
-        let fileInput = document.getElementById('file');
-        formData.append('file', fileInput.files[0]);
-
-        // bno 추가
-        formData.append('bno', bno);
-
-        // Ajax 요청 생성
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', '/file/fileUpdateUpload');
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                // 성공적으로 서버 응답을 받았을 때 처리할 코드 작성
-                console.log('성공적으로 업로드되었습니다.');
-            } else {
-                // 서버 응답을 받지 못했을 때 처리할 코드 작성
-                console.error('파일 업로드에 실패했습니다.');
-            }
-        };
-
-        // Ajax 요청 전송
-        xhr.send(formData);
-    });
 </script>
 </body>
 </html>

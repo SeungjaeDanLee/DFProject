@@ -26,8 +26,6 @@
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
         crossorigin="anonymous"></script>
 <script src="../resources/js/DF00_admin/DF0002_boardManagement.js"></script>
-
-<script src="../resources/js/DF00_admin/DF0001_memberManagement.js"></script>
 <script src="../resources/js/scripts.js" type="text/javascript"></script>
 <script src="../resources/js/datatables-simple-demo.js" type="text/javascript"></script>
 

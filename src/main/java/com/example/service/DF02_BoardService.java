@@ -9,6 +9,7 @@ import com.example.repository.DF04_LikePointRepository;
 import com.example.util.HtmlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -26,14 +27,13 @@ public class DF02_BoardService {
     @Autowired
     DF04_LikePointRepository likePointRepository;
 
-    // 게시글 작성
-    public void write_board(DF02_BoardDTO boardDTO) {
-        boardRepository.writeBoard(boardDTO);
-    }
+    @Autowired
+    DF05_FileService fileService;
 
-//    public List<DF02_BoardDTO> findAllBoard() {
-//        return boardRepository.findAllBoard();
-//    }
+    // 게시글 작성
+    public int write_board(DF02_BoardDTO boardDTO) {
+        return boardRepository.writeBoard(boardDTO);
+    }
 
     // 게시글 고유값 찾기
     public DF02_BoardDTO findByBoardBno(int bno) {

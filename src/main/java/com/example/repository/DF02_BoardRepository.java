@@ -15,8 +15,8 @@ public class DF02_BoardRepository {
     private SqlSessionTemplate sql;
 
     // 게시글 작성
-    public void writeBoard(DF02_BoardDTO boardDTO) {
-        sql.insert("Board.writeBoard", boardDTO);
+    public int writeBoard(DF02_BoardDTO boardDTO) {
+        return sql.insert("Board.writeBoard", boardDTO);
     }
 
 

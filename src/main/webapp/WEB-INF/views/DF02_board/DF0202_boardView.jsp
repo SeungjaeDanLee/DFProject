@@ -24,6 +24,7 @@
     <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalNav.jsp"></jsp:include>
 </header>
 
+<%-- 게시글 --%>
 <div class="Select_all">
     <section>
         <ul>
@@ -40,8 +41,8 @@
                 <h2>${board.title}</h2>
             </li>
 
+            <%--좋아요--%>
             <li style="display: flex; justify-content: right; align-items: center;">
-
                 <c:if test="${!isLiked}">
                     <c:if test="${board.mno != loginMno}">
                         <button type="button" class="btn btn-outline-light like-btn" style="width: 100px"
@@ -62,22 +63,31 @@
             <h6 style="display: flex; justify-content: right; align-items: center;">좋아요 ${board.like_counts} |
                 조회 ${board.view_counts}</h6>
             <hr>
-            <c:forEach items="${fileList}" var="file">
-                <c:if test="${file.fno != 0}">
-                    <li class="nav-item dropdown"  style="display: flex; justify-content: right; align-items: center;">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">첨부 파일</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/file/download?file_name=${file.file_name}&path=${file.path}">${file.origin_name}</a></li>
-                        </ul>
-                    </li>
-                </c:if>
-            </c:forEach>
+
+            <%--첨부 파일--%>
+            <c:if test="${not empty fileList}">
+                <li class="nav-item dropdown" style="display: flex; justify-content: right; align-items: center;">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">첨부 파일</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <c:forEach items="${fileList}" var="file">
+                            <c:if test="${file.fno != 0}">
+                                <li><a class="dropdown-item"
+                                       href="/file/download?file_name=${file.file_name}&path=${file.path}">${file.origin_name}</a>
+                                </li>
+                            </c:if>
+                        </c:forEach>
+                    </ul>
+                </li>
+            </c:if>
+
             <br>
             ${board.content}
         </ul>
     </section>
 </div>
+
+<%-- 목록 수정 삭제 --%>
 <div class="button-area" style="text-align: center;">
     <button class="btn btn-outline-primary" type="button"
             onclick="location.href='<c:url value='/board/paging?page=${page}'></c:url>'">목록
@@ -91,7 +101,8 @@
 </div>
 <hr>
 
-
+<%-- 댓글 --%>
+<%-- 댓글 쓰기 --%>
 <form action="/reply/write" method="post">
     <div class="Select_all">
         <section>
@@ -112,7 +123,7 @@
     </div>
 </form>
 
-
+<%--댓글 리스트--%>
 <div id="replyList">
     <c:forEach items="${replyList}" var="reply">
         <div style="text-align: center; margin: 10px;">
@@ -158,9 +169,8 @@
     <button class="btn-outline-danger" type="button" onclick="closeEditModal()">닫기</button>
 </div>
 
-
+<%-- 댓글 팝업 창 닫기 --%>
 <div class="overlay" onclick="closeEditModal()"></div>
-
 
 <jsp:include page="/resources/layouts/DF00_layouts/DF00_generalFooter.jsp"></jsp:include>
 <script>

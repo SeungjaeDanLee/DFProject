@@ -83,50 +83,6 @@ public class DF05_FileController {
         }
     }
 
-//    @ResponseBody
-//    @RequestMapping(value = {"/imageUpload"}, method = {RequestMethod.POST})
-//    public ResponseEntity<Map<String, String>> imageUpload(MultipartFile[] uploadFile) {
-//
-//        // 파일 크기 및 가로세로 크기 제한 설정
-//        long maxSize = 10 * 1024 * 1024; // 최대 10MB
-//        int maxWidth = 1920; // 최대 가로 크기
-//        int maxHeight = 1080; // 최대 세로 크기
-//
-//        // 톰캣 내부 저장경로 (*윈도우), 없을 경우 폴더생성
-////        String uploadFolder = "C:\\Users\\Epcot\\Desktop\\DFProject-0207\\apache-tomcat-9.0.85\\webapps\\upload";
-//        String uploadFolder = "C:\\upload\\image";
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        String datePath = sdf.format(new Date()).replace("-", File.separator);
-//        File uploadPath = new File(uploadFolder, datePath);
-//        if (!uploadPath.exists()) {
-//            uploadPath.mkdirs();
-//        }
-//        Map<String, String> response = new HashMap<>();
-//        byte b;
-//        int i;
-//        MultipartFile[] arrayOfMultipartFile;
-//        // 배열에서 한 개씩 꺼내서 저장
-//        for (i = (arrayOfMultipartFile = uploadFile).length, b = 0; b < i; ) {
-//            MultipartFile upFile = arrayOfMultipartFile[b];
-//            String originalFileName = upFile.getOriginalFilename();
-//            String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
-//            String uniqueFileName = UUID.randomUUID() + "." + fileExtension;
-//
-//            File saveFile = new File(uploadPath, uniqueFileName);
-//            try {
-//                upFile.transferTo(saveFile);
-//                response.put("datePath", datePath);
-//                response.put("fileName", uniqueFileName);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-////                logger.info("[ 이미지 업로드 ] Fail :: "+originalFileName+" File IOException Error");
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//            }
-//            b++;
-//        }
-//        return ResponseEntity.ok().body(response);
-//    }
-
     // 이미지 보기
     @ResponseBody
     @GetMapping({"/display"})
@@ -153,16 +109,25 @@ public class DF05_FileController {
 
     // 파일 업로드
     @PostMapping("/fileUpload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        String result = fileService.uploadFile(file);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<Integer> uploadFile(@RequestParam("file") MultipartFile file) {
+//        String result = String.valueOf(fileService.uploadFile(file));
+        int fno = fileService.uploadFile(file);
+        if (fno != -1) {
+            return ResponseEntity.ok(fno);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     // 게시글 업데이트 파일 업로드
     @PostMapping("/fileUpdateUpload")
-    public ResponseEntity<String> uploadUpdateFile(@RequestParam("file") MultipartFile file, @RequestParam("bno") int bno) {
-        String result = fileService.uploadUpdateFile(file, bno);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<Integer> uploadUpdateFile(@RequestParam("file") MultipartFile file, @RequestParam("bno") int bno) {
+        int result = fileService.uploadUpdateFile(file, bno);
+        if (result != -1) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
     }
 
     // 파일 다운로드

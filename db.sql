@@ -47,7 +47,7 @@ CREATE TABLE file (
                       ,file_name     VARCHAR(255)
                       ,origin_name   VARCHAR(255)
                       ,uploaded_date TIMESTAMP
-                      ,updated_date  TIMESTAMP
+--                       ,updated_date  TIMESTAMP
                       ,path          VARCHAR(255)
                       ,bno           INT
                       ,FOREIGN KEY (bno) REFERENCES board (bno) ON DELETE CASCADE

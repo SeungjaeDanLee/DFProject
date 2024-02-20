@@ -8,6 +8,9 @@
     <insert id="writeBoard" parameterType="board">
         insert into board(title, content, like_counts, view_counts, written_date, updated_date, category, mno)
         values (#{title}, #{content}, 0, 0, now(), now(), #{category}, #{mno})
+        <selectKey keyProperty="bno" resultType="int" order="AFTER">
+            SELECT LAST_INSERT_ID() AS bno
+        </selectKey>
     </insert>
 
 

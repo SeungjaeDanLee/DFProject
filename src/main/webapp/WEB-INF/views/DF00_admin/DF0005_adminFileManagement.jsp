@@ -25,7 +25,7 @@
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"
         crossorigin="anonymous"></script>
-<script src="../resources/js/DF00_admin/DF0003_replyManagement.js"></script>
+<script src="../resources/js/DF00_admin/DF0005_fileManagement.js"></script>
 <script src="../resources/js/scripts.js" type="text/javascript"></script>
 <script src="../resources/js/datatables-simple-demo.js" type="text/javascript"></script>
 
@@ -36,7 +36,7 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid px-4">
-                <h1 class="mt-4">댓글 관리 페이지</h1>
+                <h1 class="mt-4">파일 관리 페이지</h1>
                 <ol class="breadcrumb mb-4">
                     <li class="breadcrumb-item"><a href="/">권한</a></li>
                     <li class="breadcrumb-item active">ADMIN</li>
@@ -50,7 +50,7 @@
                 <div class="card mb-4">
                     <div class="card-header" style="font-weight: bold;color: white; background-color: #00c473;">
                         <i class="fas fa-table me-1"></i>
-                        댓글 관리 페이지
+                        파일 관리 페이지
                     </div>
                     <div class="card-body">
                         <div style="display: flex">
@@ -64,38 +64,34 @@
                         <table id="datatablesSimple">
                             <thead>
                             <tr>
-                                <th>댓글 번호</th>
-                                <th>내용</th>
-                                <th>쓴 날짜</th>
-                                <th>해당 게시글 제목</th>
-                                <th>작성자</th>
+                                <th>파일 번호</th>
+                                <th>UUID</th>
+                                <th>원 이름</th>
+                                <th>업로드 날짜</th>
+                                <th>경로</th>
+                                <th>게시물</th>
                                 <th>삭제</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <c:forEach items="${replyList}" var="reply">
+                            <c:forEach items="${fileList}" var="file">
                                 <tr>
-                                    <td id="rno">${reply.rno}</td>
-                                    <td id="content">${reply.content}</td>
-                                    <td id="written_date">${reply.written_date}</td>
+                                    <td id="fno">${file.fno}</td>
+                                    <td id="file_name">${file.file_name}</td>
+                                    <td id="origin_name">${file.origin_name}</td>
+                                    <td id="uploaded_date">${file.uploaded_date}</td>
+                                    <td id="path">${file.path}</td>
                                     <td id="bno">
-                                        <a href="/board/boardView?bno=${reply.bno}">
+                                        <a href="/board/boardView?bno=${file.bno}">
                                             <c:forEach items="${boardList}" var="board">
-                                                <c:if test="${reply.bno == board.bno}">
+                                                <c:if test="${file.bno == board.bno}">
                                                     ${board.title}
                                                 </c:if>
                                             </c:forEach>
                                         </a>
                                     </td>
-                                    <td id="mno">
-                                        <c:forEach items="${memberList}" var="member">
-                                            <c:if test="${reply.mno == member.mno}">
-                                                ${member.nick_name}
-                                            </c:if>
-                                        </c:forEach>
-                                    </td>
-                                    <td id="reply_delete">
-                                        <button class="btn btn-outline-danger" onclick="deleteReply('${reply.rno}')">삭제</button>
+                                    <td id="file_delete">
+                                        <button class="btn btn-outline-danger" onclick="deleteFile('${file.fno}')">삭제</button>
                                     </td>
                                 </tr>
                             </c:forEach>
