@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Reply">
+
+    <!--댓글 작성-->
+    <insert id="writeReply" parameterType="reply">
+        insert into reply(content, bno, mno, written_date, updated_date)
+        values(#{content}, #{bno}, #{mno}, now(), now())
+    </insert>
+
+    <!--해당 게시글의 모든 댓글 가져오기-->
+    <select id="findAllReply" parameterType="int" resultType="reply">
+        select * from reply where bno=#{bno}
+    </select>
+
+    <!--댓글 수정-->
+    <update id="updateReply" parameterType="reply">
+        update reply set content=#{content}, updated_date=now() where rno =#{rno}
+    </update>
+
+
+    <!--댓글 삭제-->
+    <delete id="deleteReply" parameterType="int">
+        delete from reply where rno = #{rno}
+    </delete>
+
+    <!--작성자와 댓글 일치-->
+    <select id="findAuthorMnoByReplyRno" parameterType="int" resultType="int">
+        select mno
+        from reply
+        where rno = #{rno}
+    </select>
+
+    <!--해당 댓글 rno 가져오기-->
+    <select id="findByReplyRno" parameterType="int" resultType="int">
+        select *
+        from reply
+        where rno = #{rno}
+    </select>
+
+    <!--모든 댓글 찾기-->
+    <select id="findAll" resultType="reply">
+        select * from reply
+    </select>
+
+</mapper>

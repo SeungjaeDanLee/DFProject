@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="Member">
+    <!--select, insert, update, delete-->
+
+    <!--회원가입 insert, select-->
+    <insert id="memberJoin" parameterType="member">
+        insert into member(id, password, email, name, nick_name, phone, zipcode, streetAddress, detailAddress, gender, birthday, regdate, updated_date, member_level)
+        values (#{id}, #{password}, #{email}, #{name}, #{nick_name}, #{phone}, #{zipcode}, #{streetAddress}, #{detailAddress}, #{gender}, #{birthday}, now(), now(), 1)
+    </insert>
+
+    <!--회원가입시 아이디 중복 검사-->
+    <select id="checkIdCount" parameterType="String" resultType="int">
+        select count(*) from member where id=#{inputId}
+    </select>
+
+
+    <!--회원가입시 닉네임 중복 검사-->
+    <select id="checkNickNameCount" parameterType="String" resultType="int">
+        select count(*) from member where nick_name=#{inputNickName}
+    </select>
+
+
+    <!--로그인 select-->
+    <select id="memberLogin" parameterType="member" resultType="member">
+        select * from member where id = #{id}
+    </select>
+
+    <!--로그인된 아이디로 해당 아이디의 모든 정보 찾기-->
+    <select id="findByLoginId" parameterType="String" resultType="member">
+        select * from member where id=#{loginId}
+    </select>
+
+    <!--회원 탈퇴 delete-->
+    <delete id="memberDelete" parameterType="int">
+        delete from member where mno = #{mno}
+    </delete>
+
+    <!--회원 정보 수정 update-->
+    <update id="memberUpdate" parameterType="member">
+        update member
+        set email = #{email},
+            name = #{name},
+            nick_name = #{nick_name},
+            phone = #{phone},
+            zipcode = #{zipcode},
+            streetAddress = #{streetAddress},
+            detailAddress = #{detailAddress},
+            gender = #{gender},
+            birthday = #{birthday},
+            updated_date = now(),
+            member_level = #{member_level}
+        where mno = #{mno};
+    </update>
+
+
+    <!--관리자 페이지-->
+    <!--모든 회원 찾기-->
+    <select id="findAll" resultType="member">
+        select * from member
+    </select>
+
+    <!--Mno로 회원정보 검색-->
+    <select id="findByMno" resultType="member">
+        select * from member where mno = #{mno}
+    </select>
+</mapper>
